@@ -1,0 +1,17 @@
+{
+    "app_name":"Karryngo",
+    "app_version":"1.00",
+    "persistence":{
+        "persistence_type":"NoSQL",
+        "database":"karryngo",
+        "hostname":"localhost",
+        "username":"karryngo_root",
+        "password":"karryngo_pass",
+        "url":"/config-files/persistence.json",
+        "parse":false
+    },
+    "routes":{
+        "parse":false,
+        "url":"/config-files/routes.json"
+    }
+}
