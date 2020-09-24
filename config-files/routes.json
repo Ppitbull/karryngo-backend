@@ -5,7 +5,11 @@
         "actions":[
             {
                 "method":"get",
-                "action": "postService"
+                "action": "getService"
+            },
+            {
+                "method":"post",
+                "action":"postService"
             }
         ]
     }

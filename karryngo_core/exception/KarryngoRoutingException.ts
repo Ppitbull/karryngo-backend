@@ -17,6 +17,6 @@ export class KarryngoRoutingException extends KarryngoException
 
     constructor(code:Number,description:String)
     {
-        super(code,"Erreur de routage",description);
+        super(code,"Erreur de routage: "+description,description);
     }
 }

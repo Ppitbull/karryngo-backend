@@ -10,6 +10,7 @@ import { ConfigurableApp } from "./ConfigurableApp.interface";
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";
 import { ConfigurationException } from "../exception/ConfigurationException";
+import { DynamicLoader } from "../utils/DynamicLoader";
 
 
 export class KarryngoConfigurationServiceFactory extends KarryngoApplicationEntity
@@ -23,17 +24,7 @@ export class KarryngoConfigurationServiceFactory extends KarryngoApplicationEnti
     }
     
     getInstance():ConfigurableApp
-    {
-        let instance:any={};
-        let keyClass:String='';
-        try
-        {
-            instance=require(`${Configuration.class_for_configuration}`);
-            for (let key in instance) keyClass=key;
-        }catch(e:any)
-        {
-            throw new ConfigurationException(ConfigurationException.CLASS_CONFIGURATION_NOT_FOUND,"Erreur d'instanciation: "+e.message());
-        }        
-        return new instance[keyClass.toString()]();
+    {       
+        return DynamicLoader.load(Configuration.class_for_configuration);
     }
 }

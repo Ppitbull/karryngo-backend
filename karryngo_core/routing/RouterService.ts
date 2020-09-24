@@ -11,6 +11,7 @@ import { ConfigurableApp } from "../config/ConfigurableApp.interface";
 import { KarryngoRoutingException } from "../exception/KarryngoRoutingException";
 import { Route } from "./Route";
 import { PersistenceManager } from "../persistence/PersistenceManager.interface";
+import { DynamicLoader } from "../utils/DynamicLoader";
 
 export class RouterService extends KarryngoApplicationEntity
 {
@@ -76,11 +77,11 @@ export class RouterService extends KarryngoApplicationEntity
             }
             route.actions.forEach((routeAction:any) => 
             {
-                if(!route.hasOwnProperty('method'))    
+                if(!routeAction.hasOwnProperty('method'))    
                 {
                     throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_PARAM_NOT_FOUND,`key 'method' not found in action ${routeAction} `)
                 }
-                if(!route.hasOwnProperty('action'))    
+                if(!routeAction.hasOwnProperty('action'))    
                 {
                     throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_PARAM_NOT_FOUND,`key 'action' not found in action ${routeAction} `)
                 }
@@ -95,16 +96,19 @@ export class RouterService extends KarryngoApplicationEntity
      */
     run(persistence:PersistenceManager)
     {        
+        //pour chaque route présent dans la liste des routes
         for(let route of this.routes)
         {
-            let controllerModule=require(`/${route.module}`);
-            let controller=new controllerModule(persistence,this.configService);
-            //doit utiliser call pour appeler la methode adéquoite
+            //on charge dynamiquement du module/controlleur associer
+            let controller=DynamicLoader.load(route.module,[persistence,this.configService]);
+            //pour chaque method on appelle l'action associer en lui passant l'object requete et reponse
             for(let method of route.getMethodList())
             {
-                //doit appeler sous la forme
-
-                //this.frameworkRouter.call(method,`controller.${route.getActionForMethod(method)}`);
+                DynamicLoader.call(this.frameworkRouter,route.url,[(req:any,res:any)=>
+                    {
+                        DynamicLoader.call(controller,route.getActionForMethod(method),[req,res]);
+                    }
+                ])
             }
         }
     }
@@ -117,5 +121,27 @@ export class RouterService extends KarryngoApplicationEntity
     protected addRoute(route:Route):void
     {
         this.routes.push(route);
+    }
+
+    /**
+     * @description permet d'obtenir la liste de toutes les routes lu dans le fichiers des routes
+     * @returns listes des routes
+     */
+    getRouteList():Route[]
+    {
+        return this.routes;
+    }
+
+    /**
+     * @description permet d'obtenir une route a partir de son url
+     * @param url url de la route
+     * @returns route qui correspond a l'url passé en parametre
+     * @throws new KarryngoRoutingException() si aucune route correspondante a l'url n'est trouvé
+     */
+    getRouteByUrl(url:String):any
+    {
+        let route=this.routes.find((rte:Route)=>rte.url==url);
+        if(route==undefined) throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_NOT_FOUND,`impossible de trouver la route d'url ${url}`);
+        return route;
     }
 }
