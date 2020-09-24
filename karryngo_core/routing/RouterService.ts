@@ -93,7 +93,7 @@ export class RouterService extends KarryngoApplicationEntity
      *  existante dans l'application ainsi que les controlleurs et les actions a appéler pour
      *  chaque methode (get,put,post,delete) 
      */
-    protected run(persistence:PersistenceManager)
+    run(persistence:PersistenceManager)
     {        
         for(let route of this.routes)
         {

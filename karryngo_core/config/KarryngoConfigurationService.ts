@@ -179,7 +179,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
         });
         this.configObject.forEach((obj)=>
         {
-            this.recursiveConstructConfiguration(obj,urlFile);
+            this.recursiveConstructConfiguration(this.parse(urlFile),urlFile);
         }); 
     }
 
@@ -205,18 +205,19 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
             //pour chaque element du tableau on appelle cette même méthode récursivement
             for( let elmt of obj) this.recursiveConstructConfiguration(elmt,urlFile);
         }
-        else if(obj instanceof Object)//si l'objet est un objet(JSON)
+        else if(obj.constructor==({}).constructor)//si l'objet est un objet(JSON)
         {
             let file=urlFile;
             //pour chaque pair de cles valeur de l'objet
             for(let elmt in obj)
             {
-                //si on ne doit pas parser alors on cree l'objet et on l'ajouet a l'obkjet de configuration
+                //si on ne doit pas parser alors on cree l'objet et on l'ajouet a l'objet de configuration
                 //et au mirroir
-                if((obj[elmt] instanceof Object) && ((obj[elmt].hasOwnProperty('parse') && !obj[elmt].parse)))
+                if((obj[elmt].constructor==({}).constructor) && ((obj[elmt].hasOwnProperty('parse') && !obj[elmt].parse)))
                 {
+                    if(obj[elmt].hasOwnProperty("url")) file=obj[elmt]['url'];
                     let notParseObj:any={};
-                    notParseObj[elmt]=obj[elmt];
+                    notParseObj[elmt]=obj[elmt];                    
                     this.configObject.push({
                         url:file,
                         config:notParseObj
@@ -229,7 +230,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
                 }
                 else
                 {
-                    if(elmt=='url') 
+                    if(elmt=="url") 
                     {
                         file=obj[elmt];//si la l'url est définis on recupere cette url
                         //et on examine son contenu

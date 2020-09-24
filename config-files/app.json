@@ -7,11 +7,12 @@
         "hostname":"localhost",
         "username":"karryngo_root",
         "password":"karryngo_pass",
-        "url":"/config-files/persistence.json",
+        "url":"./config-files/persistence.json",
+        "classe":"/karryngo_core/persistenc/MongoDBManager",
         "parse":false
     },
     "routes":{
         "parse":false,
-        "url":"/config-files/routes.json"
+        "url":"./config-files/routes.json"
     }
 }
