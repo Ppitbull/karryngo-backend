@@ -198,7 +198,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
      * @param urlFile url du fichier de configuration
      * @see parse()
      */
-    protected recursiveConstructConfiguration(obj:any,urlFile:String)
+    protected recursiveConstructConfiguration(obj:any,urlFile:String):void
     {
         if(obj instanceof Array) //si l'objet est un tableau
         {

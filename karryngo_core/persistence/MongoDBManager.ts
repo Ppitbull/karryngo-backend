@@ -13,6 +13,9 @@ import { NoSqlPersistenceManager } from "./NoSqlPersistenceManager";
 
 export class MongoDBManager extends NoSqlPersistenceManager
 {
+    connect(connexionString: String): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
     create(entity: SerializableEntity): Promise<ActionResult> {
         throw new Error("Method not implemented.");
     }

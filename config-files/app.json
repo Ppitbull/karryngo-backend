@@ -5,8 +5,9 @@
         "persistence_type":"NoSQL",
         "database":"karryngo",
         "hostname":"localhost",
-        "username":"karryngo_root",
-        "password":"karryngo_pass",
+        "username":"root",
+        "password":"mongopwd",
+        "port":28015,
         "url":"./config-files/persistence.json",
         "classe":"/karryngo_core/persistenc/MongoDBManager",
         "parse":false

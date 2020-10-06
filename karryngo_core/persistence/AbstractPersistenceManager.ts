@@ -5,8 +5,8 @@
 */
 
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
-import { SerializableEntity } from "../SerializableEntity";
 import { ActionResult } from "../utils/ActionResult";
+import { KarryngoPersistentEntity } from "./KarryngoPersistentEntity";
 import { PersistenceManager } from "./PersistenceManager.interface";
 
 export abstract class AbstractPersistenceManager extends KarryngoApplicationEntity implements PersistenceManager
@@ -15,18 +15,18 @@ export abstract class AbstractPersistenceManager extends KarryngoApplicationEnti
      * 
      * @see PersistenceManager.create()
      */
-    abstract create(entity: SerializableEntity): Promise<ActionResult>;
+    abstract create(entity: KarryngoPersistentEntity): Promise<ActionResult>;
 
     /**
      * 
      * @see PersistenceManager.update()
      */
-    abstract update(entity: SerializableEntity): Promise<ActionResult>;
+    abstract update(entity: KarryngoPersistentEntity): Promise<ActionResult>;
 
     /**
      * 
      * @see PersistenceManager.delete()
      */
-    abstract delete(entity: SerializableEntity): Promise<ActionResult>;
+    abstract delete(entity: KarryngoPersistentEntity): Promise<ActionResult>;
     
 } 

@@ -5,8 +5,8 @@
 @created: 23/09/2020
 */
 
-import { SerializableEntity } from "../SerializableEntity";
 import { ActionResult } from "../utils/ActionResult";
+import { KarryngoPersistentEntity } from "./KarryngoPersistentEntity";
 
 export interface PersistenceManager
 {
@@ -17,7 +17,7 @@ export interface PersistenceManager
      * @returns une promise qui est resolu si l'opération est effectué avec succées et 
      *  rejecter dans le cas contraire
      */
-    create(entity:SerializableEntity):Promise<ActionResult>;
+    create(entity:KarryngoPersistentEntity):Promise<ActionResult>;
     
     /**
      * @description permet de mettre a jour une entité dans le support de stockage (bd,fichier...)
@@ -26,7 +26,7 @@ export interface PersistenceManager
      * @returns une promise qui est resolu si l'opération est effectué avec succées et 
      *  rejecter dans le cas contraire
      */
-    update(entity:SerializableEntity):Promise<ActionResult>;
+    update(entity:KarryngoPersistentEntity):Promise<ActionResult>;
 
     /**
      * @description permet de supprimer une entité dans le support de stockage (bd,fichier...)
@@ -35,5 +35,7 @@ export interface PersistenceManager
      * @returns une promise qui est resolu si l'opération est effectué avec succées et 
      *  rejecter dans le cas contraire
      */
-    delete(entity:SerializableEntity):Promise<ActionResult>;
+    delete(entity:KarryngoPersistentEntity):Promise<ActionResult>;
+
+    
 }

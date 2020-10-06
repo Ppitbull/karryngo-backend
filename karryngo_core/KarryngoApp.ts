@@ -22,22 +22,22 @@ export class KarryngoApp extends KarryngoApplicationEntity
     hydrate(entity: KarryngoEntity): void {
         throw new Error("Method not implemented.");
     }
-    protected configurationServiceFactory:KarryngoConfigurationServiceFactory;
+    /*protected configurationServiceFactory:KarryngoConfigurationServiceFactory;
     protected persistanceManagerFactory:KarryngoPersistenceManagerFactory;
-    protected routerService:RouterService=null;
+    protected routerService:RouterService;*/
 
     constructor()
     {
         super();
-        this.configurationServiceFactory=new KarryngoConfigurationServiceFactory();
+        //this.configurationServiceFactory=new KarryngoConfigurationServiceFactory();
     }
     run()
     {
-        let configurationServiceIntance=this.configurationServiceFactory.getInstance();
+        /*let configurationServiceIntance=this.configurationServiceFactory.getInstance();
         this.persistanceManagerFactory=new KarryngoPersistenceManagerFactory(configurationServiceIntance);
         let persistenceManagerInstance=this.persistanceManagerFactory.getInstance();
         this.routerService=new RouterService(configurationServiceIntance,express.Router);
-        this.routerService.run(persistenceManagerInstance);
+        this.routerService.run(persistenceManagerInstance);*/
     }
     
 }

@@ -7,12 +7,13 @@
 
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
 import { SerializableEntity } from "../SerializableEntity";
+import { ActionResult } from "../utils/ActionResult";
 import { AbstractPersistenceManager } from "./AbstractPersistenceManager";
 
 export abstract class NoSqlPersistenceManager extends AbstractPersistenceManager
 {
     protected configService:ConfigurableApp;
-
+    protected db:any;
     constructor(config:ConfigurableApp)
     {
         super();
@@ -24,5 +25,6 @@ export abstract class NoSqlPersistenceManager extends AbstractPersistenceManager
         let urlEntity:String="";
         return urlEntity;
     }
+    abstract connect(connexionString:String):Promise<ActionResult>;
 }
 
