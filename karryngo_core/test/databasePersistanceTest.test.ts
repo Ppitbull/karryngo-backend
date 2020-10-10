@@ -29,8 +29,8 @@ describe('Test du service de Persistance',()=>
     it("test de creation d'un compte utilisateur",async()=>
     {
         let user:User=new User();
-        user.firstName="Cedric";
-        user.lastName="Nguendap";
+        user.firstname="Cedric";
+        user.lastname="Nguendap";
 
         let res=await db.create(user);
         

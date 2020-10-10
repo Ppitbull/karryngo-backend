@@ -11,6 +11,8 @@ import { KarryngoConfigurationServiceFactory } from "./config/KarryngoConfigurat
 import { KarryngoPersistenceManagerFactory } from "./persistence/KarryngoPersistenceManagerFactory";
 import { RouterService } from "./routing/RouterService";
 import * as express from 'express';
+import { isNonNullExpression } from "typescript";
+import { PersistenceManager } from "./persistence/PersistenceManager.interface";
 
 export class KarryngoApp extends KarryngoApplicationEntity
 {
@@ -30,6 +32,12 @@ export class KarryngoApp extends KarryngoApplicationEntity
     protected persistanceManagerFactory:KarryngoPersistenceManagerFactory;
 
     /**
+     * @description Unité de persistance.
+     * @type  PersistenceManager
+     */
+    protected persistenceManagerInstance:PersistenceManager;
+
+    /**
      * @description Service de routing permettant le routage des requetes
      * @type RouterService
      */
@@ -40,6 +48,19 @@ export class KarryngoApp extends KarryngoApplicationEntity
         super();
         //instanciation du factory du service de configuration
         this.configurationServiceFactory=new KarryngoConfigurationServiceFactory();
+
+        //obtention de l'instance du service de configuration a partir du factory
+        let configurationServiceIntance=this.configurationServiceFactory.getInstance();
+
+        //obtention de l'instance du factory de persistance avec injection de service de configuration
+        this.persistanceManagerFactory=new KarryngoPersistenceManagerFactory(configurationServiceIntance);
+        
+        //obtention de l'instance du service de persistance
+        this.persistenceManagerInstance=this.persistanceManagerFactory.getInstance();
+
+        //obtention de l'instance du service de routage avec injection du service de routing
+        //offerte par le framework Express et du service de configuration
+        this.routerService=new RouterService(configurationServiceIntance,express.Router);
     }
 
     /**
@@ -49,21 +70,8 @@ export class KarryngoApp extends KarryngoApplicationEntity
      */
     run():void
     {
-        //obtention de l'instance du service de configuration a partir du factory
-        let configurationServiceIntance=this.configurationServiceFactory.getInstance();
-
-        //obtention de l'instance du factory de persistance avec injection de service de configuration
-        this.persistanceManagerFactory=new KarryngoPersistenceManagerFactory(configurationServiceIntance);
-        
-        //obtention de l'instance du service de persistance
-        let persistenceManagerInstance=this.persistanceManagerFactory.getInstance();
-
-        //obtention de l'instance du service de routage avec injection du service de routing
-        //offerte par le framework Express et du service de configuration
-        this.routerService=new RouterService(configurationServiceIntance,express.Router);
-
         //execution du service de routage
-        this.routerService.run(persistenceManagerInstance);
+        this.routerService.run(this.persistenceManagerInstance);
     }
 
     /**

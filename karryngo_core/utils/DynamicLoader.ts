@@ -36,6 +36,31 @@ export class DynamicLoader
     }
 
     /**
+     * @description permet de charger dynamiquement une classe en fonction de son nom
+     *  comme le fait la fonction require() et mais sans l'instancier
+     * @param module module a chargé
+     * @throws new KarryngoLoaderException() si le module est introuvable
+     * @returns le module 
+     * @see require()
+     * @see import()
+     */
+    static loadWithoutInstance(module:String)
+    {
+        let keyClass:String='';
+        let moduleRequire:any={};
+        try
+        {
+            moduleRequire=require(`${process.cwd()}/${module}`);
+            for (let key in moduleRequire) keyClass=key;
+        }
+        catch(e:any)
+        {
+            throw new KarryngoLoaderException(KarryngoLoaderException.CLASS_NOT_FOUND,"Module: "+e+" non trouvé");
+        }        
+        return moduleRequire[keyClass.toString()];
+    }
+
+    /**
      * @description Cette fonction permet d'appeler une methode a partir de son nom 
      *  dynamiquement en lui passant les paramétres 
      * @param obj object sur lequel la methode est appelé

@@ -1,8 +1,8 @@
 "use strict";
-const express = require('express');
+var express = require('express');
 var cors = require('cors');
-const app = express();
-let bodyParser = require('body-parser'); //librairie qui permet de parser une chaîne en JSON
+var app = express();
+var bodyParser = require('body-parser'); //librairie qui permet de parser une chaîne en JSON
 app.use(cors());
 // Import routes
 //let apiRoutes = require("./api-routes")
@@ -13,10 +13,10 @@ app.use(bodyParser.json({ limit: '50mb' })); //ceci permet de gérer les tailles
 //var db = mongoose.connection;
 // console.log(db);
 // Setup server port
-var port = process.env.PORT || 8080;
+var port = process.env.PORT || 8090;
 // Send message for default URL
 app.use(express.json());
-app.get('/', (req, res) => res.send('Hello World with Express'));
+app.get('/', function (req, res) { return res.send('Hello World with Express'); });
 // Use Api routes in the App
 //app.use('/api', apiRoutes)
 // Launch app to listen to specified port

@@ -1,5 +1,5 @@
 "use strict";
-/*
+/**
 @author: Cedric nguendap
 @description: interface permetant d'implémenter les procédures d'acces
     au fichier de confoguration

@@ -2,6 +2,7 @@
 @author: Cedric nguendap
 @description: classe  permetant de faire le routage entre les url et modules appelé et ainsi que les 
     methode a executer
+@modified by Cedric Nguendap At 10/10/2020
 @created: 22/09/2020
 */
 
@@ -12,6 +13,7 @@ import { KarryngoRoutingException } from "../exception/KarryngoRoutingException"
 import { Route } from "./Route";
 import { PersistenceManager } from "../persistence/PersistenceManager.interface";
 import { DynamicLoader } from "../utils/DynamicLoader";
+import { InjectorContainer } from "../lifecycle/injector_container";
 
 export class RouterService extends KarryngoApplicationEntity
 {
@@ -111,8 +113,10 @@ export class RouterService extends KarryngoApplicationEntity
         //pour chaque route présent dans la liste des routes
         for(let route of this.routes)
         {
-            //on charge dynamiquement du module/controlleur associer
-            let controller=DynamicLoader.load(route.module,[persistence,this.configService]);
+            //on charge dynamiquement du module/controlleur associer et par le biais du container de dépendance
+            //on injecte toutes les dépendances néccessaire au module
+            let controller=InjectorContainer.getInstance().getInstanceOf(DynamicLoader.loadWithoutInstance(route.module));
+        
             //pour chaque method on appelle l'action associer en lui passant l'object requete et reponse
             for(let method of route.getMethodList())
             {
