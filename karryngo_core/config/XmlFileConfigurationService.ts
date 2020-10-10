@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: classe permettant de gerer les fichiers de configuration 
     de type Xml
@@ -12,16 +12,14 @@ export class XmlFileConfigurationService extends KarryngoConfigurationService
 {
 
     /**
-     * 
-     * @see KarryngoConfigurationService.encode() 
+     * @inheritdoc
      */
     protected encode(content: String) {
         throw new Error("Method not implemented.");
     }
 
     /**
-     * 
-     * @see KarryngoConfigurationService.decode() 
+     * @inheritdoc
      */
     protected decode(content: any): String {
         throw new Error("Method not implemented.");

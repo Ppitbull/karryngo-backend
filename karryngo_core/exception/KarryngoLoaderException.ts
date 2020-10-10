@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: Exception lié au chargment dynamique des modules de l'application de l'application
 @see KarryngoException

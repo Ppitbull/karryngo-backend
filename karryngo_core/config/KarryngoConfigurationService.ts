@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: classe abstraite offrant l'ensemble des services d'acces a la configuration 
     systéme car implémente l'interface Configurable App
@@ -6,7 +6,6 @@
 @created: 21/09/2020
 @last_modified 23/09/2020
 @modified by Cedric Nguendap
-@todo doit tester cette classe
 */
 import  { KarryngoEntity } from '../KarryngoEntity';
 import { ConfigurableApp } from './ConfigurableApp.interface';
@@ -54,19 +53,18 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
         this.constructConfiguration(Configuration.app_config_file);
     }
 
-    /***
-     *@see SerializableEntity.toString()
+    /**
+     * @inheritdoc
      */
     toString():any{}
 
     /**
-     * @see SerializableEntity.hydrate()
+     * @inheritdoc
      */
     hydrate(entity:KarryngoEntity):void{}
 
     /**
-     * 
-     * @see key ConfigurableApp.keyExist()
+     * @inheritdoc
      */
     keyExist(key:String):Boolean
     {
@@ -76,7 +74,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
     }
 
     /**
-     * @see ConfigurableApp.getValueOf()
+     * @inheritdoc
      */
     getValueOf(key:String):any
     {   
@@ -86,7 +84,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
     }
 
     /**
-     * @see ConfigurableApp.setValueOf()
+     * @inheritdoc
      */
     setValueOf(key:String,value:any):void
     {
@@ -97,7 +95,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
     }
 
     /**
-     * @see ConfigurableApp.parse()
+     * @inheritdoc
      */
     parse(urlFile:String):any
     {
@@ -105,16 +103,16 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
         return content;            
     }
 
-    /**
-     *@see ConfigurableApp.getKeysList() 
+   /**
+     * @inheritdoc
      */
     getKeysList():String[]
     {
         return this.mirrorConfigObject.map(obj=> obj.key);
     }
 
-    /**
-     *@see ConfigurableApp.getConfigObject() 
+   /**
+     * @inheritdoc
      */
     getConfigObject():any
     {
@@ -127,7 +125,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
      * @param content contenu a inserer dans le fichier
      * @param urlFile url du fichier 
      */
-    protected saveFile(content:String,urlFile:String)
+    protected saveFile(content:String,urlFile:String):void
     {
         if(fs.existsSync(urlFile.toString()))
         {

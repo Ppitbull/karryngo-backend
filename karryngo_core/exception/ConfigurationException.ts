@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: Exception lié a la configuration de l'application
 @see KarryngoException
@@ -12,6 +12,7 @@ export class ConfigurationException extends KarryngoException
     static ARGUMENT_IS_NOT_CONFIGURABLE_OBJECT:Number=-99;
     static CONFIGURABLE_KEY_NOT_FOUND:Number=-98;
     static CLASS_CONFIGURATION_NOT_FOUND:Number=97;
+    
     constructor(code:Number,description:String)
     {
         super(code,"Erreur de configuration",description);

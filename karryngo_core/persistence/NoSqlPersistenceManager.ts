@@ -25,6 +25,5 @@ export abstract class NoSqlPersistenceManager extends AbstractPersistenceManager
         let urlEntity:String="";
         return urlEntity;
     }
-    abstract connect(connexionString:String):Promise<ActionResult>;
 }
 

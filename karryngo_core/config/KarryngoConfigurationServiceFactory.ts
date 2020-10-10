@@ -15,14 +15,25 @@ import { DynamicLoader } from "../utils/DynamicLoader";
 
 export class KarryngoConfigurationServiceFactory extends KarryngoApplicationEntity
 {
-    
+    /**
+     * @inheritdoc
+     */
     toString() {
         throw new Error("Method not implemented.");
     }
+
+    /**
+     * @inheritdoc
+     */
     hydrate(entity: KarryngoEntity): void {
         throw new Error("Method not implemented.");
     }
     
+    /**
+     * @description permet de creer une instance de l'unité de configuration. cette unité de configuration
+     *  est configurer dans le fichier de configuration app.json
+     * @return une implémentation de l'interface ConfigurablaApp
+     */
     getInstance():ConfigurableApp
     {       
         return DynamicLoader.load(Configuration.class_for_configuration);

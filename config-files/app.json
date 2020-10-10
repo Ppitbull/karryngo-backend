@@ -1,15 +1,8 @@
 {
     "app_name":"Karryngo",
     "app_version":"1.00",
-    "persistence":{
-        "persistence_type":"NoSQL",
-        "database":"karryngo",
-        "hostname":"localhost",
-        "username":"root",
-        "password":"mongopwd",
-        "port":28015,
-        "url":"./config-files/persistence.json",
-        "classe":"/karryngo_core/persistenc/MongoDBManager",
+    "persistence":{        
+        "url":"./config-files/persistence.json",        
         "parse":false
     },
     "routes":{

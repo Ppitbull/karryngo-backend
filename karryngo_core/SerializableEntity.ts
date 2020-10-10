@@ -1,4 +1,4 @@
-/*
+/** 
 @author: Cedric nguendap
 @description: Ceci est une interface qui permet de sérialisé les 
     objet

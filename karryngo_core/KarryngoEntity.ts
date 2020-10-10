@@ -9,12 +9,12 @@ import {SerializableEntity} from './SerializableEntity';
 export abstract class KarryngoEntity implements SerializableEntity
 {
     /***
-     *@see SerializableEntity.toString()
+     *@inheritdoc
      */
     abstract toString():any;
 
     /**
-     * @see SerializableEntity.hydrate()
+     * @inheritdoc
      */
     abstract hydrate(entity:KarryngoEntity):void;
 }

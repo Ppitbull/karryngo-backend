@@ -1,3 +1,9 @@
+/**
+@author: Cedric nguendap
+@description: Cette classe permet des faires des instanciations dynamique de classe et des appels dynamique
+    de fonction
+@created: 23/09/2020
+*/
 import { KarryngoLoaderException } from "../exception/KarryngoLoaderException";
 import { KarryngoEntity } from "../KarryngoEntity";
 
@@ -28,6 +34,7 @@ export class DynamicLoader
         }        
         return new moduleRequire[keyClass.toString()](...param);
     }
+
     /**
      * @description Cette fonction permet d'appeler une methode a partir de son nom 
      *  dynamiquement en lui passant les paramétres 

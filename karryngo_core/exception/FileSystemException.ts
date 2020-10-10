@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: Exception lié au systéme de fichier de nodejs
 @see KarryngoException

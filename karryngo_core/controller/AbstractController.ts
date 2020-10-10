@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: classe  est une classe abstraite. c'est la classe de base de tous les controller
 @created: 23/09/2020

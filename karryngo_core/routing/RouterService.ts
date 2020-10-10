@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: classe  permetant de faire le routage entre les url et modules appelé et ainsi que les 
     methode a executer
@@ -60,10 +60,17 @@ export class RouterService extends KarryngoApplicationEntity
      */
     protected readRouteFromConfiguration()
     {
+        //obtention du tableau des routes dans le fichier de configuraiton routes.json
         let objRoute=this.configService.getValueOf('routes');
+
+        //si les routes ne sont pas dans un tableau alors on lance une erreur
         if(!(objRoute instanceof Array)) throw new KarryngoRoutingException(KarryngoRoutingException.BAD_ROUTE_CONFIGURATION,"bad definition of file configuration of route");
+        
+        //pour chaque unité de routage contenu dans le tableau des routes
         for(let route of objRoute)
         {
+            //si une propriété de la route est manquante (url,module,actions) alors on génére
+            //une erreur avec un message approprié
             if(!route.hasOwnProperty('url') || !route.hasOwnProperty('module') || !route.hasOwnProperty('actions'))
             {
                 let notFoundKey=route.hasOwnProperty('url')?
@@ -75,6 +82,11 @@ export class RouterService extends KarryngoApplicationEntity
                     ): 'url';
                 throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_PARAM_NOT_FOUND,`key ${notFoundKey} not found in route ${route} `)
             }
+
+            //pour chaque action trouvé dans l'ensemble des actions de chaque  url
+        
+        
+            //si une propriété de l'action est innéxistante, on lance une exception
             route.actions.forEach((routeAction:any) => 
             {
                 if(!routeAction.hasOwnProperty('method'))    

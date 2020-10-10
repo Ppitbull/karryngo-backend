@@ -1,20 +1,18 @@
-import { ConfigurationException } from "../exception/ConfigurationException";
-/*
+/**
 @author: Cedric nguendap
 @description: classe permettant de gerer les fichiers de configuration 
     de type JSON
 @see KarryngoConfigurationService
 @created: 21/09/2020
 */
-
+import { ConfigurationException } from "../exception/ConfigurationException";
 import { KarryngoConfigurationService } from "./KarryngoConfigurationService";
 
 export class JsonFileConfigurationService extends KarryngoConfigurationService
 {
 
     /**
-     * 
-     * @see KarryngoConfigurationService.encode() 
+     * @inheritdoc
      */
     protected encode(content: String):any {
         let result;
@@ -27,8 +25,7 @@ export class JsonFileConfigurationService extends KarryngoConfigurationService
     }
 
     /**
-     * 
-     * @see KarryngoConfigurationService.decode() 
+     * @inheritdoc
      */
     protected decode(content: any): String {
         let result;

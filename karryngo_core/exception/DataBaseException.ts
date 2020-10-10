@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: Exception lié a l'accés et la manipulation de la bd
 @see KarryngoException

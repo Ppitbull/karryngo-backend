@@ -1,9 +1,8 @@
-
 /**
 @author: Cedric nguendap
-@description: Cette classe est une classe abstraite et classe de base representant l'unite 
-    de persistance de type NoSQL (MongoDB, Firebase...)
+@description: Cette classe est la classe permetant de lancer l'application
 @created: 23/09/2020
+@version 1.0.0
 */
 
 import { KarryngoApplicationEntity } from "./KarryngoApplicationEntity";
@@ -16,28 +15,68 @@ import * as express from 'express';
 export class KarryngoApp extends KarryngoApplicationEntity
 {
 
-    toString() {
-        throw new Error("Method not implemented.");
-    }
-    hydrate(entity: KarryngoEntity): void {
-        throw new Error("Method not implemented.");
-    }
-    /*protected configurationServiceFactory:KarryngoConfigurationServiceFactory;
+    /**
+     * @description Factory (usine a fabrication d'objet) permettant de creer une instance du service
+     *  de configuration. dépendant du type de service a utiliser (a base de fichier JSON; XML...)
+     * voir design partern Factory
+     * @type configurationServiceFactory
+     */
+    protected configurationServiceFactory:KarryngoConfigurationServiceFactory;
+
+    /**
+     * @description Factory permettant de creer une unité de persistance.
+     * @type  KarryngoPersistenceManagerFactory
+     */
     protected persistanceManagerFactory:KarryngoPersistenceManagerFactory;
-    protected routerService:RouterService;*/
+
+    /**
+     * @description Service de routing permettant le routage des requetes
+     * @type RouterService
+     */
+    protected routerService:RouterService;
 
     constructor()
     {
         super();
-        //this.configurationServiceFactory=new KarryngoConfigurationServiceFactory();
+        //instanciation du factory du service de configuration
+        this.configurationServiceFactory=new KarryngoConfigurationServiceFactory();
     }
-    run()
+
+    /**
+     * @description Cette fonction permet de coordonner les étapes nécessaires a la reponse de 
+     *  de la requetes envoyé par l'utilisateur.
+     *  voir le design partern Injection des dépendances (Inversion de contrôle IoC)
+     */
+    run():void
     {
-        /*let configurationServiceIntance=this.configurationServiceFactory.getInstance();
+        //obtention de l'instance du service de configuration a partir du factory
+        let configurationServiceIntance=this.configurationServiceFactory.getInstance();
+
+        //obtention de l'instance du factory de persistance avec injection de service de configuration
         this.persistanceManagerFactory=new KarryngoPersistenceManagerFactory(configurationServiceIntance);
+        
+        //obtention de l'instance du service de persistance
         let persistenceManagerInstance=this.persistanceManagerFactory.getInstance();
+
+        //obtention de l'instance du service de routage avec injection du service de routing
+        //offerte par le framework Express et du service de configuration
         this.routerService=new RouterService(configurationServiceIntance,express.Router);
-        this.routerService.run(persistenceManagerInstance);*/
+
+        //execution du service de routage
+        this.routerService.run(persistenceManagerInstance);
     }
-    
+
+    /**
+     * @inheritdoc
+     */
+    toString() {
+        throw new Error("Method not implemented.");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    hydrate(entity: KarryngoEntity): void {
+        throw new Error("Method not implemented.");
+    }
 }

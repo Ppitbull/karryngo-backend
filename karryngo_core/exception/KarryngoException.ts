@@ -1,4 +1,4 @@
-/*
+/**
 @author: Cedric nguendap
 @description: Exception de base de l'application Karryngo
 @created: 22/09/2020

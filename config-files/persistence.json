@@ -1,3 +1,9 @@
 {
-    "persisit":true
+    "persistence_type":"NoSQL",
+    "database":"karryngo",
+    "hostname":"localhost",
+    "username":"root",
+    "password":"",
+    "classe":"/karryngo_core/persistence/MongooseDBManager",
+    "port":27017
 }

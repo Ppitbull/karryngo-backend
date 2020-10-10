@@ -30,6 +30,10 @@ describe('Test du service de configuration',()=>
     it('test de la recuperation du sous noeud de persistance',()=>
     {
         chai.expect(jsonConfig.getValueOf('persistence').constructor).to.equal(({}).constructor);
+    });
+    it("test de la recuperation de l'hote de la base de données MongoDB",()=>
+    {
+        chai.expect(jsonConfig.getValueOf('persistence').hostname).to.equal("localhost");
     })
     
 });

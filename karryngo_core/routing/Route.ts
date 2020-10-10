@@ -1,6 +1,6 @@
-/*
+/**
 @author: Cedric nguendap
-@description: Cette class represente une route carractérise par son url le module 
+@description: Cette class represente une route carractérisé par son url le module 
     a appeler et l'action a exécuter
 @created: 22/09/2020
 */
