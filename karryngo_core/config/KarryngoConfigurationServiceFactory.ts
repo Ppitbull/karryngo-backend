@@ -15,6 +15,13 @@ import { DynamicLoader } from "../utils/DynamicLoader";
 
 export class KarryngoConfigurationServiceFactory extends KarryngoApplicationEntity
 {
+    protected configService:ConfigurableApp;
+
+    constructor()
+    {
+        super();
+        this.configService=DynamicLoader.load(Configuration.class_for_configuration);
+    }
     /**
      * @inheritdoc
      */
@@ -30,12 +37,12 @@ export class KarryngoConfigurationServiceFactory extends KarryngoApplicationEnti
     }
     
     /**
-     * @description permet de creer une instance de l'unité de configuration. cette unité de configuration
-     *  est configurer dans le fichier de configuration app.json
+     * @description permet d'obtenir l'instance de l'unité de configuration créer dans le constructeur
+     *   cette unité de configuration est configurer dans le fichier de configuration app.json
      * @return une implémentation de l'interface ConfigurablaApp
      */
     getInstance():ConfigurableApp
     {       
-        return DynamicLoader.load(Configuration.class_for_configuration);
+        return this.configService;
     }
 }

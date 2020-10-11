@@ -1,5 +1,6 @@
 import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
-import { Controller, Service } from "../decorator/dependecy_injector.decorator";
+import { Controller,DBPersistence, Service } from "../decorator/dependecy_injector.decorator";
+import { PersistenceManager } from "../persistence/PersistenceManager.interface";
 
 @Service()
 class Personigir
@@ -13,13 +14,29 @@ class Personigir
 }
   
   @Controller()
-  class Greeter {
-    property = "property";
-    constructor(private config:KarryngoConfigurationServiceFactory) { this.test()}
+  class Greeter2 {    
+    proper:PersistenceManager|any={};
+
+    constructor(private config:KarryngoConfigurationServiceFactory,private man:any) { this.test()}
     test()
     {
-        console.log("class_for_configuration",this.config.getInstance())
+       // console.log("class_for_configuration",this.config.getInstance());
+        console.log("property value",this);
+
     }
   }
   
-  //console.log("gretter", new Greeter());
+
+@DBPersistence()
+class Greeter {
+    
+    property = "property";
+    hello: string;
+    constructor(m: string) {
+        this.hello = m;
+        //console.log("greeterdec",this);
+    }
+}
+  
+  
+  console.log("gretter", new Greeter("mlkùmùmqlgk"));

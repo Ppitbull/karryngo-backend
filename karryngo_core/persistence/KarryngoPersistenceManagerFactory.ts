@@ -1,4 +1,6 @@
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
+import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
+import { ConfigService, KarryngoCore } from "../decorator/dependecy_injector.decorator";
 /**
 @author: Cedric nguendap
 @description: Cette classe est une classe abstraite et classe de base representant l'unite 
@@ -11,15 +13,15 @@ import { KarryngoEntity } from "../KarryngoEntity";
 import { DynamicLoader } from "../utils/DynamicLoader";
 import { PersistenceManager } from "./PersistenceManager.interface";
 
-
+@KarryngoCore()
 export class KarryngoPersistenceManagerFactory extends KarryngoApplicationEntity
 {
-    protected configService:ConfigurableApp;
+    protected persistance:PersistenceManager;
 
-    constructor(config:ConfigurableApp)
+    constructor(protected configServiceFactory:KarryngoConfigurationServiceFactory)
     {
         super();
-        this.configService=config;
+        this.persistance=DynamicLoader.load(this.configServiceFactory.getInstance().getValueOf('persistence').classe,[this.configServiceFactory.getInstance()]);
     }
     
     /**
@@ -37,12 +39,12 @@ export class KarryngoPersistenceManagerFactory extends KarryngoApplicationEntity
     }
     
     /**
-     * @description permet de creer une instance de l'unité de persistace. cette unité de persistance
+     * @description permet d'obtenir l'instance de l'unité de persistace creer dans le constructeur. cette unité de persistance
      *  est configurer dans le fichier de configuration persistance.json
      * @return une implémentation de l'interface PersistenceManager
      */
     getInstance():PersistenceManager
     {
-        return DynamicLoader.load(this.configService.getValueOf('persistence').classe,[this.configService]);
+        return this.persistance;
     }
 }

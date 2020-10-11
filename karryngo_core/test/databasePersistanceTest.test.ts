@@ -13,7 +13,7 @@ describe('Test du service de Persistance',()=>
 {
     let jsonConfigFactory=new KarryngoConfigurationServiceFactory();
     let jsonConfig=jsonConfigFactory.getInstance();
-    let persistenceFactory=new KarryngoPersistenceManagerFactory(jsonConfig)
+    let persistenceFactory=new KarryngoPersistenceManagerFactory(jsonConfigFactory);
     let db=persistenceFactory.getInstance();
 
     it("Test d'instanciation de la classe de persistence",()=>

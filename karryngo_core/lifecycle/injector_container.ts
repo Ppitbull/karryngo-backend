@@ -1,3 +1,4 @@
+import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
 /**
 @author: Cedric nguendap
 @description: Cette classe est un container d'instance et fait également office d'injecteur
@@ -7,6 +8,7 @@
 */
 
 import { Type } from "../lifecycle/type.interface";
+import { KarryngoPersistenceManagerFactory } from "../persistence/KarryngoPersistenceManagerFactory";
 
 export class InjectorContainer extends Map
 {
@@ -30,6 +32,7 @@ export class InjectorContainer extends Map
      */
     public static getInstance():InjectorContainer
     {
+        //if(this.instance==undefined || this.instance==null) this.instance=new InjectorContainer();
         return this.instance;
     }
     
@@ -91,10 +94,22 @@ export class InjectorContainer extends Map
         this.clear();
     }
 
-    public getInstanceOf(classe:Type<any>)
+    public getInstanceOf<T>(classe:Type<any>):T
     {
         let instance=this.get(classe);
         if(instance) return instance;
-        return this.resolve<any>(classe);
+        instance=this.resolve<any>(classe);
+        this.set(classe,instance);
+        return instance;
+    }
+
+    public saveInstance<T>(classe:Type<any>,instance:T)
+    {
+        this.set(classe,instance);
+    }
+    public bootstrap():void
+    {
+        this.resolveAndSave<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory);
+        this.resolveAndSave<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory);
     }
 }
