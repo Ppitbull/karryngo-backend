@@ -1,12 +1,13 @@
+/**
+@author Cedric nguendap
+@description Cette classe est une classe abstraite et classe de base representant l'unite 
+    de persistance de type NoSQL (MongoDB, Firebase...)
+@created 23/09/2020
+*/
+
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
 import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
-import { ConfigService, KarryngoCore } from "../decorator/dependecy_injector.decorator";
-/**
-@author: Cedric nguendap
-@description: Cette classe est une classe abstraite et classe de base representant l'unite 
-    de persistance de type NoSQL (MongoDB, Firebase...)
-@created: 23/09/2020
-*/
+import { KarryngoCore } from "../decorator/core.decorator";
 
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";

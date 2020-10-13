@@ -28,11 +28,15 @@ export class KarryngoApp extends KarryngoApplicationEntity
         super();       
         InjectorContainer.getInstance().bootstrap();
         //obtention de l'instance du service de configuration
-        let persistenceManagerInstance=InjectorContainer.getInstance().getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory).getInstance();
+        let configurationInstance=InjectorContainer.getInstance().getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory).getInstance();
   
+        //connexion a la bd
+        InjectorContainer.getInstance().getInstanceOf<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory).getInstance()
+            .connect();
+
         //obtention de l'instance du service de routage avec injection du service de routing
         //offerte par le framework Express et du service de configuration
-        this.routerService=new RouterService(persistenceManagerInstance,express.Router);
+        this.routerService=new RouterService(configurationInstance,express.Router());
     }
 
     /**

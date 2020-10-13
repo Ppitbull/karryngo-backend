@@ -71,11 +71,12 @@ export class DynamicLoader
      */
     static call(obj:any,method:String,params:any[]):any
     {
+        console.log("obj ",obj," method ",method," params ",params);
         let result=null;
         try {
             result=obj[method.toString()](...params);
         } catch (error) {
-            throw new KarryngoLoaderException(KarryngoLoaderException.METHOD_NOT_FOUND,`Erreur d'appel de la methode '${method}' du module: `+error);
+            throw new KarryngoLoaderException(KarryngoLoaderException.METHOD_NOT_FOUND,`Erreur d'appel de la methode '${method}' du module avec pour erreur ${error}`);
         } 
         return result;
     }

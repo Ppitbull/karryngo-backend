@@ -4,7 +4,7 @@
   "description": "Backend de l'application karryngo",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --reporter spec  --require ts-node/register **/test/*.test.ts",
+    "test": "mocha --reporter spec  --require ts-node/register **/routingservice.test.ts",
     "start": "nodemon app.ts",
     "build": "tsc --project ./"
   },

@@ -9,7 +9,7 @@ class Personigir
     constructor()
     {
         this.con="ésdqfqs";
-        console.log(this.con);
+        //console.log(this.con);
     }
 }
   
@@ -21,7 +21,7 @@ class Personigir
     test()
     {
        // console.log("class_for_configuration",this.config.getInstance());
-        console.log("property value",this);
+       // console.log("property value",this);
 
     }
   }
@@ -32,11 +32,16 @@ class Greeter {
     
     property = "property";
     hello: string;
+    protected db="klhjlhjpj";
     constructor(m: string) {
         this.hello = m;
-        //console.log("greeterdec",this);
+    }
+    test()
+    {
+      //console.log("persisz",this.db);
     }
 }
   
   
-  console.log("gretter", new Greeter("mlkùmùmqlgk"));
+  let g= new Greeter("mlkùmùmqlgk");
+  g.test();

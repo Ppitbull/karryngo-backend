@@ -1,15 +1,11 @@
 [   
     {
-        "url":"/api/truc",
-        "module" :"servicepost.Service",
+        "url":"/api/users",
+        "module" :"ControlBussTest",
         "actions":[
             {
                 "method":"get",
-                "action": "getService"
-            },
-            {
-                "method":"post",
-                "action":"postService"
+                "action": "getAllUser"
             }
         ]
     }

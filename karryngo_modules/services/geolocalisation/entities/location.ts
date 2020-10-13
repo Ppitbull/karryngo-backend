@@ -49,7 +49,7 @@ export class Location extends KarryngoPersistentEntity
         }
     }
 
-    hydrate(entity: KarryngoEntity): void
+    hydrate(entity: any): void
     {
         super.hydrate(entity);
         this.longitude=this.purgeAttribute(entity,"longitude");

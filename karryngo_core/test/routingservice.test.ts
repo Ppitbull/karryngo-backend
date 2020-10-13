@@ -7,7 +7,7 @@ var chai=require('chai');
 describe('Test du service de routage',()=>
 {
     let jsonConfigFactory=new KarryngoConfigurationServiceFactory();
-    let router=new RouterService(jsonConfigFactory.getInstance(),express.Router);
+    let router=new RouterService(jsonConfigFactory.getInstance(),express.Router());
     it("test de la liste des routes",()=>
     {
         chai.expect(router.getRouteList()).to.be.a("array");
@@ -29,4 +29,10 @@ describe('Test du service de routage',()=>
     {
         chai.expect(()=>router.getRouteByUrl("/api/truc").getActionForMethod("get")).to.not.throw();
     });
-});
+
+    it("test de lancement d'instanciation et d'appel de fonction de la metode run",()=>
+    {
+        router.run();
+        console.log("Router Service ",router);
+    })
+});;

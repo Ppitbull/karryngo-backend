@@ -1,4 +1,3 @@
-import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
 /**
 @author: Cedric nguendap
 @description: Cette classe est un container d'instance et fait également office d'injecteur
@@ -6,8 +5,9 @@ import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigura
     Elle implémente le design patern singleton
 @created: 10/10/2020
 */
-
+import "reflect-metadata";
 import { Type } from "../lifecycle/type.interface";
+import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
 import { KarryngoPersistenceManagerFactory } from "../persistence/KarryngoPersistenceManagerFactory";
 
 export class InjectorContainer extends Map
@@ -32,7 +32,7 @@ export class InjectorContainer extends Map
      */
     public static getInstance():InjectorContainer
     {
-        //if(this.instance==undefined || this.instance==null) this.instance=new InjectorContainer();
+        if(this.instance==undefined || this.instance==null) this.instance=new InjectorContainer();
         return this.instance;
     }
     
@@ -49,11 +49,11 @@ export class InjectorContainer extends Map
         //obtention des métadonnées de la classe. ces méthodes concerne particulierement
         //les parametres du constructor de la classe
         const tokens=Reflect.getMetadata('design:paramtypes',target) || [];
-        //console.log("class ",tokens);
+        //console.log("class ",target,tokens,Reflect.getMetadata('design:paramtypes',target));
 
         //pour chaque parametres du constructor appelle recuresivement la méthode resolveAndSave()
         //afin d'obtenir une instance du parametre. Le tout est retourné sous forme de tableau
-        const injections = tokens.map((token: Type<any>)=> this.resolve<any>(token));
+        const injections = tokens.map((token: Type<any>)=> this.resolveAndSave<any>(token));
         
         //on essaie de voir si une instance de la classe courante existe déjà 
         //voir design partern Singleton
@@ -62,7 +62,7 @@ export class InjectorContainer extends Map
         //si existant alors on retourne automatiquement cette instance
         if(classInstance) return classInstance;
 
-        //const newClassInstance = new target(...injections);
+        const newClassInstance = new target(...injections);
         //console.log(`DI-Container created class ${newClassInstance.constructor.name}`);
         
         //si non on retourne l'instance associer
@@ -78,6 +78,7 @@ export class InjectorContainer extends Map
     public resolveAndSave<T>(target:Type<any>):void
     {
         this.set(target,this.resolve<T>(target));
+        return this.get(target);
     }
 
     /**
@@ -110,6 +111,7 @@ export class InjectorContainer extends Map
     public bootstrap():void
     {
         this.resolveAndSave<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory);
-        this.resolveAndSave<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory);
+        //this.resolveAndSave<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory);
+        
     }
 }

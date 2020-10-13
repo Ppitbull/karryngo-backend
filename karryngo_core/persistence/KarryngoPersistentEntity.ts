@@ -9,11 +9,14 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
      * @type EntityID
      */
     public id:EntityID;
+
+    
     constructor(id:EntityID)
     {
         super();
         this.id=id;
     }
+    
     /**
      * @description Cette methode permet de verifier l'existance d'un valeur dans un fichier de configuration   
      *  un objet JSON afin de retourner sa valeur. cela évite des erreurs du a la tentative
@@ -22,17 +25,17 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
      * @param attr attribue dont on veu la valeur
      * @return null si l'attribut n'exite pas et sa valeur dans le cas contraire
      */
-    purgeAttribute(object:any,attr:any):any
+    purgeAttribute(object:any,attr:String):any
     {
-        return object.hasOwnProperty(attr)?object[attr]:null;
+        return object.hasOwnProperty(attr)?object[attr.toString()]:null;
     }
 
     /**
      * @inheritdoc
      */
-    hydrate(entity:KarryngoEntity):void
+    hydrate(entity:any):void
     {
-        this.id=this.purgeAttribute(entity,"id");
+        this.id=this.purgeAttribute(entity,"_id");
     }
 
     /**
@@ -41,7 +44,7 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
     toString():any
     {
         return {
-            id:this.id
+            _id:this.id
         };
     }
 

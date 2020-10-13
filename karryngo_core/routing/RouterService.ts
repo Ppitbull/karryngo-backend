@@ -14,6 +14,7 @@ import { Route } from "./Route";
 import { PersistenceManager } from "../persistence/PersistenceManager.interface";
 import { DynamicLoader } from "../utils/DynamicLoader";
 import { InjectorContainer } from "../lifecycle/injector_container";
+import Configuration from "./../../config-files/constants";
 
 export class RouterService extends KarryngoApplicationEntity
 {
@@ -115,12 +116,12 @@ export class RouterService extends KarryngoApplicationEntity
         {
             //on charge dynamiquement du module/controlleur associer et par le biais du container de dépendance
             //on injecte toutes les dépendances néccessaire au module
-            let controller=InjectorContainer.getInstance().getInstanceOf(DynamicLoader.loadWithoutInstance(route.module));
+            let controller=InjectorContainer.getInstance().getInstanceOf(DynamicLoader.loadWithoutInstance(`${Configuration.path_for_bussiness_module}/${route.module}`));
         
             //pour chaque method on appelle l'action associer en lui passant l'object requete et reponse
             for(let method of route.getMethodList())
             {
-                DynamicLoader.call(this.frameworkRouter,route.url,[(req:any,res:any)=>
+                DynamicLoader.call(this.frameworkRouter,method,[(req:any,res:any)=>
                     {
                         DynamicLoader.call(controller,route.getActionForMethod(method),[req,res]);
                     }

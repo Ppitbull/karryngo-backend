@@ -24,8 +24,9 @@ export class MongooseDBManager extends NoSqlPersistenceManager
         schema:{
             strict:false
         }
-        
     }
+
+    protected shemas=new Map();
 
     /**
      * 
@@ -129,9 +130,12 @@ export class MongooseDBManager extends NoSqlPersistenceManager
 
         //construction du schéma a partir de la classe
         entitySchema.loadClass(entity.constructor);
+        if(this.shemas.get(entity.constructor.name)) return this.shemas.get(entity.constructor.name);
 
         //création du model a partir du schema générer
-        return mongooseDB.model(entity.constructor.name,entitySchema);   
+        let model=mongooseDB.model(entity.constructor.name,entitySchema);
+        this.shemas.set(entity.constructor.name,model);
+        return model;   
     }
     
 }

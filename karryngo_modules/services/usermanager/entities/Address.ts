@@ -3,7 +3,6 @@
 @description: Cette classe permet de stocké toutes les addesses de l'utilisateur (Whatsapp,Tel,Email...)
 @created: 09/10/2020
 */
-import { KarryngoEntity } from "../../../../karryngo_core/KarryngoEntity";
 import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 
@@ -47,7 +46,8 @@ export class Address extends KarryngoPersistentEntity
     /**
      * @inheritdoc
      */
-    hydrate(entity: KarryngoEntity): void {
+    hydrate(entity: any): void
+    {
         super.hydrate(entity);
         this.email=this.purgeAttribute(entity,"email");
         this.mobilePhone=this.purgeAttribute(entity,"mobilePhone");

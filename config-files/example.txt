@@ -1,0 +1,18 @@
+example du fichier de router
+
+[   
+    {
+        "url":"/api/truc",
+        "module" :"servicepost.Service",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getService"
+            },
+            {
+                "method":"post",
+                "action":"postService"
+            }
+        ]
+    }
+]

@@ -1,7 +1,7 @@
 /**
 @author: Cedric nguendap
 @description: Cette classe permet represente un utilisateur du systéme
-@created: 09/10/2020
+@created 09/10/2020
 */
 
 import { KarryngoEntity } from "../../../../karryngo_core/KarryngoEntity";
@@ -51,7 +51,7 @@ export class User extends KarryngoPersistentEntity
     /**
      * @inheritdoc
      */
-    toString() {
+    toString():any {
         return {
             ...super.toString(),
             "firstname":this.firstname,
@@ -65,12 +65,13 @@ export class User extends KarryngoPersistentEntity
     /**
      * @inheritdoc
      */
-    hydrate(entity: KarryngoEntity): void {
+    hydrate(entity: any): void {
+        //console.log("entite ",entity)
         super.hydrate(entity);
         this.firstname=this.purgeAttribute(entity,"firstname");
         this.lastname=this.purgeAttribute(entity,"lastname");
         this.password=this.purgeAttribute(entity,"password");
-        this.adresse.hydrate(entity);
+        if(entity.adresse) this.adresse.hydrate(entity.adresse);
         this.locations=this.purgeAttribute(entity,"locations")==null
             ?[]
             :this.purgeAttribute(entity,"locations").map((zone:any)=>{

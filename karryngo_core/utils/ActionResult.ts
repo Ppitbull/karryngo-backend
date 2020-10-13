@@ -1,8 +1,8 @@
 /**
-* @author: Cedric nguendap
-* @description: Cette class represente le resultat d'une action et qui requiere des informations 
+* @author Cedric nguendap
+* @description Cette class represente le resultat d'une action et qui requiere des informations 
 *    sur le resultat
-* @created: 23/09/2020
+* @created 23/09/2020
 */
 export class ActionResult
 {

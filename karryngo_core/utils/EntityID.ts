@@ -27,4 +27,8 @@ export class EntityID
     {
         return this._id;
     }
+    toObject():any
+    {
+        return this._id;
+    }
 }   
