@@ -55,7 +55,7 @@ export class DynamicLoader
         }
         catch(e:any)
         {
-            throw new KarryngoLoaderException(KarryngoLoaderException.CLASS_NOT_FOUND,"Module: "+e+" non trouvé");
+            throw new KarryngoLoaderException(KarryngoLoaderException.CLASS_NOT_FOUND,`Module: non trouvé ${e}`);
         }        
         return moduleRequire[keyClass.toString()];
     }
@@ -71,7 +71,7 @@ export class DynamicLoader
      */
     static call(obj:any,method:String,params:any[]):any
     {
-        console.log("obj ",obj," method ",method," params ",params);
+        //console.log("method ",method," params ",params);
         let result=null;
         try {
             result=obj[method.toString()](...params);

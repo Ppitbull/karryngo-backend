@@ -8,5 +8,33 @@
                 "action": "getAllUser"
             }
         ]
+    },
+    {
+        "url":"/api/auth/provider",
+        "module" :"/authentification/authprovider",
+        "actions":[
+            {
+                "method":"post",
+                "action": "register"
+            },
+            {
+                "method":"get",
+                "action": "login"
+            }
+        ]
+    },
+    {
+        "url":"/api/auth/requester",
+        "module" :"/authentification/authrequester",
+        "actions":[
+            {
+                "method":"post",
+                "action": "register"
+            },
+            {
+                "method":"get",
+                "action": "login"
+            }
+        ]
     }
 ]

@@ -117,15 +117,19 @@ export class RouterService extends KarryngoApplicationEntity
             //on charge dynamiquement du module/controlleur associer et par le biais du container de dépendance
             //on injecte toutes les dépendances néccessaire au module
             let controller=InjectorContainer.getInstance().getInstanceOf(DynamicLoader.loadWithoutInstance(`${Configuration.path_for_bussiness_module}/${route.module}`));
-        
+            //console.log(controller);
             //pour chaque method on appelle l'action associer en lui passant l'object requete et reponse
             for(let method of route.getMethodList())
             {
-                DynamicLoader.call(this.frameworkRouter,method,[(req:any,res:any)=>
+                /*DynamicLoader.call(this.frameworkRouter,method,[(req:any,res:any)=>
                     {
                         DynamicLoader.call(controller,route.getActionForMethod(method),[req,res]);
                     }
-                ])
+                ])*/
+                this.frameworkRouter[method.toString()](route.url.toString(),(req:any,res:any)=>
+                {
+                    DynamicLoader.call(controller,route.getActionForMethod(method),[req,res]);
+                });
             }
         }
     }

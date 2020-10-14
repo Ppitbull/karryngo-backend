@@ -9,8 +9,12 @@ let bodyParser = require('body-parser');  //librairie qui permet de parser une c
 app.use(cors())
 
 // Import routes
-let karryngoApp=new KarryngoApp();
-karryngoApp.run();
+let karryngoApp=new KarryngoApp(app);
+app.use(((request:any,response:any,next:any)=>
+{
+    karryngoApp.run();
+    next();
+}));
 //var mongoose = require('mongoose');
 
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));    //ceci permet de gérer les tailles des json en entrée très grand

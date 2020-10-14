@@ -23,7 +23,7 @@ export class KarryngoApp extends KarryngoApplicationEntity
      */
     protected routerService:RouterService;
 
-    constructor()
+    constructor(router:any)
     {
         super();       
         InjectorContainer.getInstance().bootstrap();
@@ -36,7 +36,7 @@ export class KarryngoApp extends KarryngoApplicationEntity
 
         //obtention de l'instance du service de routage avec injection du service de routing
         //offerte par le framework Express et du service de configuration
-        this.routerService=new RouterService(configurationInstance,express.Router());
+        this.routerService=new RouterService(configurationInstance,router);
     }
 
     /**
