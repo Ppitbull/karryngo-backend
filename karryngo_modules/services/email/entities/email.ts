@@ -1,5 +1,9 @@
 export class Email
 {
+    private sender:String="";
+    private receiver:String="";
+    private cc:String[]=[];
+    
     from(userFrom:String):Email
     {
         return this;

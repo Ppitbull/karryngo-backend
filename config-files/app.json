@@ -8,5 +8,15 @@
     "routes":{
         "parse":false,
         "url":"./config-files/routes.json"
+    },
+    "mail": {
+        "parse":false,
+        "host":"",
+        "port":2525,
+        "service":"gmail",
+        "auth" :{
+            "user":"karryngoemail@gmail.com",
+            "pass":"karryngopass"
+        }
     }
 }

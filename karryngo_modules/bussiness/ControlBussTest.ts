@@ -8,7 +8,6 @@ export class ControlBussTest
 
     getAllUser(req:any,response:any)
     {
-        console.log("get All user");
         this.userMaganer.findAll()
         .then((data)=>response.status(200).json(data))
         .catch((error)=> response.status(200).json(error));

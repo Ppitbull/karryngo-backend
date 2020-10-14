@@ -121,11 +121,6 @@ export class RouterService extends KarryngoApplicationEntity
             //pour chaque method on appelle l'action associer en lui passant l'object requete et reponse
             for(let method of route.getMethodList())
             {
-                /*DynamicLoader.call(this.frameworkRouter,method,[(req:any,res:any)=>
-                    {
-                        DynamicLoader.call(controller,route.getActionForMethod(method),[req,res]);
-                    }
-                ])*/
                 this.frameworkRouter[method.toString()](route.url.toString(),(req:any,res:any)=>
                 {
                     DynamicLoader.call(controller,route.getActionForMethod(method),[req,res]);
