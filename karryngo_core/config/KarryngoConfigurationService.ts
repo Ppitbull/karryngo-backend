@@ -231,16 +231,16 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
                                         
                     this.configObject.push({
                         url:file,
-                        config:notParseObj
+                        config:notParseObj[elmt]
                     });
 
                     
                     this.mirrorConfigObject.push({
                         url:file,
                         key:elmt,
-                        value:notParseObjCopy
+                        value:notParseObjCopy[elmt]
                     });
-                    console.log("objet ",this.mirrorConfigObject[this.mirrorConfigObject.length-1]);
+                    //console.log("objet ",this.mirrorConfigObject[this.mirrorConfigObject.length-1]);
                 }
                 else
                 {

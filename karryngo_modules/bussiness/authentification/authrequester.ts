@@ -70,17 +70,17 @@ export default class AuthRequester
 
     login(request:any,response:any):void
     {
-        let requester:ServiceRequester=new ServiceRequester();
         let user:User=new User();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
 
         this.auth.login(user)
+        .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,user.password))
         .then((data:ActionResult)=>
         {
             data.description="Authentification successful";
             data.result={
-                token:this.jwtAuth.JWTRegister(user.adresse.email,user.password)
+                token:data.result
             }
             response.status(200).json(data);
         })

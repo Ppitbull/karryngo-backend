@@ -22,24 +22,9 @@ export class ApiAccess
      * @return {ActionResult} un resultat de success est retourné (muni du token déchiffer)
      *  si tout ce passe bien et un resultat d'échec dans le cas contraire
      */
-    JWTLogin(token:String):ActionResult
+    JWTLogin(token:String):Promise<ActionResult>|void
     {
-        let result:ActionResult=new ActionResult();
-        jsonwebtoken.verify(token.toString(),this.configService.getValueOf("jwt").secret_key,{
-            algorithms:[this.configService.getValueOf("jwt").algorithm]
-        },(err,decoded)=>{
-            if(err)
-            {
-                result.message=`Error: ${err.name}`;
-                result.description=err.message;
-                result.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR
-            }
-            else
-            {
-                result.result=decoded;
-            }
-        });
-        return result;
+        return this.textFromJWT(token);        
     }
 
 
@@ -51,15 +36,59 @@ export class ApiAccess
      *  ce resultat est accompagné d'un token a utiliser pendans un nombre de temps configurer
      *  dans le fichier de configuration
      */
-    JWTRegister(username:String,password:String):ActionResult
+    JWTRegister(username:String,password:String):Promise<ActionResult>
     {
-        let result:ActionResult=new ActionResult();
+        return this.textToJWT(JSON.stringify({username,password}));
+    }
 
-        console.log("secret_key ",this.configService.getValueOf("jwt"));
-        result.result=jsonwebtoken.sign({username,password},this.configService.getValueOf('jwt').secret_key,{
-            algorithm:this.configService.getValueOf('jwt').algorithm,
-            expiresIn:`${this.configService.getValueOf("jwt").timeout}s`
+    textToJWT(data:any):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>
+        {
+            let result:ActionResult=new ActionResult();
+
+            jsonwebtoken.sign(data,this.configService.getValueOf('jwt').secret_key,{
+                algorithm:this.configService.getValueOf('jwt').algorithm,
+                expiresIn:`${this.configService.getValueOf("jwt").timeout}s`
+            },(err:any,token:any)=>
+            {
+                if(err)
+                {
+                    result.message="Error";
+                    result.resultCode=ActionResult.UNKNOW_ERROR;
+                    result.description=err;
+                    reject(result);
+                }
+                else
+                {
+                    result.result=token
+                    resolve(result);
+                }
+            });
         });
-        return result;
+    }
+
+    textFromJWT(token:String):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>
+        {
+            let result:ActionResult=new ActionResult();
+            jsonwebtoken.verify(token.toString(),this.configService.getValueOf("jwt").secret_key,{
+                algorithms:[this.configService.getValueOf("jwt").algorithm]
+            },(err,decoded)=>{
+                if(err)
+                {
+                    result.message=`Error: ${err.name}`;
+                    result.description=err.message;
+                    result.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
+                    reject(result);
+                }
+                else
+                {
+                    result.result=decoded;
+                    resolve(result);
+                }
+            });
+        })
     }
 }

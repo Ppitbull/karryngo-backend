@@ -54,19 +54,19 @@ export class RouterChecker extends KarryngoApplicationEntity
             if(token)
             {
                 if(token.startsWith('Bearer ')) token=token.slice(7,token.length);
-                let result:ActionResult=this.checkApiAccess(token)
-                if(result.resultCode==ActionResult.SUCCESS)
+                this.checkApiAccess(token)
+                .then((data:ActionResult)=>
                 {
-                    req.decoded=result.result;
+                    req.decoded=data.result;
                     next();
-                }
-                else
+                })
+                .catch((data:ActionResult)=>
                 {
                     return res.json({
                         success: false,
                         message: 'Bad token'
                         });
-                }
+                });
             }
             return res.json({
                 success: false,
