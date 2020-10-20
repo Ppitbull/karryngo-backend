@@ -1,4 +1,5 @@
 import { KarryngoApp } from "./karryngo_core/KarryngoApp";
+import { ActionResult } from "./karryngo_core/utils/ActionResult";
 
 
 const express = require('express');
@@ -8,13 +9,15 @@ let bodyParser = require('body-parser');  //librairie qui permet de parser une c
 
 app.use(cors())
 
-// Import routes
+//instanciation du coeur de Karryngo
 let karryngoApp=new KarryngoApp(app);
+
 app.use(((request:any,response:any,next:any)=>
 {
     karryngoApp.run();
     next();
 }));
+
 //var mongoose = require('mongoose');
 
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));    //ceci permet de gérer les tailles des json en entrée très grand

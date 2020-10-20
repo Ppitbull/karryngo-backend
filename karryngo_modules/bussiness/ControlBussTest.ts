@@ -10,6 +10,6 @@ export class ControlBussTest
     {
         this.userMaganer.findAll()
         .then((data)=>response.status(200).json(data))
-        .catch((error)=> response.status(200).json(error));
+        .catch((error)=> response.status(500).json(error));
     }
 }

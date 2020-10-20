@@ -5,7 +5,8 @@
         "actions":[
             {
                 "method":"get",
-                "action": "getAllUser"
+                "action": "getAllUser",
+                "secure":false
             }
         ]
     },
@@ -29,11 +30,19 @@
         "actions":[
             {
                 "method":"post",
-                "action": "register"
+                "action": "register",
+                "secure": false,
+                "params":{
+                }
             },
             {
                 "method":"get",
-                "action": "login"
+                "action": "login",
+                "secure": false,
+                "params": {
+                    "email": "string",
+                    "password": "string"
+                }
             }
         ]
     }

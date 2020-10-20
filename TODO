@@ -1,0 +1,33 @@
+Listes des taches a faire:
+
+-Dans le noyeau 
+    *avoir une couche de sécurité qui:
+        +avoir une fonction qui implément un algoritme de chiffrement en fonction de celui 
+            précisé dans le fichier de configuration
+        +(optionnel) avoir une fonction de déchiffrage
+    
+-Parmis les services
+    *implémenter le service de mail (package nodemailer)
+    *implémenter le service de map
+    *implémenter le service de paiement en ligne
+    *finaliser le service d'authentification (en intégrant JWT)
+    *intégrer la vérification et la validation des jetons jwt  dans la gestion global de l'api
+    *implémenter, dans le service de routing, une méthode qui retourne un code et son commentaire
+    spécifique celon les erreurs suivantes:
+        +la methode (HTTP) associer a l'url n'est pas prise en compte par la route définis 
+            dans le fichier de route
+        +l'utilisateur ne fournis pas les informations d'identification et d'authentification
+            requise par l'api ou par la route
+        +toutes les informations nécessaire dans une url (par example l'ors de l'authentification toutes les 
+            les données nécessaire a l'authentification de l'entité ne sont pas présente) ne sont pas présente 
+            ou sont incorretes
+        +l'url demandé n'est pas pris en compte par l'api
+    
+-Dans la logique métier: pour chaque module les étapes suivantes seront exécuter
+    *redaction d'un document de spécification technique
+    *implémentation du module
+    *test unitaire et test d'intégration (dans le backend)
+    *validation (par le client et l'équipe entiere de Karryngo)
+        
+    
+

@@ -9,6 +9,12 @@
         "parse":false,
         "url":"./config-files/routes.json"
     },
+    "jwt":{
+        "parse":false,
+        "secret_key":"karryngo security",
+        "algorithm":"HS256",
+        "timeout":"3600"
+    },
     "mail": {
         "parse":false,
         "host":"",

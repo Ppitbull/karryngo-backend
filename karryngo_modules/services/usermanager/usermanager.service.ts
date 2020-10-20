@@ -134,10 +134,11 @@ export class UserManagerService
         return new Promise<ActionResult>((resolve,reject)=>
         {
             let action=new ActionResult();
-            this.db.getQueryBuilder(user).save()
+            this.db.getQueryBuilder(user).save(user)
             .then((data:any)=> 
             {
                 action.result=data;
+                console.log("saved" , data);
                 resolve(action);
             })
             .catch((err:any) => 

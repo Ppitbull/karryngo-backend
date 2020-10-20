@@ -15,6 +15,9 @@ import { PersistenceManager } from "../persistence/PersistenceManager.interface"
 import { DynamicLoader } from "../utils/DynamicLoader";
 import { InjectorContainer } from "../lifecycle/injector_container";
 import Configuration from "./../../config-files/constants";
+import { Action } from "./Action";
+import { RouterChecker } from "./routerchecker";
+import { ActionResult } from "../utils/ActionResult";
 
 export class RouterService extends KarryngoApplicationEntity
 {
@@ -32,13 +35,16 @@ export class RouterService extends KarryngoApplicationEntity
     protected configService:ConfigurableApp;
 
     protected frameworkRouter:any;
+
+    protected routerChecker:RouterChecker;
     
-    constructor(config:ConfigurableApp,frouter:any)
+    constructor(config:ConfigurableApp,routerChecker:RouterChecker,frouter:any)
     {
         super();
         this.configService=config;
         this.frameworkRouter=frouter;
         this.readRouteFromConfiguration();
+        this.routerChecker=routerChecker;
     }
     /***
      *@see SerializableEntity.toString()
@@ -89,7 +95,13 @@ export class RouterService extends KarryngoApplicationEntity
             //pour chaque action trouvé dans l'ensemble des actions de chaque  url
         
         
+            let r=new Route();
+            r.module=route.module;
+            r.secure=route.hasOwnProperty('secure');
+            r.url=route.url;
+
             //si une propriété de l'action est innéxistante, on lance une exception
+            let actions:Action[]=[]
             route.actions.forEach((routeAction:any) => 
             {
                 if(!routeAction.hasOwnProperty('method'))    
@@ -100,8 +112,19 @@ export class RouterService extends KarryngoApplicationEntity
                 {
                     throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_PARAM_NOT_FOUND,`key 'action' not found in action ${routeAction} `)
                 }
+                //on ajoute l'action au tableau des actions
+                actions.push(new Action(
+                    routeAction.method,
+                    routeAction.action,
+                    routeAction.hasOwnProperty('params')?routeAction.params:{},
+                    routeAction.hasOwnProperty("secure")?routeAction.secure:r.secure
+                    ));
+                    
             });
-            this.addRoute(new Route(route.url,route.module,route.actions));
+            r.actions=actions;
+            //console.log("routes ", r)
+            //on ajoute la route a la liste des routes disponible
+            this.addRoute(r);
         }
     }
     /**
@@ -117,14 +140,25 @@ export class RouterService extends KarryngoApplicationEntity
             //on charge dynamiquement du module/controlleur associer et par le biais du container de dépendance
             //on injecte toutes les dépendances néccessaire au module
             let controller=InjectorContainer.getInstance().getInstanceOf(DynamicLoader.loadWithoutInstance(`${Configuration.path_for_bussiness_module}/${route.module}`));
-            //console.log(controller);
+            
             //pour chaque method on appelle l'action associer en lui passant l'object requete et reponse
-            for(let method of route.getMethodList())
+            for(let action of route.actions)
             {
-                this.frameworkRouter[method.toString()](route.url.toString(),(req:any,res:any)=>
-                {
-                    DynamicLoader.call(controller,route.getActionForMethod(method),[req,res]);
-                });
+                this.frameworkRouter[action.method.toString()](
+                    route.url.toString(),
+                    (req:any, res:any,next:any)=>{
+                        this.routerChecker.checkSecurity(
+                            route,
+                            action,
+                            req,
+                            res,
+                            next
+                        );
+                    },
+                    (req:any,res:any)=>{
+                        DynamicLoader.call(controller,action.action,[req,res]);
+                    }
+                );
             }
         }
     }

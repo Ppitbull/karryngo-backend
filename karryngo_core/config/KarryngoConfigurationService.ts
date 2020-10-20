@@ -213,18 +213,34 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
                 //et au mirroir
                 if((obj[elmt].constructor==({}).constructor) && ((obj[elmt].hasOwnProperty('parse') && !obj[elmt].parse)))
                 {
-                    if(obj[elmt].hasOwnProperty("url")) file=obj[elmt]['url'];
                     let notParseObj:any={};
-                    notParseObj[elmt]=obj[elmt];                    
+                    notParseObj[elmt]=obj[elmt];
+                    let notParseObjCopy={...notParseObj};
+
+                    if(obj[elmt].hasOwnProperty("url")) 
+                    {
+                        file=obj[elmt]['url'];
+                        delete notParseObjCopy[elmt]['url'];
+                        delete notParseObjCopy[elmt]['parse'];
+
+                        let tab=this.parse(file);
+                        if(tab instanceof Array)  notParseObjCopy[elmt]=[...tab];
+                        else notParseObjCopy[elmt]={...notParseObjCopy[elmt],...tab};
+                       
+                    }
+                                        
                     this.configObject.push({
                         url:file,
                         config:notParseObj
                     });
+
+                    
                     this.mirrorConfigObject.push({
                         url:file,
                         key:elmt,
-                        value:this.parse(file)
+                        value:notParseObjCopy
                     });
+                    console.log("objet ",this.mirrorConfigObject[this.mirrorConfigObject.length-1]);
                 }
                 else
                 {
@@ -242,7 +258,7 @@ export abstract class KarryngoConfigurationService extends KarryngoApplicationEn
 
                     //si la valeur de la cles est un objet (JSON) on reappelle cette methode pour chaque 
                     //valeur de la cles sinon on conserve la cles, la valeur et l'url du fichier dans la mirroir 
-                    else if(obj[elmt] instanceof Object) this.recursiveConstructConfiguration(obj[elmt],file);
+                    else if(obj[elmt].constructor==({}).constructor) this.recursiveConstructConfiguration(obj[elmt],file);
                     else 
                     {
                         this.mirrorConfigObject.push({

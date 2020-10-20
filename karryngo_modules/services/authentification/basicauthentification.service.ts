@@ -6,9 +6,9 @@ import { UserManagerService } from "../usermanager/usermanager.service";
 
 @Service()
 @DBPersistence()
-export class AuthentificationService
+export class BasicAuthentificationService
 {
-    protected db:Partial<PersistenceManager>={};
+    protected db:any={};
     constructor(private userManagerService:UserManagerService){}
 
     register(user:User):Promise<ActionResult>
@@ -26,7 +26,32 @@ export class AuthentificationService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            //this.db.getQueryBuilder(user).find().where()
+            this.db.getQueryBuilder(user).findOne({"adresse.email":user.adresse.email,password:user.password},(err:any,data:any)=>
+            {
+                let result=new ActionResult();
+                if(err)
+                {
+                    result.message="Error";
+                    result.description=err;
+                    result.resultCode=ActionResult.UNKNOW_ERROR;
+                    reject(result);
+                }
+                else if(data==null || data==undefined || data.length==0) 
+                {
+                    result.description="No data found";
+                    result.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
+                    result.result=null;
+                    reject(result);
+                }
+                else
+                {
+                    let p:User=new User();
+                    p.hydrate(data.toObject({ virtuals: true }));
+                    result.result=p;
+                    resolve(result);
+                }
+
+            })
         });
     }
 

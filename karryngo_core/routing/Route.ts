@@ -8,6 +8,7 @@
 import { KarryngoRoutingException } from "../exception/KarryngoRoutingException";
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";
+import { Action } from "./Action";
 
 export class Route extends KarryngoApplicationEntity
 {
@@ -29,9 +30,11 @@ export class Route extends KarryngoApplicationEntity
      * @type String
      * @description represente la methode qui est appelé (get,post,put,delete).
      */
-    protected _actions:any={};
+    protected _actions:Action[]=[];
 
-    constructor(url:String="",module:String="",action:any={})
+    protected _secure:Boolean=true;
+
+    constructor(url:String="",module:String="",action:Action[]=[])
     {
         super();
         this.url=url;
@@ -72,9 +75,14 @@ export class Route extends KarryngoApplicationEntity
      * @description setter de la methode
      * @param act action a appeler
      */
-    set actions(act:any)
+    set actions(act:Action[])
     {
         this._actions=act;
+    }
+
+    set secure(sec:Boolean)
+    {
+        this._secure=sec;
     }
 
     /**
@@ -100,9 +108,14 @@ export class Route extends KarryngoApplicationEntity
      * @description getter de l'action
      * @returns action de la route
      */
-    get actions():any
+    get actions():Action[]
     {
         return this._actions;
+    }
+
+    isSecure():Boolean
+    {
+        return this._secure;
     }
 
     /**
@@ -111,7 +124,7 @@ export class Route extends KarryngoApplicationEntity
      */
     getMethodList():String[]
     {
-        return this._actions.map((action:any)=> action.method);
+        return this._actions.map((action:Action)=> action.method);
     }
 
     /**
@@ -121,12 +134,12 @@ export class Route extends KarryngoApplicationEntity
      * @throws new KarryngoRoutingException() si l'action n'est pas définis ou si la 
      *  methode passé en parametre n'est pas trouvée
      */
-    getActionForMethod(method:String):String
+    getActionForMethod(method:String):Action
     {
         let routeFind=this._actions.find((route:any)=> route.method=method);
         if(routeFind==undefined) throw new KarryngoRoutingException(KarryngoRoutingException.METHOD_NOT_FOUND,`method ${method} not found`);
-        if(!routeFind.hasOwnProperty('action')) throw new KarryngoRoutingException(KarryngoRoutingException.ACTION_NOT_FOUND,`no action found for method ${method}`);
-        return routeFind.action;        
+        if(routeFind.action=="") throw new KarryngoRoutingException(KarryngoRoutingException.ACTION_NOT_FOUND,`no action found for method ${method}`);
+        return routeFind;        
     }
     
 }

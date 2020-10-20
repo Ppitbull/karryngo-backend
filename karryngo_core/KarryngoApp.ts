@@ -10,10 +10,8 @@ import { KarryngoEntity } from "./KarryngoEntity";
 import { KarryngoConfigurationServiceFactory } from "./config/KarryngoConfigurationServiceFactory";
 import { KarryngoPersistenceManagerFactory } from "./persistence/KarryngoPersistenceManagerFactory";
 import { RouterService } from "./routing/RouterService";
-import * as express from 'express';
-import { isNonNullExpression } from "typescript";
-import { PersistenceManager } from "./persistence/PersistenceManager.interface";
 import { InjectorContainer } from "./lifecycle/injector_container";
+import { RouterChecker } from "./routing/routerchecker";
 
 export class KarryngoApp extends KarryngoApplicationEntity
 {
@@ -29,14 +27,17 @@ export class KarryngoApp extends KarryngoApplicationEntity
         InjectorContainer.getInstance().bootstrap();
         //obtention de l'instance du service de configuration
         let configurationInstance=InjectorContainer.getInstance().getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory).getInstance();
-  
+
         //connexion a la bd
         InjectorContainer.getInstance().getInstanceOf<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory).getInstance()
             .connect();
 
         //obtention de l'instance du service de routage avec injection du service de routing
         //offerte par le framework Express et du service de configuration
-        this.routerService=new RouterService(configurationInstance,router);
+        this.routerService=new RouterService(
+            configurationInstance,
+            InjectorContainer.getInstance().getInstanceOf<RouterChecker>(RouterChecker),
+            router);
     }
 
     /**

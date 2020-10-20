@@ -2,8 +2,8 @@ export class Email
 {
     private sender:String="";
     private receiver:String="";
-    private cc:String[]=[];
-    
+    private otherReceiver:String[]=[];
+
     from(userFrom:String):Email
     {
         return this;

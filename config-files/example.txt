@@ -4,10 +4,16 @@ example du fichier de router
     {
         "url":"/api/truc",
         "module" :"servicepost.Service",
+        "secure" : true,
         "actions":[
             {
                 "method":"get",
-                "action": "getService"
+                "action": "getService",
+                "secure":false,
+                "params":{
+                    "username":"string"
+                    "password":"string"
+                }
             },
             {
                 "method":"post",

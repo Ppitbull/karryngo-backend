@@ -6,12 +6,12 @@
 */
 
 import { Controller } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
-import { AuthentificationService } from "../../services/authentification/authentification.service";
+import { BasicAuthentificationService } from "../../services/authentification/basicauthentification.service";
 
 @Controller()
 export class AuthProvider
 {
-    constructor (private auth:AuthentificationService) {}
+    constructor (private auth:BasicAuthentificationService) {}
 
     register(request:any,response:any):void
     {
