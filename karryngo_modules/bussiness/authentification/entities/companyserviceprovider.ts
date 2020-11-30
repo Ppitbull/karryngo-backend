@@ -4,14 +4,11 @@
 @created 13/10/2020
 */
 
+import { CompagnyServiceRequester } from "./companyservicerequester";
 import { ServiceProvider } from "./serviceprovider";
 
-export class CompagnyServiceProvider extends ServiceProvider
+export class CompagnyServiceProvider extends CompagnyServiceRequester
 {
-    companyName:String="";
-    registrationNumber:String="";
-    importExportCompagnyCode:String="";
-
     hydrate(entity: any):void
     {
         super.hydrate(entity);

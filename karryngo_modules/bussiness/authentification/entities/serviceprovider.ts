@@ -5,9 +5,9 @@
 */
 
 import { Address } from "../../../services/usermanager/entities/Address";
-import { Customer } from "./customer";
+import { ServiceRequester } from "./servicerequester";
 
-export class ServiceProvider extends Customer
+export class ServiceProvider extends ServiceRequester
 {
     public adressForVerification:Address[]=[];
 

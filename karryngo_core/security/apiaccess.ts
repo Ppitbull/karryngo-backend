@@ -16,13 +16,13 @@ export class ApiAccess
 
 
     /**
-     * @description permet de vérifier l'existance d'un token permis l'ensemble des tokens 
+     * @description permet de vérifier l'existance d'un token parmis l'ensemble des tokens 
      *  stocké. si le token est trouvé alors il est dechiffer et retourner
      * @param token token dont on veu vérifier l'existance
      * @return {ActionResult} un resultat de success est retourné (muni du token déchiffer)
      *  si tout ce passe bien et un resultat d'échec dans le cas contraire
      */
-    JWTLogin(token:String):Promise<ActionResult>|void
+    JWTLogin(token:String):Promise<ActionResult>
     {
         return this.textFromJWT(token);        
     }
@@ -49,9 +49,10 @@ export class ApiAccess
 
             jsonwebtoken.sign(data,this.configService.getValueOf('jwt').secret_key,{
                 algorithm:this.configService.getValueOf('jwt').algorithm,
-                expiresIn:`${this.configService.getValueOf("jwt").timeout}s`
+                expiresIn:`${this.configService.getValueOf("jwt").timeout}`
             },(err:any,token:any)=>
             {
+                //console.log("jwt ",this.configService.getValueOf("jwt"),"data ",token,"error ",err);
                 if(err)
                 {
                     result.message="Error";

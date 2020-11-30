@@ -6,11 +6,12 @@ const express = require('express');
 var cors = require('cors');
 const app = express();
 let bodyParser = require('body-parser');  //librairie qui permet de parser une chaîne en JSON
+let router=express.Router();
 
 app.use(cors())
 
 //instanciation du coeur de Karryngo
-let karryngoApp=new KarryngoApp(app);
+let karryngoApp=new KarryngoApp(router);
 
 app.use(((request:any,response:any,next:any)=>
 {
@@ -18,11 +19,14 @@ app.use(((request:any,response:any,next:any)=>
     next();
 }));
 
-//var mongoose = require('mongoose');
+//ceci permet de gérer les tailles des json en entrée très grand
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));    //ceci permet de gérer les tailles des json en entrée très grand
-app.use(bodyParser.json({limit: '50mb'}));                           //ceci permet de gérer les tailles des json en entrée très grand
+//ceci permet de gérer les tailles des json en entrée très grand
+app.use(bodyParser.json({limit: '50mb'}));
 
+//utilisation du router
+app.use(router);
 
 // Setup server port
 var port = process.env.PORT || 8090;

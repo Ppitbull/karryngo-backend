@@ -30,7 +30,7 @@ export function Service<T extends Type<any> > ()
 
 /**
  * @description Cette fonction est un décorateur permetant de gérer les dépendance
- *  en tant que service.
+ *  en tant que controlleur.
  * @return function qui définis le comportement l'ors de l'appel du décorateur @Controller
  */
 export function Controller<T extends Type<any> >()

@@ -73,7 +73,7 @@ export default class AuthRequester
         let user:User=new User();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
-
+        
         this.auth.login(user)
         .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,user.password))
         .then((data:ActionResult)=>
@@ -86,7 +86,6 @@ export default class AuthRequester
         })
         .catch((data:ActionResult)=>
          {
-            console.log("data statut", data);
              data.message="Error";
              if(data.resultCode===ActionResult.RESSOURCE_NOT_FOUND_ERROR)
              {

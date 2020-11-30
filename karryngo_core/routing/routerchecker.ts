@@ -20,7 +20,7 @@ export class RouterChecker extends KarryngoApplicationEntity
         throw new Error("Method not implemented.");
     }
     
-    checkApiAccess(token:String)
+    checkApiAccess(token:String):Promise<ActionResult>
     {
         return this.apiAccess.JWTLogin(token);
     }
@@ -48,7 +48,7 @@ export class RouterChecker extends KarryngoApplicationEntity
         {
             //console.log("action ", route);
             //recuperationj du token dans l'entête
-            let token=req.headers['x-access-token'] || req.headers['authorization'];
+            let token=req.headers['x-access-token'] || req.headers['Authorization'];
             
             //si le token existe on le traite sinon on retoune un objet d'érreure
             if(token)
