@@ -28,12 +28,24 @@ export class Location extends KarryngoPersistentEntity
      */
     public longitude:Number=0.0;
 
-    constructor (id:EntityID=new EntityID(),name:String="",longitude:Number=0.0,latitude:Number=0.0)
+
+    public country:String="";
+    public city:String="";
+    constructor (
+        id:EntityID=new EntityID(),
+        name:String="",
+        longitude:Number=0.0,
+        latitude:Number=0.0,
+        country:String="",
+        city:String=""
+        )
     {
         super(id);
         this.longitude=longitude;
         this.latitude=latitude;
         this.name=name;
+        this.country=country;
+        this.city=city;
     }
 
     /**
@@ -46,6 +58,8 @@ export class Location extends KarryngoPersistentEntity
             "longitude":this.longitude,
             "latitude":this.latitude,
             "name":this.name,
+            "country":this.country,
+            "city":this.city
         }
     }
 
@@ -55,5 +69,7 @@ export class Location extends KarryngoPersistentEntity
         this.longitude=this.purgeAttribute(entity,"longitude");
         this.latitude=this.purgeAttribute(entity,"latitude");
         this.name=this.purgeAttribute(entity,"name");
+        this.country=this.purgeAttribute(entity,"country");
+        this.city=this.purgeAttribute(entity,"city");
     }
 }

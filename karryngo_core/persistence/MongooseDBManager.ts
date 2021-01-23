@@ -16,6 +16,27 @@ import { SerializableEntity } from "../SerializableEntity";
 
 export class MongooseDBManager extends NoSqlPersistenceManager
 {
+    createCollection(collectionName: String): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
+    deleteCollection(collectionName: String): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
+    getCollection(collectionName: String): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
+    addToCollection(collectionName: String, entity: SerializableEntity): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
+    removeToCollection(collectionName: String, entity: SerializableEntity): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
+    findInCollection(collectionName: String, options: Record<string, any>): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
+    disconnect(): void {
+        throw new Error("Method not implemented.");
+    }
     
     protected options:any={
         database:{
@@ -64,7 +85,7 @@ export class MongooseDBManager extends NoSqlPersistenceManager
 
     /**
      * 
-     * @inheritdoc
+     * @inheritdoc 
      */
     create(entity: SerializableEntity): Promise<ActionResult>
     {

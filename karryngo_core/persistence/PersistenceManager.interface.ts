@@ -57,4 +57,50 @@ export interface PersistenceManager
      * @requires Mongoose.QueryBuilder
      */
     getQueryBuilder(entity:SerializableEntity):any;
+
+    /**
+     * @description Cette méthode permet de fermer une connexion a la bd
+     */
+    disconnect():void;
+
+    /**
+     * @description permet de creer une nouvelle collection
+     * @param collectionName nom de la collection a créer
+     * @return Promise résolut si la collection est bien créer et rejecté dans le cas contraire
+     */
+    createCollection(collectionName:String):Promise<ActionResult>
+
+    /**
+     * @description permet de supprimer une nouvelle collection
+     * @param collectionName nom de la collection a supprimer
+     * @return Promise résolut si la collection est bien supprimer et rejecté dans le constraire
+     */
+    deleteCollection(collectionName:String):Promise<ActionResult>
+
+    /**
+     * @description permet de recuperer une collection
+     * @param collectionName nom de la collection a obtenir
+     * @return Promise résolut dont le resultat est un ActionResult avec pour attribut result la reference
+     *  vers la collection et rejecté dans le cas contraire
+     */
+    getCollection(collectionName:String):Promise<ActionResult>
+
+
+    addToCollection(collectionName:String,entity:SerializableEntity):Promise<ActionResult>
+
+    removeToCollection(collectionName:String,entity:SerializableEntity): Promise<ActionResult>;
+
+    findInCollection(collectionName:String,options:Record<string,any>,limit:Number):Promise<ActionResult>
+
+    /**
+     * @description Cette methode permet de mettre a jour un document. elle recherche en base de données
+     *  le document correspond dans la collection indiqué en fonction des conditions et met a jour les champs
+     *  spécifier
+     * @param collectionName Nom de la collection contenant l'entité a mettre a jour
+     * @param cond Condition de validation de document
+     * @param toUpdate Les champs a mettre a jour
+     * @param options autres options utiles 
+     * @see Mongodb.MongoClient.Collection.findOneAndUpdate()
+     */
+    updateInCollection(collectionName:String,cond:Record<string,any>,toUpdate:Record<string,any>,options:Record<string, any>):Promise<ActionResult>
 }

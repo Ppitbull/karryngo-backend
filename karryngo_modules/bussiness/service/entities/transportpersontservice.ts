@@ -5,10 +5,16 @@
 */
 
 import { TransportServiceType } from "./transportservicetype";
-import { Vehicle } from "./vehicle";
 
 export class TransportPersonService extends TransportServiceType
 {
-    carType:Vehicle=new Vehicle();
+    static TYPE="TransportPersonService";
     time:Date=new Date();
+    toString()
+    {
+        return {
+            ...super.toString(),
+            type:TransportPersonService.TYPE
+        }
+    }
 }

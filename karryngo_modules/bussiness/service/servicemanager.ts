@@ -4,68 +4,134 @@
 @created 28/11/2020
 */
 
-import { Controller } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
+import { CrudService } from "../../services/crud/crud.service";
+import { TransportServiceType } from "./entities/transportservicetype";
+import { Vehicle } from "./entities/vehicle";
 import { TransportServiceManager } from "./transportservicemanager";
+import { Location } from "./../../services/geolocalisation/entities/location";
+import { ServiceProvider } from "../authentification/entities/serviceprovider";
+import { DataBaseException } from "../../../karryngo_core/exception/DataBaseException";
+import { InvalideServiceStateException } from "./entities/transactionservice";
 
-@Controller()
+@DBPersistence()
 export class ServiceManager
 {
-    constructor(private transportservicemanager:TransportServiceManager){}
+    private db:any=null;
 
-    /**
-     * @description permet a un provider d'ajouter un service qu'il est capable de rendre
-     * @param request requete de l'utilisation
-     * @param response reponse a envoyer a l'utilisateur
-     */
-    addProviderService(request:any,response:any):void
+    constructor(private crudService:CrudService,private transportServiceManager:TransportServiceManager){}
+
+   rechercherFounisseurProximite(zone:Location,service:TransportServiceType):Promise<ActionResult>
+   {
+       return new Promise<ActionResult>((resolve,reject)=>{
+            let options:any={};
+            options["option.vehicicle.type"]=service.carType.type;
+            options["adresse.from.country"]=zone.country;
+            options["adresse.from.city"]=zone.city;
+            this.db.findInCollection("ProvideService",
+            {
+                "provide":{
+                    $elemMatch: options
+                }
+            })
+            .then((data:ActionResult)=>
+            {
+                //doit contenir la liste des fournisseurs de service
+                //calcul de la distance la plus courte
+
+                //on resoud avec le resultat
+                resolve(data);
+            })
+            .catch((error:ActionResult)=>{
+                reject(error);
+            })
+
+       });       
+   }
+
+    startTransaction(request:any,response:any):void
     {
-
+        this.transportServiceManager.startTransaction(request.body.idService,
+            request.body.idProvider,
+            request.body.idRequester)
+        .then((data:ActionResult)=>{
+            response.status(201).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"Transaction started successfully",
+            })
+        })
+        .catch((error:ActionResult)=>{
+            let code=500;
+            if(error.resultCode==DataBaseException.DATABASE_UNKNOW_ERROR) code=404;
+            else if(error.resultCode==ActionResult.RESSOURCE_ALREADY_EXIST_ERROR) code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        })
     }
 
-    /**
-     * @description permet de mettre a jour les informations lié a un service d'un fournisseur
-     * @param request requete de l'utilisateur
-     * @param response reponse a envoyer a l'utilisateur
-     */
-    updateProviderService(request:any,response:any):void
+    acceptPrice(request:any,response:any):void
     {
-
+        this.transportServiceManager.acceptServicePrice(
+            request.body.idService,
+            request.body.idTransaction,
+            request.body.idProvider,
+            request.body.price
+        ).then((result:ActionResult) => {
+            response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"Price setted successfully",
+            })
+        }).catch((error:ActionResult) => {
+            let code=500;
+            if(error.resultCode==DataBaseException.DATABASE_UNKNOW_ERROR) code=404;
+            else if(error.resultCode==ActionResult.RESSOURCE_ALREADY_EXIST_ERROR) code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        });
     }
 
-    /**
-     * @description permet de supprimer un service 
-     * @param request requete de l'utilisateur
-     * @param response reponse a envoyer a l'utilisateur'
-     */
-    deleteProviderService(request:any,response:any):void
+    makePaiement(request:any,response:any):void
     {
-
+        this.transportServiceManager.makePaiement(request.body.idService,request.body.idTransaction)
+        .then((data:ActionResult)=>{
+            response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"Successful paiement operation",
+            })
+        })
+        .catch((error:ActionResult)=>{{
+            let code=500;
+            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) code=404;
+            else if(error.resultCode==InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR) code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        }})
     }
 
-    getProviderServiceList(request:any,response:any):void
+    endTransaction(request:any,response:any):void
     {
-
+        this.transportServiceManager.endTransaction(request.body.idService,request.body.idTransaction)
+        .then((data:ActionResult)=>{
+            response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"Successful end transaction service",
+            })
+        })
+        .catch((error:ActionResult)=>{{
+            let code=500;
+            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) code=404;
+            else code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        }})
     }
-    
-    /**
-     * @description Permet a un demandeur de service de poster  la description d'un service
-     * @param request request de l'utilisateur
-     * @param response response a envoyer a l'utilisateur
-     */
-    postServiceDesciption(request:any,response:any):void
-    {
-
-    }
-
-    getServiceDescriptionPostInfos(request:any,response:any):void
-    {
-
-    }
-
-    getServiceList(request:any,response:any):void
-    {
-
-    }
-
-
 }

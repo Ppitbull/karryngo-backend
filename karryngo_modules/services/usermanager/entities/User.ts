@@ -42,7 +42,7 @@ export class User extends KarryngoPersistentEntity
     {
         super(_id);
         this.firstname=fname;
-        this.lastname=lname;
+        this.lastname=lname; 
         this.password=pwd;
         this.adresse=add;
         this.locations=locations;
@@ -57,7 +57,7 @@ export class User extends KarryngoPersistentEntity
             "firstname":this.firstname,
             "lastname":this.lastname,
             "password":this.password,
-            "adresse":this.adresse.toString(),
+            "adress":this.adresse.toString(),
             "locations":this.locations.map((zone:Location)=>zone.toString())
         }
     }

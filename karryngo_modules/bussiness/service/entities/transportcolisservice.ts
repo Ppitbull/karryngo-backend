@@ -11,6 +11,8 @@ import { TransportServiceType } from "./transportservicetype";
 
 export class TransportColisService extends TransportServiceType
 {
+    static TYPE="TransportColisService";
+
     is_fragile:Boolean=false;
     servicefor:String="";
     size_heigth:Number=0.0;
@@ -18,25 +20,18 @@ export class TransportColisService extends TransportServiceType
     size_width:Number=0.0;
     size_piece_nber:Number=0;
 
-    constructor(
-        id:EntityID=new EntityID(),
-        transportBy:TransportService
-        )
-    {
-        super(id,transportBy);
-    }
-
     hydrate(entity:any):void
     {
         super.hydrate(entity);
-        this.is_fragile=this.purgeAttribute(entity,"is_fragile");
-        this.servicefor=this.purgeAttribute(entity,"servicefor");
+        let options=this.purgeAttribute(entity,"options");
+        this.is_fragile=this.purgeAttribute(options,"is_fragile");
+        this.servicefor=this.purgeAttribute(options,"servicefor");
         if(entity.hasOwnProperty('size'))
         {
-            this.size_heigth=this.purgeAttribute(entity,"heigth");
-            this.size_depth=this.purgeAttribute(entity,"depth");
-            this.size_width=this.purgeAttribute(entity,"width");
-            this.size_piece_nber=this.purgeAttribute(entity,"piece_nber");
+            this.size_heigth=this.purgeAttribute(options.size,"heigth");
+            this.size_depth=this.purgeAttribute(options.size,"depth");
+            this.size_width=this.purgeAttribute(options.size,"width");
+            this.size_piece_nber=this.purgeAttribute(options.size,"piece_nber");
         }
     }
 
@@ -45,8 +40,10 @@ export class TransportColisService extends TransportServiceType
      */
     toString():any
     {
-        return {
-            ...super.toString(),
+        let stringifyO=super.toString();
+
+        stringifyO["options"]={
+            ...stringifyO["options"],
             is_fragile:this.is_fragile,
             servicefor:this.servicefor,
             size:{
@@ -56,5 +53,7 @@ export class TransportColisService extends TransportServiceType
                 piece_nber:this.size_piece_nber
             }
         };
+        stringifyO["type"]=TransportColisService.TYPE;
+        return stringifyO;
     }
 }

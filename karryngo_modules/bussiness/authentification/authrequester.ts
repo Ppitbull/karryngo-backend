@@ -75,7 +75,7 @@ export default class AuthRequester
         user.password=request.body.password==undefined?"":request.body.password;
         
         this.auth.login(user)
-        .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,user.password))
+        .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,user.password,data.result.id))
         .then((data:ActionResult)=>
         {
             data.description="Authentification successful";

@@ -45,5 +45,171 @@
                 }
             }
         ]
+    },
+    {
+        "url":"/api/requester/service/add",
+        "module" :"/service/requesterservicemanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "addService",
+                "params":{
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/:idService",
+        "module" :"/service/requesterservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getService",
+                "params":{
+                    "idService":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/list",
+        "module" :"/service/requesterservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getServiceList",
+                "params":{
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/transaction/start",
+        "module" :"/service/servicemanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "startTransaction",
+                "params":{
+                    "idService":"string",
+                    "idProvider":"string",
+                    "idRequester":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/transaction/valid_price",
+        "module" :"/service/servicemanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "acceptPrice",
+                "params":{
+                    "idService":"string",
+                    "idProvider":"string",
+                    "idTransaction":"string",
+                    "price":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/make_paiement",
+        "module" :"/service/servicemanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "makePaiement",
+                "params":{
+                    "idService":"string",
+                    "idTransaction":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/end",
+        "module" :"/service/servicemanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "endTransaction",
+                "params":{
+                    "idService":"string",
+                    "idTransaction":"string"
+                }
+            }
+        ]
+    },
+
+    {
+        "url":"/api/provider/service/add",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "addService",
+                "params":{
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/provider/service/:idService",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getService",
+                "params":{
+                    "idService":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/list",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getServiceList",
+                "params":{
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/chat/list",
+        "module" :"/chat/chatmanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getTransactionMessageList",
+                "params":{
+                    "idDiscussion":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/chat/add",
+        "module" :"/chat/chatmanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getTransactionMessageList",
+                "params":{
+                    "idDiscussion":"string",
+                    "from":"string",
+                    "to":"string",
+                    "date":"string",
+                    "title":"string",
+                    "content":"string"
+                }
+            }
+        ]
     }
+
 ]

@@ -10,8 +10,9 @@ import { Location } from "../../../services/geolocalisation/entities/location";
 
 export abstract class TransportBikeService extends TransportService
 {
+    static TYPE="TransportBikeService";
     constructor(id:EntityID=new EntityID(),startLocation:Location=new Location(),endLocation:Location=new Location())
     {
-        super(id,"TransportBikeService",startLocation,endLocation);
+        super(id,TransportBikeService.TYPE,startLocation,endLocation);
     }
 }

@@ -12,6 +12,7 @@ import { KarryngoCore } from "../decorator/core.decorator";
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";
 import { DynamicLoader } from "../utils/DynamicLoader";
+import { NoSqlPersistenceManager } from "./NoSqlPersistenceManager";
 import { PersistenceManager } from "./PersistenceManager.interface";
 
 @KarryngoCore()
@@ -44,7 +45,7 @@ export class KarryngoPersistenceManagerFactory extends KarryngoApplicationEntity
      *  est configurer dans le fichier de configuration persistance.json
      * @return une implémentation de l'interface PersistenceManager
      */
-    getInstance():PersistenceManager
+    getInstance():NoSqlPersistenceManager | PersistenceManager 
     {
         return this.persistance;
     }

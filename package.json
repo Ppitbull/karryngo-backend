@@ -4,7 +4,7 @@
   "description": "Backend de l'application karryngo",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --reporter spec  --require ts-node/register **/usermanager.test.ts",
+    "test": "mocha --reporter spec  --require ts-node/register **/databasePersistanceTest.test.ts",
     "start": "nodemon app.ts",
     "doc": "typedoc --out docs . --exclude ./node_modules",
     "build": "tsc --project ./"
@@ -16,6 +16,7 @@
   "author": "SDK",
   "license": "ISC",
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.1.15",
     "@types/express": "^4.17.8",
     "@types/jsonwebtoken": "^8.5.0",
     "@types/mocha": "^8.0.3",
@@ -35,6 +36,7 @@
     "typescript": "^4.0.3"
   },
   "devDependencies": {
+    "@types/googlemaps": "^3.43.2",
     "typedoc": "^0.19.2"
   }
 }

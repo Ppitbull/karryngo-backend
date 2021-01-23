@@ -8,24 +8,26 @@ import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/
 import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { Location } from "../../../services/geolocalisation/entities/location";
 import { TransportService } from "./transportservice";
+import { Vehicle } from "./vehicle";
 
 export abstract class TransportServiceType extends KarryngoPersistentEntity
 {
+    carType:Vehicle;
     is_urgent:Boolean;
     details:String;
     images:String[];
     from:Location;
     to:Location;
-    transportBy:TransportService;
+    date:Date;
     constructor(
-        id:EntityID,
-        transportBy:TransportService,
-        
+        id:EntityID=new EntityID(),
         is_urgent:Boolean=false,
         details:String="",
         images:String[]=[],
         from:Location=new Location(),
-        to:Location=new Location()
+        to:Location=new Location(),
+        date:Date=new Date(),
+        carType:Vehicle=new Vehicle()
         )
     {
         super(id);
@@ -34,7 +36,8 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
         this.images=images;
         this.from=from;
         this.to=to;
-        this.transportBy=transportBy;
+        this.date=date;
+        this.carType=carType;
     }
 
     /**
@@ -43,12 +46,19 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
     hydrate(entity:any):void
     {
         super.hydrate(entity);
-        this.is_urgent=this.purgeAttribute(entity,"is_urgent");
-        this.details=this.purgeAttribute(entity,"details");
-        this.images=this.purgeAttribute(entity,"images");
-        this.from.hydrate(entity);
-        this.to.hydrate(entity);
-        this.transportBy.hydrate(entity);
+
+        let options=this.purgeAttribute(entity,"options");
+        this.is_urgent=this.purgeAttribute(options,"is_urgent");
+        this.details=this.purgeAttribute(options,"details");
+        this.images=this.purgeAttribute(options,"images");
+        this.carType.hydrate(this.purgeAttribute(options,"vehicicle"));
+
+        let adresse=this.purgeAttribute(entity,"address");
+        this.from.hydrate(adresse.from);
+        this.to.hydrate(adresse.to);
+
+
+        //hydrate date iso 8601
     }
 
     /**
@@ -58,12 +68,19 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
     {
         return {
             ...super.toString(),
-           is_urgent:this.is_urgent,
-           details:this.details,
-           images:this.images,
-           from:this.from.toString(),
-           to:this.to.toString(),
-           transportBy:this.transportBy.toString(),
+            address:
+            {
+                from:this.from.toString(),
+                to:this.to.toString(),
+            },
+           options:{
+            vehicicle:this.carType.toString(),
+            is_urgent:this.is_urgent,
+            details:this.details,
+            images:this.images,
+           },
+           
         };
+        //stringify date format ISO 8601
     }
 }

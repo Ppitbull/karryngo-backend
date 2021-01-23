@@ -15,6 +15,14 @@
         "algorithm":"HS256",
         "timeout":"3600s"
     },
+    "googleapis":{
+        "cliendId":"",
+        "apikey":"AIzaSyA2vJtnn9aljDSsUr2V8ooZ3H0sulbIUzU",
+        "scope":[
+
+        ],
+        "parse":false
+    },
     "mail": {
         "parse":false,
         "host":"",
@@ -23,6 +31,16 @@
         "auth" :{
             "user":"karryngoemail@gmail.com",
             "pass":"karryngopass"
+        }
+    },
+    "map":
+    {
+        "parse":false,
+        "couverture":
+        {
+            "airplane":"30km",
+            "car":"1km",
+            "bike":"1km"
         }
     }
 }

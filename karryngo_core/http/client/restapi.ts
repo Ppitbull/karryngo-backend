@@ -9,9 +9,9 @@ import axios from 'axios';
 import { KarryngoCore } from "../../decorator/core.decorator";
 
 @KarryngoCore()
-class RestApi extends Http
+export class RestApi extends Http
 {
-    api():any
+    request():any
     {
         return axios;
     }

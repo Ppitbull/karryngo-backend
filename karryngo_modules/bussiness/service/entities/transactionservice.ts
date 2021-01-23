@@ -4,22 +4,42 @@
 @created 22/11/2020
 */
 
+import { KarryngoException } from "../../../../karryngo_core/exception/KarryngoException";
 import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/KarryngoPersistentEntity";
+import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { TransportService } from "./transportservice";
+import { TransportServiceType } from "./transportservicetype";
 
 export class TransactionServiceState
 {
     static INIT:Number=0;
+    static SERVICE_ACCEPTED_AND_WAITING_PAIEMENT:Number=1;
+    static SERVICE_PAIEMENT_DONE_AND_RUNNING:Number=2;
+    static SERVICE_DONE_AND_END:Number=3;
 }
 
+export class InvalideServiceStateException extends KarryngoException
+{
+    static TRANSACTION_IS_NOT_IN_INIT_STATE_ERROR:Number=-109;
+    static INVALID_PRICE_IN_TRANSACTION_ERROR:Number=-108;
+    static TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR:Number=-107;
+    static TRANSACTION_IS_NOT_IN_RUNNIG_STATE_ERROR:Number=-106;
+    constructor(code:Number,description:String)
+    {
+        super(code,"Error in transaction: "+description,description);
+    }
+}
 
 export class TransactionService extends KarryngoPersistentEntity
 {
     state:Number;
-    service:TransportService;
+    service:TransportServiceType;
+    idProvider:String="";
+    idRequester:String="";
+    price:String="";
 
-    constructor(id:EntityID,transportService:TransportService)
+    constructor(id:EntityID,transportService:TransportServiceType,)
     {
         super(id);
         this.state=TransactionServiceState.INIT;
@@ -36,63 +56,79 @@ export class TransactionService extends KarryngoPersistentEntity
      */
     acceptPrice(price:Number)
     {
+        if(this.state!=TransactionServiceState.INIT) 
+            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_INIT_STATE_ERROR,"la transaction doit être dans son état initial")
+        if(price<0)
+            throw new InvalideServiceStateException(InvalideServiceStateException.INVALID_PRICE_IN_TRANSACTION_ERROR,"Le prix doit être supérieur a 0")
+        this.price=`${price}`;
+        this.state=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT;
     }
-
-    /**
-     * @description Permet de rejecter de prix du demandeur de service. il permet a 
-     *  la transaction de revenir a l'état Service en discution (voir diagramme d'état transition de 
-     *  de gestion de service)
-     * @throws new InvalideServiceStateException() si cette méthode n'est pas appeler a une étape 
-     *  ou l'on doit demander de rejecter le prix du service
-     */
-    rejectPrice()
+    makePaiement():Promise<ActionResult>
     {
-
+        let dataResult:ActionResult=new ActionResult();
+        return new Promise<ActionResult>((resolve,reject)=>{
+            if(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT)
+            {
+                dataResult.resultCode=InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR;
+                dataResult.message="Cannot make paiement in that step of transaction"
+                reject(dataResult)
+            }
+            else
+            {
+                //on fait le paiemement. ici cela consite a retirer les fonds 
+                //du compte bancaire|carte de crédit|compte paypal|... vers le compte bancaire de la plateforme
+                this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_RUNNING;
+                //on notifie les 2 utilisateur
+                resolve(dataResult)
+            }
+        })
     }
 
-    /**
-     * @description Permet de débuter la transaction. cette méthode est appeler une fois le service 
-     *  enregistrer et les fournisseurs de service trouvé. a cette étape l'un des membres de la discution
-     *  fournisseurs ou demandeur de service veut démarer la discution (voir diagramme d'état transition de 
-     *  de gestion de service)
-     * @throws new InvalideServiceStateException() si cette méthode n'est pas appeler a une étape 
-     *  ou l'on doit demander d'initialiser le service
-     */
-    beginService()
-    {
-
-    }
-
-    /**
-     * @description Permet d'initier le paiement. a cette étape le demandeur de service doit valider le 
-     *  paiement
-     *  @throws new InvalideServiceStateException() si cette méthode n'est pas appeler a une étape 
-     *  ou l'on doit demander d'initialiser le paiement
-     */
-    initPaiement()
-    {
-
-    }
-
-     /**
-     * @description Permet de rejecter le paiement. a cette étape le demandeur de service annule le paiement
-     *  @throws new InvalideServiceStateException() si cette méthode n'est pas appeler a une étape 
-     *  ou l'on doit demander d'annuler le paiement
-     */
-    rejectPaiement()
-    {
-        
-    }
 
      /**
      * @description Permet de terminer le service. a cette étape le demandeur et le fournisseur de service
-     *  valide que le service est terminer. une note (nombre d'étoile) doit être retourner par le 
-     *  demandeur de service sur la qualité du service rendu
+     *  valide que le service est terminer. 
      *  @throws new InvalideServiceStateException() si cette méthode n'est pas appeler a une étape 
      *  ou l'on doit demander la fin du service
      */
-    endService()
+    endService():Promise<ActionResult>
     {
+        let dataResult:ActionResult=new ActionResult();
+        if(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT)
+        {
+            dataResult.resultCode=InvalideServiceStateException.TRANSACTION_IS_NOT_IN_RUNNIG_STATE_ERROR;
+            dataResult.message="Cannot make paiement in that step of transaction"
+            return Promise.reject(dataResult)
+        }
+        this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_RUNNING;
+        return Promise.resolve(dataResult);
+    }
 
+    /**
+     * 
+     * @inheritdoc
+     */
+    hydrate(entity:any):void
+    {
+        super.hydrate(entity);
+        this.state=this.purgeAttribute(entity,"state");
+        this.idProvider=this.purgeAttribute(entity,"idProvider");
+        this.idRequester=this.purgeAttribute(entity,"idRequester");
+        this.price=this.purgeAttribute(entity,"price");
+    }
+
+    /**
+     * 
+     * @inheritdoc
+     */
+    toString()
+    {
+        return {
+            ...super.toString(),
+            state:this.state,
+            idProvider:this.idProvider,
+            idRequester:this.idRequester,
+            price:this.price,
+        }
     }
 }

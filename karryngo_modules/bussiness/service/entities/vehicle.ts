@@ -9,6 +9,10 @@ import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 
 export class Vehicle extends KarryngoPersistentEntity
 {
+    static CAR:String="car";
+    static AIRPLANE:String="airplane";
+    static BIKE:String="bike";
+    
     type:String="";
     name:String="";
     marque:String="";

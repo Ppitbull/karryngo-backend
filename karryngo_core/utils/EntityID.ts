@@ -23,6 +23,11 @@ export class EntityID
         }).toLowerCase();
     }
     
+    setId(id:String)
+    {
+        this._id=id;
+    }
+
     toString():String
     {
         return this._id;

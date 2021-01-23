@@ -5,8 +5,10 @@
 */
 
 import { Service ,DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
+import { CrudService } from "../crud/crud.service";
 import { User } from "./entities/User";
 
 
@@ -14,8 +16,9 @@ import { User } from "./entities/User";
 @DBPersistence()
 export class UserManagerService
 {
-    protected db:any ={};
+    protected db:any ={};//PersistenceManager
 
+    constructor(private crud:CrudService){}
     /**
      * @description Cette classe permet de creer un nouvel utilisateur
      * @param {User} user utilisateur que l'on veut creer
@@ -24,7 +27,7 @@ export class UserManagerService
      */
     newUser(user:User):Promise<ActionResult>
     {
-        return this.db.getQueryBuilder(user).create(user);
+        return this.db.addToCollection("Users",user)
     }
 
     /**
@@ -38,39 +41,30 @@ export class UserManagerService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.getQueryBuilder(new User()).find({"adresse.email":email},(err:any,people:any)=>
+            this.db.findInCollection("Users",{"adresse.email":email},1)
+            .then((result:ActionResult)=>
             {
-                let action=new ActionResult();
-                if(err)
+                let people:Record<string, any>[]= result.result;
+                let action=new ActionResult(); //si aucun utilisateur n'est trouvé on rejete la promise
+                if(people.length==0)
                 {
+                    action.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
                     action.message="Error";
-                    action.description=err;
-                    action.resultCode=ActionResult.UNKNOW_ERROR;
+                    action.description="User not found";
                     reject(action);
                 }
+                //sinon on resout la promise avec les différents comptes utilisateur trouvé
                 else
                 {
-                    //si aucun utilisateur n'est trouvé on rejete la promise
-                    if(people.length==0)
+                    action.result=people.map((person:any)=>
                     {
-                        action.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
-                        action.message="Error";
-                        action.description="User not found";
-                        reject(action);
-                    }
-                    //sinon on resout la promise avec les différents comptes utilisateur trouvé
-                    else
-                    {
-                        action.result=people.map((person:any)=>
-                        {
-                            let p:User=new User();
-                            p.hydrate(person.toObject({ virtuals: true }));
-                            return p;
-                        });
-                        resolve(action);
-                    }
+                        let p:User=new User();
+                        p.hydrate(person);
+                        return p;
+                    });
+                    resolve(action);                    
                 }
-            });
+            }).catch((error:ActionResult)=>reject(error));
 
         });
     }
@@ -86,36 +80,29 @@ export class UserManagerService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.getQueryBuilder(new User()).findById(id.toString(),(err:any,people:any)=>
+            this.db.findInCollection("Users",{"_id":id.toString()},1)
+            .then((result:ActionResult)=>
             {
                 let action=new ActionResult();
-                if(err)
+                let people:Record<string, any>[]=result.result;
+                if(people.length==0)
                 {
+                    action.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
                     action.message="Error";
-                    action.description=err;
-                    action.resultCode=ActionResult.UNKNOW_ERROR;
+                    action.description="User not found";
                     reject(action);
                 }
                 else
                 {
-                    if(people.length==0)
+                    action.result=people.map((person:any)=>
                     {
-                        action.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
-                        action.message="Error";
-                        action.description="User not found";
-                        reject(action);
-                    }
-                    else
-                    {
-                        action.result=people.map((person:any)=>
-                        {
-                            let p:User=new User();
-                            p.hydrate(person.toObject({ virtuals: true }));
-                            return p;
-                        });
-                        resolve(action);
-                    }
+                        let p:User=new User();
+                        p.hydrate(person);
+                        return p;
+                    });
+                    resolve(action);
                 }
+                
             });
         });
     }
@@ -129,26 +116,9 @@ export class UserManagerService
      *  la connexion a la bd...)  et
      *  elle est résolu dans le cas contraire
      */
-    saveUser(user:User):Promise<ActionResult>
+    saveUser(idUser:EntityID,toupdate:Record<string, any>):Promise<ActionResult>
     {
-        return new Promise<ActionResult>((resolve,reject)=>
-        {
-            let action=new ActionResult();
-            this.db.getQueryBuilder(user).save(user)
-            .then((data:any)=> 
-            {
-                action.result=data;
-                console.log("saved" , data);
-                resolve(action);
-            })
-            .catch((err:any) => 
-            {
-                action.resultCode=ActionResult.NETWORK_ERROR;
-                action.message="Erreur";
-                action.description="Unable to save user";
-                reject(action);
-            });
-        });
+        return this.db.updateInCollection("Users",{"_id":idUser.toString()},toupdate,{})
     }
 
     /**
@@ -160,27 +130,20 @@ export class UserManagerService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.getQueryBuilder(new User()).find((err:any,people:any)=>
+
+            this.db.findInCollection("Users",{},50).
+            then((result:ActionResult)=>
             {
                 let action=new ActionResult();
-                if(err)
+                action.result=result.result.map((person:any)=>
                 {
-                    action.message="Erreur";
-                    action.description=err;
-                    action.resultCode=ActionResult.UNKNOW_ERROR;
-                    reject(action);
-                }
-                else
-                {
-                    action.result=people.map((person:any)=>
-                    {
-                        let p:User=new User();
-                        p.hydrate(person.toObject({ virtuals: true }));
-                        return p;
-                    });
-                    resolve(action);
-                }
-            });
+                    let p:User=new User();
+                    p.hydrate(person);
+                    return p;
+                });
+                resolve(action);
+            })
+            .catch((error:ActionResult)=>reject(error));
         })
     }
 }

@@ -13,7 +13,7 @@ import { ActionResult } from "../utils/ActionResult";
 export class ApiAccess
 {
     private configService:any={};
-
+    
 
     /**
      * @description permet de vérifier l'existance d'un token parmis l'ensemble des tokens 
@@ -36,9 +36,9 @@ export class ApiAccess
      *  ce resultat est accompagné d'un token a utiliser pendans un nombre de temps configurer
      *  dans le fichier de configuration
      */
-    JWTRegister(username:String,password:String):Promise<ActionResult>
+    JWTRegister(username:String,password:String,id:String):Promise<ActionResult>
     {
-        return this.textToJWT(JSON.stringify({username,password}));
+        return this.textToJWT(JSON.stringify({username,password,id}));
     }
 
     textToJWT(data:any):Promise<ActionResult>

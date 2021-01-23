@@ -13,6 +13,16 @@ import { PersistenceManager } from "./PersistenceManager.interface";
 
 export abstract class AbstractPersistenceManager extends KarryngoApplicationEntity implements PersistenceManager
 {
+     /**
+     * @inheritdoc
+     */
+    abstract updateInCollection(collectionName: String, cond: Record<string, any>, toUpdate: Record<string, any>,options:Record<string, any>): Promise<ActionResult>;
+    
+    /**
+     * @inheritdoc
+     */
+    abstract disconnect(): void;
+
     /**
      * @inheritdoc
      */
@@ -22,6 +32,7 @@ export abstract class AbstractPersistenceManager extends KarryngoApplicationEnti
      * @inheritdoc
      */
     abstract connect(): Promise<ActionResult>;
+    
     
     /**
      * @inheritdoc
@@ -37,5 +48,35 @@ export abstract class AbstractPersistenceManager extends KarryngoApplicationEnti
      * @inheritdoc
      */
     abstract delete(entity: KarryngoPersistentEntity): Promise<ActionResult>;
+
+    /**
+     * @inheritdoc
+     */
+    abstract createCollection(collectionName:String):Promise<ActionResult>
+
+    /**
+     * @inheritdoc
+     */
+    abstract deleteCollection(collectionName:String):Promise<ActionResult>
+
+    /**
+     * @inheritdoc
+     */
+    abstract getCollection(collectionName:String):any;
+
+    /**
+     * @inheritdoc
+     */
+    abstract addToCollection(collectionName:String,entity:SerializableEntity):Promise<ActionResult>
+
+    /**
+     * @inheritdoc
+     */
+    abstract removeToCollection(collectionName:String,entity:SerializableEntity): Promise<ActionResult>;
+
+    /**
+     * @inheritdoc
+     */
+    abstract findInCollection(collectionName:String,options:Record<string,any>,limit:Number):Promise<ActionResult>
     
 } 

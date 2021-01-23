@@ -9,10 +9,11 @@ import { TransportService } from "./transportservice";
 import { Location } from "../../../services/geolocalisation/entities/location";
 
 
-export abstract class TransportCarService extends TransportService
+export class TransportCarService extends TransportService
 {
+    static TYPE="TransportCarService";
     constructor(id:EntityID=new EntityID(),startLocation:Location=new Location(),endLocation:Location=new Location())
     {
-        super(id,"TransportCarService",startLocation,endLocation);
+        super(id,TransportCarService.TYPE,startLocation,endLocation);
     }
 }

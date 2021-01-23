@@ -9,6 +9,7 @@ import {KarryngoException} from './KarryngoException';
 export class DataBaseException extends KarryngoException
 {
     static DATABAE_DISCONNECTED:Number=-60;
+    static DATABASE_UNKNOW_ERROR:Number=-59;
     constructor(code:Number,description:String)
     {
         super(code,"Erreur de communication avec la bd: "+description,description);

@@ -44,7 +44,7 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
     toString():any
     {
         return {
-            _id:this.id
+            _id:this.id.toString()
         };
     }
 

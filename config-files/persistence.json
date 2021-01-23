@@ -4,6 +4,6 @@
     "hostname":"localhost",
     "username":"root",
     "password":"",
-    "classe":"/karryngo_core/persistence/MongooseDBManager",
+    "classe":"/karryngo_core/persistence/MongoDBManager",
     "port":27017
 }

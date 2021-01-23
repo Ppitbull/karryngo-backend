@@ -26,17 +26,11 @@ export class BasicAuthentificationService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.getQueryBuilder(user).findOne({"adresse.email":user.adresse.email,password:user.password},(err:any,data:any)=>
+            this.db.findInCollection("Users",{"adresse.email":user.adresse.email,password:user.password},1)
+            .then((data:ActionResult)=>
             {
                 let result=new ActionResult();
-                if(err)
-                {
-                    result.message="Error";
-                    result.description=err;
-                    result.resultCode=ActionResult.UNKNOW_ERROR;
-                    reject(result);
-                }
-                else if(data==null || data==undefined || data.length==0) 
+                if(data.result.length==0) 
                 {
                     result.description="No data found";
                     result.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
@@ -46,12 +40,13 @@ export class BasicAuthentificationService
                 else
                 {
                     let p:User=new User();
-                    p.hydrate(data.toObject({ virtuals: true }));
+                    p.hydrate(data.result[0]);
                     result.result=p;
                     resolve(result);
                 }
 
             })
+            .catch((error:ActionResult)=> reject(error))
         });
     }
 
