@@ -151,25 +151,15 @@
                 "method":"post",
                 "action": "addService",
                 "params":{
+                    "title":"string",
+                    "description":"string",
+                    "zone":"array"
                 }
             }
         ]
     },
     {
-        "url":"/api/provider/service/:idService",
-        "module" :"/service/providerservicemanager",
-        "actions":[
-            {
-                "method":"get",
-                "action": "getService",
-                "params":{
-                    "idService":"string"
-                }
-            }
-        ]
-    },
-    {
-        "url":"/api/requester/service/list",
+        "url":"/api/provider/service/list",
         "module" :"/service/providerservicemanager",
         "actions":[
             {
@@ -180,6 +170,20 @@
             }
         ]
     },
+    {
+        "url":"/api/provider/service/:idProviderService",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getService",
+                "params":{
+                    "idProviderService":"string"
+                }
+            }
+        ]
+    },
+    
     {
         "url":"/api/chat/list",
         "module" :"/chat/chatmanager",

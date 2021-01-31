@@ -10,10 +10,8 @@ import { PersistenceManager } from "../../../karryngo_core/persistence/Persisten
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { CrudService } from "../../services/crud/crud.service";
-import { TransportCarService } from "./entities/transportcarservice";
 import { TransportColisService } from "./entities/transportcolisservice";
 import { TransportPersonService } from "./entities/transportpersontservice";
-import { TransportService } from "./entities/transportservice";
 import { TransportServiceType } from "./entities/transportservicetype";
 import { ServiceManager } from "./servicemanager";
 import { TransportServiceManager } from "./transportservicemanager";
@@ -46,8 +44,10 @@ export class RequesterServiceManager
     addService(request:any,response:any):void
     {
         let service:TransportServiceType;
-        if(request.body.options.is_fragile==undefined)
+        
+        if(request.body.options.is_weak!=undefined)
         {
+            console.log("Colis")
             //service pour un colis
             service=new TransportColisService(new EntityID());
         }
@@ -56,18 +56,19 @@ export class RequesterServiceManager
             service=new TransportPersonService(new EntityID());            
         }
         service.hydrate(request.body);
-        
+        service.id=new EntityID();
+        console.log("Body ",service)
         //sauvegarde en BD
         let serviceData = {
-            "idProvider":request.decoded.id,
+            "idRequester":request.decoded.id,
             "idSelectedProvider":"",
             "idSelectedTransaction":"",
             "providers":[],
             "transactions":[],
             ...service.toString()
         };
-
-        this.db.addToCollection("RequestService",serviceData)
+        console.log("service ");
+        /*this.db.addToCollection("RequestService",serviceData)
         .then((data:any)=>
         {
             //calcul du rayon de couverture
@@ -97,7 +98,7 @@ export class RequesterServiceManager
                 resultCode:error.resultCode,
                 message:error.message
             });
-        })       
+        })  */     
     }
 
     /**

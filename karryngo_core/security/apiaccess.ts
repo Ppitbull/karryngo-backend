@@ -49,12 +49,13 @@ export class ApiAccess
 
             jsonwebtoken.sign(data,this.configService.getValueOf('jwt').secret_key,{
                 algorithm:this.configService.getValueOf('jwt').algorithm,
-                expiresIn:`${this.configService.getValueOf("jwt").timeout}`
+                //expiresIn:this.configService.getValueOf("jwt").timeout
             },(err:any,token:any)=>
             {
                 //console.log("jwt ",this.configService.getValueOf("jwt"),"data ",token,"error ",err);
                 if(err)
                 {
+                    //console.log("JWT Error ",this.configService.getValueOf("jwt").secret_key,err);
                     result.message="Error";
                     result.resultCode=ActionResult.UNKNOW_ERROR;
                     result.description=err;

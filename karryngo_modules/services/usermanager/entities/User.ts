@@ -57,7 +57,7 @@ export class User extends KarryngoPersistentEntity
             "firstname":this.firstname,
             "lastname":this.lastname,
             "password":this.password,
-            "adress":this.adresse.toString(),
+            "adresse":this.adresse.toString(),
             "locations":this.locations.map((zone:Location)=>zone.toString())
         }
     }

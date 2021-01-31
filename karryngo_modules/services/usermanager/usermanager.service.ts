@@ -44,6 +44,7 @@ export class UserManagerService
             this.db.findInCollection("Users",{"adresse.email":email},1)
             .then((result:ActionResult)=>
             {
+                console.log('Result Exist ',result)
                 let people:Record<string, any>[]= result.result;
                 let action=new ActionResult(); //si aucun utilisateur n'est trouvé on rejete la promise
                 if(people.length==0)

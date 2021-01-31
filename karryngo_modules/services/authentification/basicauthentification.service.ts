@@ -26,7 +26,7 @@ export class BasicAuthentificationService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.findInCollection("Users",{"adresse.email":user.adresse.email,password:user.password},1)
+            this.db.findInCollection("Users",{"adresse.email":user.adresse.email,"password":user.password},1)
             .then((data:ActionResult)=>
             {
                 let result=new ActionResult();
@@ -39,6 +39,7 @@ export class BasicAuthentificationService
                 }
                 else
                 {
+                    
                     let p:User=new User();
                     p.hydrate(data.result[0]);
                     result.result=p;

@@ -30,6 +30,8 @@ export default class AuthRequester
     {
         let user=new User();
         user.firstname=request.body.firstname;
+        user.lastname=request.body.lastname;
+
         user.adresse.email=request.body.adresse.email;
         user.password=request.body.password;
         this.userManagerService.findUserByEmail(user.adresse.email)
@@ -86,14 +88,19 @@ export default class AuthRequester
         })
         .catch((data:ActionResult)=>
          {
-             data.message="Error";
              if(data.resultCode===ActionResult.RESSOURCE_NOT_FOUND_ERROR)
              {
-                return response.status(403).json(data)
+                return response.status(403).json({
+                    resultCode:data.resultCode,
+                    message:"Incorrect email or password"
+                })
              }
              else(data.resultCode===ActionResult.UNKNOW_ERROR)
              {
-                return response.status(500).json(data);
+                return response.status(500).json({
+                    resultCode:data.resultCode,
+                    message:data.message
+                });
              }
          })
     }

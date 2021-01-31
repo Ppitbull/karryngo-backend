@@ -45,22 +45,23 @@ export class MongoDBManager extends NoSqlPersistenceManager
     
     findInCollection(collectionName: String, options: Record<string, any>,limit:Number=50): Promise<ActionResult>
     {
-        return new Promise<ActionResult>((resolve,reject)=>{
+        return new Promise<ActionResult>(async (resolve,reject)=>{
             let result:ActionResult=new ActionResult();
-            let arr:Record<string, any>[]=[];
-            this.getCollection(collectionName).find(options).limit(MongoDBManager.MAX_TO_FIND).each((err:any,doc:any)=>{
-                if(err)
-                {
-                    result.resultCode=DataBaseException.DATABASE_UNKNOW_ERROR;
-                    result.message="Cannot find document";
-                    result.result=err;
-                    reject(result);
-                }
-                else if(doc) arr.push(doc)
-                else return false;
-            })
-            result.result=[...arr];
-            resolve(result);                
+            try{                
+                let arr:Record<string, any>[]=[];
+                let cursor=this.getCollection(collectionName).find(options).limit(MongoDBManager.MAX_TO_FIND);
+                
+                while(await cursor.hasNext())  arr.push(await cursor.next());
+                result.result=[...arr];
+                resolve(result);    
+            }     
+            catch(e){
+                result.resultCode=DataBaseException.DATABASE_UNKNOW_ERROR;
+                result.message="Cannot find document";
+                result.result=e;
+                reject(result);
+            }  
+                         
         })
     }
 

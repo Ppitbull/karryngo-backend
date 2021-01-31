@@ -26,7 +26,7 @@ export class ServiceManager
    {
        return new Promise<ActionResult>((resolve,reject)=>{
             let options:any={};
-            options["option.vehicicle.type"]=service.carType.type;
+            //options["option.vehicicle.type"]=service.carType.type;
             options["adresse.from.country"]=zone.country;
             options["adresse.from.city"]=zone.city;
             this.db.findInCollection("ProvideService",

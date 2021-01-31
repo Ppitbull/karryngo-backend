@@ -46,9 +46,8 @@ export class RouterChecker extends KarryngoApplicationEntity
         //si la route spécifi d'utiliser une authentification
         if(action.isSecure())
         {
-            //console.log("action ", route);
             //recuperationj du token dans l'entête
-            let token=req.headers['x-access-token'] || req.headers['Authorization'];
+            let token=req.headers['x-access-token'] || req.headers['Authorization'] || req.headers['authorization'];
             
             //si le token existe on le traite sinon on retoune un objet d'érreure
             if(token)
@@ -62,14 +61,14 @@ export class RouterChecker extends KarryngoApplicationEntity
                 })
                 .catch((data:ActionResult)=>
                 {
-                    return res.json({
-                        success: false,
+                    return res.status(401).json({
+                        resultCode: -2,
                         message: 'Bad token'
                         });
                 });
             }
-            return res.json({
-                success: false,
+            else return res.status(401).json({
+                resultCode: -1,
                 message: 'Auth token is not supplied'
                 });
         }
