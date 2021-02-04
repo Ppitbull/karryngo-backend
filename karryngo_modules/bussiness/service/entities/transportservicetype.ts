@@ -14,13 +14,14 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
 {
     carTypeList:Vehicle[]=[];
     is_urgent:Boolean;
-    details:String;
+    description:String;
     images:String[];
     from:Location;
     to:Location;
     date:String="";
     date_departure:String="";
     date_arrival:String="";
+    title:String="";
     constructor(
         id:EntityID=new EntityID(),
         is_urgent:Boolean=false,
@@ -32,7 +33,7 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
     {
         super(id);
         this.is_urgent=is_urgent;
-        this.details=details;
+        this.description=details;
         this.images=images;
         this.from=from;
         this.to=to;
@@ -51,8 +52,8 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
         super.hydrate(entity);
         let options=this.purgeAttribute(entity,"options");
         this.is_urgent=this.purgeAttribute(options,"is_urgent");
-        this.details=this.purgeAttribute(options,"details");
-        this.images=this.purgeAttribute(options,"images");
+        this.description=this.purgeAttribute(entity,"description");
+        this.images=this.purgeAttribute(entity,"images");
         if(this.purgeAttribute(options,"vehicle"))
         {
             this.carTypeList=this.purgeAttribute(options,"vehicle").map((v:Record<string, any>)=>{
@@ -66,13 +67,16 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
 
         let adresse=this.purgeAttribute(entity,"address");
         this.from.hydrate(adresse.from);
+        if(this.from.id==null) this.from.id=new EntityID();
+
         this.to.hydrate(adresse.to);
+        if(this.to.id==null) this.to.id=new EntityID();
 
         let deadline=this.purgeAttribute(entity,"deadline");
         this.date_departure=this.purgeAttribute(deadline,"departure");
         this.date_arrival=this.purgeAttribute(deadline,"arrival");
         this.date=this.purgeAttribute(entity,"publicationDate")?this.purgeAttribute(entity,"publicationDate"):this.date;
-
+        this.title=this.purgeAttribute(entity,"title");
        
     }
 
@@ -96,9 +100,10 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
            options:{
             vehicle:this.carTypeList.map((vehicle:Vehicle)=>vehicle.toString()),
             is_urgent:this.is_urgent,
-            details:this.details,
+            description:this.description,
             images:this.images,
            },
+           title:this.title,
            
         };
         //stringify date format ISO 8601

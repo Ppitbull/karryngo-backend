@@ -20,7 +20,7 @@ export class TransportColisService extends TransportServiceType
     size_depth:Number=0.0;
     size_width:Number=0.0;
     size_piece_nber:Number=0;
-
+    package_name:String="";
     receiver:ReceiverColis=new ReceiverColis(new EntityID());
 
     hydrate(entity:any):void
@@ -29,6 +29,7 @@ export class TransportColisService extends TransportServiceType
         let options=this.purgeAttribute(entity,"options");
         this.is_weak=this.purgeAttribute(options,"is_weak");
         this.typeof=this.purgeAttribute(options,"typeof");
+        this.package_name=this.purgeAttribute(options,"package_name");
         if(entity.hasOwnProperty('size'))
         {
             this.size_heigth=this.purgeAttribute(options.size,"heigth");
@@ -57,7 +58,7 @@ export class TransportColisService extends TransportServiceType
                 width:this.size_width,
                 piece_nber:this.size_piece_nber
             },
-            
+            package_name:this.package_name,
             receiver:this.receiver.toString()
         };
         stringifyO["type"]=TransportColisService.TYPE;

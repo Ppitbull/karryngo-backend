@@ -8,13 +8,13 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
      * @description identifiant d'une entité
      * @type EntityID
      */
-    public id:EntityID;
+    public _id:EntityID;
 
     
     constructor(id:EntityID)
     {
         super();
-        this.id=id;
+        this._id=id;
     }
     
     /**
@@ -25,9 +25,11 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
      * @param attr attribue dont on veu la valeur
      * @return null si l'attribut n'exite pas et sa valeur dans le cas contraire
      */
-    purgeAttribute(object:any,attr:String):any
-    {
-        return object.hasOwnProperty(attr)?object[attr.toString()]:null;
+    purgeAttribute(object:Record<string|number,any>,attr:String):any
+    {        
+        if(object.hasOwnProperty(attr.toString())) return object[attr.toString()]
+        if(this.hasOwnProperty(attr.toString()))  return Reflect.get(this,attr.toString());
+        return null;
     }
 
     /**
@@ -46,6 +48,14 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
         return {
             _id:this.id.toString()
         };
+    }
+    set id(_id:EntityID)
+    {
+        this._id=_id;
+    }
+    get id():EntityID
+    {
+        return this._id;
     }
 
 }

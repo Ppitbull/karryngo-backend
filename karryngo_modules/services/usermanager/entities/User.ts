@@ -52,12 +52,13 @@ export class User extends KarryngoPersistentEntity
      * @inheritdoc
      */
     toString():any {
+        console.log("Adress",this.adresse.toString())
         return {
             ...super.toString(),
             "firstname":this.firstname,
             "lastname":this.lastname,
             "password":this.password,
-            "adresse":this.adresse.toString(),
+            "address":this.adresse.toString(),
             "locations":this.locations.map((zone:Location)=>zone.toString())
         }
     }
@@ -71,7 +72,7 @@ export class User extends KarryngoPersistentEntity
         this.firstname=this.purgeAttribute(entity,"firstname");
         this.lastname=this.purgeAttribute(entity,"lastname");
         this.password=this.purgeAttribute(entity,"password");
-        if(entity.adresse) this.adresse.hydrate(entity.adresse);
+        if(entity.address) this.adresse.hydrate(entity.address);
         this.locations=this.purgeAttribute(entity,"locations")==null
             ?[]
             :this.purgeAttribute(entity,"locations").map((zone:any)=>{

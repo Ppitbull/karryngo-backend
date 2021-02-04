@@ -25,21 +25,19 @@ export class ServiceManager
    rechercherFounisseurProximite(zone:Location,service:TransportServiceType):Promise<ActionResult>
    {
        return new Promise<ActionResult>((resolve,reject)=>{
-            let options:any={};
-            //options["option.vehicicle.type"]=service.carType.type;
-            options["adresse.from.country"]=zone.country;
-            options["adresse.from.city"]=zone.city;
             this.db.findInCollection("ProvideService",
             {
-                "provide":{
-                    $elemMatch: options
+                "zones":{
+                    $elemMatch: {
+                        "country":zone.country,
+                        "city":zone.city
+                    },
                 }
             })
             .then((data:ActionResult)=>
             {
                 //doit contenir la liste des fournisseurs de service
-                //calcul de la distance la plus courte
-
+                console.log("Found Provider",data)
                 //on resoud avec le resultat
                 resolve(data);
             })

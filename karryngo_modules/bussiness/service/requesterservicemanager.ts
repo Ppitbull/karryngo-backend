@@ -57,32 +57,39 @@ export class RequesterServiceManager
         }
         service.hydrate(request.body);
         service.id=new EntityID();
-        console.log("Body ",service)
         //sauvegarde en BD
         let serviceData = {
+            ...service.toString(),
             "idRequester":request.decoded.id,
             "idSelectedProvider":"",
             "idSelectedTransaction":"",
             "providers":[],
-            "transactions":[],
-            ...service.toString()
+            "transactions":[],        
         };
-        console.log("service ");
-        /*this.db.addToCollection("RequestService",serviceData)
+        serviceData.toString=()=> serviceData;
+        this.db.addToCollection("RequestService",serviceData)
         .then((data:any)=>
         {
             //calcul du rayon de couverture
 
+            let listProvider:Record<string, any>[]=[];
             //recherche des fournisseur a proximité
             this.serviceManager.rechercherFounisseurProximite(service.from,service)
-            .then((data:ActionResult)=>this.db.updateInCollection("RequestService",{
-                "_id":serviceData._id
-            },{"providers":data.result},{}))
+            .then((data:ActionResult)=>{
+                console.log("Provider ",data.result)
+                listProvider=data.result;
+                return this.db.updateInCollection("RequestService",{
+                    "_id":serviceData._id.toString()
+                },{"providers":data.result},{})
+            })
             .then((data:ActionResult)=>{
                 response.status(201).json({
                     resultCode:ActionResult.SUCCESS,
                     message:"Description saved successfully",
-                    result:data.result.splice(0,10)
+                    result:{
+                        "idService":service.id.toString(),
+                        "providers":listProvider
+                    }
                 });
             })
             .catch((error:ActionResult)=>{
@@ -94,11 +101,12 @@ export class RequesterServiceManager
         })
         .catch((error:ActionResult)=>
         {
+            console.log("Result ",error);
             response.status(400).json({
                 resultCode:error.resultCode,
                 message:error.message
             });
-        })  */     
+        })       
     }
 
     /**

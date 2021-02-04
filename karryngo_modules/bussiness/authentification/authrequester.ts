@@ -5,9 +5,11 @@
 @created 13/10/2020
 */
 
+import { Request, Response } from "express";
 import { Controller } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { ApiAccess } from "../../../karryngo_core/security/apiaccess";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
+import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { BasicAuthentificationService } from "../../services/authentification/basicauthentification.service";
 import { User } from "../../services/usermanager/entities/User";
 import { UserManagerService } from "../../services/usermanager/usermanager.service";
@@ -26,14 +28,11 @@ export default class AuthRequester
         let status:Boolean=false;
         return status;
     }
-    register(request:any,response:any):void
+    register(request:Request,response:Response):void
     {
+        console.log("UserRegistration ",request.body)
         let user=new User();
-        user.firstname=request.body.firstname;
-        user.lastname=request.body.lastname;
-
-        user.adresse.email=request.body.adresse.email;
-        user.password=request.body.password;
+        user.hydrate(request.body)
         this.userManagerService.findUserByEmail(user.adresse.email)
             .then((data:ActionResult)=> 
             {
@@ -103,5 +102,22 @@ export default class AuthRequester
                 });
              }
          })
+    }
+
+    getProfil(request:any,response:any):void
+    {
+        let id:EntityID = new EntityID()
+        this.userManagerService.findUserById(id)
+        .then((data:ActionResult)=>{
+            return response.status(200).json({
+                resultCode:data.resultCode,
+                result:data.result
+            })
+        }).catch((error:ActionResult)=>{
+            return response.status(404).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        })
     }
 }
