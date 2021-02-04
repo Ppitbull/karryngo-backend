@@ -30,7 +30,6 @@ export default class AuthRequester
     }
     register(request:Request,response:Response):void
     {
-        console.log("UserRegistration ",request.body)
         let user=new User();
         user.hydrate(request.body)
         this.userManagerService.findUserByEmail(user.adresse.email)
@@ -69,12 +68,11 @@ export default class AuthRequester
             });
     }
 
-    login(request:any,response:any):void
+    login(request:Request,response:any):void
     {
         let user:User=new User();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
-        
         this.auth.login(user)
         .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,user.password,data.result.id))
         .then((data:ActionResult)=>
@@ -104,10 +102,10 @@ export default class AuthRequester
          })
     }
 
-    getProfil(request:any,response:any):void
+    getProfil(request:any,response:Response):void
     {
         let id:EntityID = new EntityID()
-        this.userManagerService.findUserById(id)
+        this.userManagerService.findUserById(request.decoded.id)
         .then((data:ActionResult)=>{
             return response.status(200).json({
                 resultCode:data.resultCode,

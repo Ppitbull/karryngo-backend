@@ -47,7 +47,22 @@
         ]
     },
     {
-        "url":"/api/requester/profil/:idUser",
+        "url":"/api/auth/login",
+        "module" :"/authentification/authrequester",
+        "actions":[
+            {
+                "method":"post",
+                "action": "login",
+                "secure": false,
+                "params": {
+                    "email": "string",
+                    "password": "string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/profil",
         "module" :"/authentification/authrequester",
         "actions":[
             {

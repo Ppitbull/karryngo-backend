@@ -39,8 +39,7 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
         this.to=to;
         
         //hydrate date iso 8601
-        let d=new Date();
-        this.date=`${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}T${d.getHours()}:${d.getMinutes()}`;
+        this.date=(new Date()).toISOString();
         
     }
 

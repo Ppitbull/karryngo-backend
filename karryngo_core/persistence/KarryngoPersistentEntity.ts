@@ -18,7 +18,7 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
     }
     
     /**
-     * @description Cette methode permet de verifier l'existance d'un valeur dans un fichier de configuration   
+     * @description Cette methode permet de verifier l'existance d'un valeur dans   
      *  un objet JSON afin de retourner sa valeur. cela évite des erreurs du a la tentative
      *  d'accés a un attribue non contenu dans l'objet JSON
      * @param object objet au format JSON
@@ -37,6 +37,7 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
      */
     hydrate(entity:any):void
     {
+        //console.log("Entity ",entity._id)
         this.id=this.purgeAttribute(entity,"_id");
     }
 

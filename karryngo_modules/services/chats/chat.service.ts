@@ -44,8 +44,7 @@ export class ChatService
             .then((data:ActionResult)=>resolve(data))
             .catch((error:ActionResult)=>reject(error));
         })
-       
-        return this.db.addToCollection("Chats",message.toString())
+    
     }
     readAll(idUser:String):Promise<ActionResult>
     {

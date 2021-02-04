@@ -41,7 +41,7 @@ export class UserManagerService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.findInCollection("Users",{"adresse.email":email},1)
+            this.db.findInCollection("Users",{"address.email":email},1)
             .then((result:ActionResult)=>
             {
                 console.log('Result Exist ',result)

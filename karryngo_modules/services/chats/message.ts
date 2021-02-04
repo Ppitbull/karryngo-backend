@@ -5,12 +5,13 @@
 */
 
 import { KarryngoPersistentEntity } from "../../../karryngo_core/persistence/KarryngoPersistentEntity";
+import { EntityID } from "../../../karryngo_core/utils/EntityID";
 
 export class Message extends KarryngoPersistentEntity
 {
-    from:String="";
-    to:String="";
-    date:Partial<{date:string,hours:string}>={};
+    from:EntityID=new EntityID();
+    to:EntityID=new EntityID();
+    date:String="";
     title:String="";
     content:String="";
 
@@ -18,8 +19,8 @@ export class Message extends KarryngoPersistentEntity
     {
         return {
             ...super.toString(),
-            from:this.from,
-            to:this.to,
+            from:this.from.toString(),
+            to:this.to.toObject(),
             date:this.date,
             title:this.title,
             content:this.content
@@ -29,8 +30,8 @@ export class Message extends KarryngoPersistentEntity
     hydrate(entity: any): void
     {
         super.hydrate(entity);
-        this.from=this.purgeAttribute(entity,"from");
-        this.to=this.purgeAttribute(entity,"to");
+        this.from.setId(this.purgeAttribute(entity,"from"));
+        this.to.setId(this.purgeAttribute(entity,"to"));
         this.date=this.purgeAttribute(entity,"date");
         this.title=this.purgeAttribute(entity,"title");
         this.content=this.purgeAttribute(entity,"content");

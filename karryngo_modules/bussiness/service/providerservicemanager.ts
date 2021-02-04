@@ -40,7 +40,6 @@ export class ProviderServiceManager
         pservice.deservedZone=request.body.zones.map((local:Record<string,string|number>)=>{
             let location:Location=new Location();
             location.hydrate(local);
-            location.id=new EntityID();
             return location;
         });
 
@@ -48,7 +47,6 @@ export class ProviderServiceManager
         pservice.listVehicle=request.body.vehicles.map((v:Record<string, any>)=>{
             let vehi:Vehicle=new Vehicle();
             vehi.hydrate(v);
-            vehi.id=new EntityID();
             return vehi
         });
         this.db.addToCollection("ProvideService",pservice)
@@ -88,11 +86,9 @@ export class ProviderServiceManager
 
     getServiceList(request:any,response:any):void
     {
-        console.log("Get service")
         this.db.findInCollection("ProvideService",{},50)
         .then((data:ActionResult)=>
         {
-            console.log(data)
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Provider service found",
@@ -110,7 +106,6 @@ export class ProviderServiceManager
 
     getService(request:any,response:any):void
     {
-        console.log("unique")
         let idProviderService=request.body.idProviderService;
         this.db.findInCollection("ProvideService",{"idProvider":idProviderService},1)
         .then((data:ActionResult)=>
