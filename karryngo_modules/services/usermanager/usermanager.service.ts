@@ -89,8 +89,7 @@ export class UserManagerService
                 if(people.length==0)
                 {
                     action.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
-                    action.message="Error";
-                    action.description="User not found";
+                    action.message="User not found";
                     reject(action);
                 }
                 else

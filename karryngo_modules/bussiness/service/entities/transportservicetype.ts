@@ -72,8 +72,11 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
         if(this.to.id==null) this.to.id=new EntityID();
 
         let deadline=this.purgeAttribute(entity,"deadline");
-        this.date_departure=this.purgeAttribute(deadline,"departure");
-        this.date_arrival=this.purgeAttribute(deadline,"arrival");
+        if(deadline)
+        {
+            this.date_departure=this.purgeAttribute(deadline,"departure");
+            this.date_arrival=this.purgeAttribute(deadline,"arrival");
+        }
         this.date=this.purgeAttribute(entity,"publicationDate")?this.purgeAttribute(entity,"publicationDate"):this.date;
         this.title=this.purgeAttribute(entity,"title");
        

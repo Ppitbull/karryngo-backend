@@ -74,6 +74,18 @@
         ]
     },
     {
+        "url":"/api/user/profil/:idService",
+        "module" :"/authentification/authrequester",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getUserProfil",
+                "params":{
+                }
+            }
+        ]
+    },
+    {
         "url":"/api/requester/service/add",
         "module" :"/service/requesterservicemanager",
         "actions":[

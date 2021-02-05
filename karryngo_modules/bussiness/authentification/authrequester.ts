@@ -104,12 +104,13 @@ export default class AuthRequester
 
     getProfil(request:any,response:Response):void
     {
-        let id:EntityID = new EntityID()
-        this.userManagerService.findUserById(request.decoded.id)
+        let id:EntityID=new EntityID();
+        id.setId(request.decoded.id)
+        this.userManagerService.findUserById(id)
         .then((data:ActionResult)=>{
             return response.status(200).json({
                 resultCode:data.resultCode,
-                result:data.result
+                result:data.result[0]
             })
         }).catch((error:ActionResult)=>{
             return response.status(404).json({
@@ -117,5 +118,10 @@ export default class AuthRequester
                 message:error.message
             })
         })
+    }
+    getUserProfil(request:any,response:Response):void
+    {
+        request.decoded.id=request.params.idService;
+        this.getProfil(request,response);
     }
 }

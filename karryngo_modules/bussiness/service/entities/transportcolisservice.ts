@@ -25,7 +25,7 @@ export class TransportColisService extends TransportServiceType
 
     hydrate(entity:any):void
     {
-        super.hydrate(entity);
+        super.hydrate(entity);        
         let options=this.purgeAttribute(entity,"options");
         this.is_weak=this.purgeAttribute(options,"is_weak");
         this.typeof=this.purgeAttribute(options,"typeof");

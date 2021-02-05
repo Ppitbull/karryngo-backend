@@ -28,7 +28,7 @@ export class ProviderServiceManager
      */
     addService(request:any,response:any):void
     {
-        //console.log("Requete ",request.body)
+        console.log("Requete Body",request.body)
         let pservice:ProviderService=new ProviderService(new EntityID());
         
         let idProviderService = request.decoded.id;
@@ -36,7 +36,7 @@ export class ProviderServiceManager
         pservice.description=request.body.description;
         pservice.idProvider=idProviderService;
         request.body.zones=request.body.zones || [];
-
+        console.log("Requete ",pservice);
         pservice.deservedZone=request.body.zones.map((local:Record<string,string|number>)=>{
             let location:Location=new Location();
             location.hydrate(local);

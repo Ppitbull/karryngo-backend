@@ -5,6 +5,7 @@
 */
 
 import { error } from "console";
+import { Request, Response } from "express";
 import { Controller, DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
@@ -43,11 +44,11 @@ export class RequesterServiceManager
      */
     addService(request:any,response:any):void
     {
+        console.log("Body",request.body)
         let service:TransportServiceType;
         
         if(request.body.options.is_weak!=undefined)
         {
-            console.log("Colis")
             //service pour un colis
             service=new TransportColisService(new EntityID());
         }
@@ -56,7 +57,6 @@ export class RequesterServiceManager
             service=new TransportPersonService(new EntityID());            
         }
         service.hydrate(request.body);
-        service.id=new EntityID();
         //sauvegarde en BD
         let serviceData = {
             ...service.toString(),
@@ -129,9 +129,9 @@ export class RequesterServiceManager
 
     }
 
-    getService(request:any,response:any):void
+    getService(request:Request,response:Response):void
     {
-        let idServiceDescription=request.body.idService;
+        let idServiceDescription=request.params.idService;
         this.db.findInCollection("RequestService",{"_id":idServiceDescription})
         .then((data:ActionResult)=>
         {

@@ -5,6 +5,7 @@ import { Vehicle } from "./vehicle";
 export class ProviderService extends KarryngoPersistentEntity
 {
     title:String="";
+    name:String="Provider Name";
     description:String="";
     idProvider:String="";
     deservedZone:Location[]=[];
@@ -15,6 +16,7 @@ export class ProviderService extends KarryngoPersistentEntity
         return {
             ...super.toString(),
             title:this.title,
+            name:this.name,
             description:this.description,
             providerId:this.idProvider,
             zones:this.deservedZone.map((zone:Location)=>zone.toString()),
@@ -25,6 +27,7 @@ export class ProviderService extends KarryngoPersistentEntity
     {
         super.hydrate(entity);
         this.title=this.purgeAttribute(entity,"title");
+        this.name=this.purgeAttribute(entity,"name");
         this.description=this.purgeAttribute(entity,"description");
         this.idProvider=this.purgeAttribute(entity,"providerId");
         this.deservedZone=this.purgeAttribute(entity,"zones").map((zone:Record<string, any>)=>{
