@@ -18,7 +18,7 @@ import Configuration from "../../../config-files/constants";
 @DBPersistence()
 export class ProviderServiceManager
 {
-    private db:PersistenceManager|any={};
+    private db:any={};
     
     constructor(private transportservicemanager:TransportServiceManager){}
 
@@ -145,6 +145,32 @@ export class ProviderServiceManager
             resultCode:error.resultCode,
             message:error.message
         }));
+    }
+    getVehicleList(request:any,response:any):any
+    {
+        this.db.findInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{"vehicles":true,_id:false})
+        .then((data:ActionResult)=>response.status(200).json({
+            resultCode:ActionResult.SUCCESS,
+            message:"successful vehicle recovery",
+            result:data.result
+        }))
+        .catch((error:ActionResult)=> response.status(500).json({
+            resultCode:error.resultCode,
+            message:error.message
+        }))
+    }
+    getZoneList(request:any,response:any):any
+    {
+        this.db.findInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{"zones":true,_id:false})
+        .then((data:ActionResult)=>response.status(200).json({
+            resultCode:ActionResult.SUCCESS,
+            message:"successful zones recovery",
+            result:data.result
+        }))
+        .catch((error:ActionResult)=> response.status(500).json({
+            resultCode:error.resultCode,
+            message:error.message
+        }))
     }
     addZone(request:any,response:any):void
     {

@@ -256,6 +256,18 @@
         ]
     },
     {
+        "url":"/api/provider/service/vehicle/list",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getVehicleList",
+                "params":{
+                }
+            }
+        ]
+    },
+    {
         "url":"/api/provider/service/zone/add",
         "module" :"/service/providerservicemanager",
         "actions":[
@@ -268,6 +280,18 @@
                     "name":"string",
                     "country":"string",
                     "city":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/provider/service/zone/list",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getZoneList",
+                "params":{
                 }
             }
         ]

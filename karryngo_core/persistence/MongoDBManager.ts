@@ -43,13 +43,13 @@ export class MongoDBManager extends NoSqlPersistenceManager
     }
     
     
-    findInCollection(collectionName: String, options: Record<string, any>,limit:Number=50): Promise<ActionResult>
+    findInCollection(collectionName: String, options: Record<string, any>,othersOption:Record<string, any>={},limit:Number=MongoDBManager.MAX_TO_FIND): Promise<ActionResult>
     {
         return new Promise<ActionResult>(async (resolve,reject)=>{
             let result:ActionResult=new ActionResult();
             try{                
                 let arr:Record<string, any>[]=[];
-                let cursor=this.getCollection(collectionName).find(options).limit(MongoDBManager.MAX_TO_FIND);
+                let cursor=this.getCollection(collectionName).find(options,othersOption).limit(MongoDBManager.MAX_TO_FIND);
                 
                 while(await cursor.hasNext())  arr.push(await cursor.next());
                 result.result=[...arr];

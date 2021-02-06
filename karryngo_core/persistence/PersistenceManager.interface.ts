@@ -90,7 +90,7 @@ export interface PersistenceManager
 
     removeToCollection(collectionName:String,entity:SerializableEntity): Promise<ActionResult>;
 
-    findInCollection(collectionName:String,options:Record<string,any>,limit:Number):Promise<ActionResult>
+    findInCollection(collectionName:String,options:Record<string,any>,othersOption:Record<string, any>,limit:Number):Promise<ActionResult>
 
     /**
      * @description Cette methode permet de mettre a jour un document. elle recherche en base de données
