@@ -14,13 +14,21 @@ import { Location } from "./../../services/geolocalisation/entities/location";
 import { ServiceProvider } from "../authentification/entities/serviceprovider";
 import { DataBaseException } from "../../../karryngo_core/exception/DataBaseException";
 import { InvalideServiceStateException } from "./entities/transactionservice";
+import { ChatService } from "../../services/chats/chat.service";
+import { Message } from "../../services/chats/message";
+import { EntityID } from "../../../karryngo_core/utils/EntityID";
+import { Discussion } from "../../services/chats/discussion";
 
 @DBPersistence()
 export class ServiceManager
 {
     private db:any=null;
 
-    constructor(private crudService:CrudService,private transportServiceManager:TransportServiceManager){}
+    constructor(
+        private crudService:CrudService,
+        private transportServiceManager:TransportServiceManager,
+        private chatService:ChatService
+        ){}
 
    rechercherFounisseurProximite(zone:Location,service:TransportServiceType):Promise<ActionResult>
    {
@@ -37,7 +45,7 @@ export class ServiceManager
             .then((data:ActionResult)=>
             {
                 //doit contenir la liste des fournisseurs de service
-                console.log("Found Provider",data)
+                // console.log("Found Provider",data)
                 //on resoud avec le resultat
                 resolve(data);
             })
@@ -50,10 +58,42 @@ export class ServiceManager
 
     startTransaction(request:any,response:any):void
     {
-        this.transportServiceManager.startTransaction(request.body.idService,
+        console.log("Data",request.body)
+        this.transportServiceManager.startTransaction(
+            request.body.idService,
             request.body.idProvider,
             request.body.idRequester)
         .then((data:ActionResult)=>{
+            
+                let to:EntityID=new EntityID();
+                to.setId(
+                    request.body.idProvider==request.body.idInitiator
+                        ?request.body.idRequester
+                        :request.body.idProvider
+                    );
+                
+                    let from:EntityID=new EntityID();
+                    from.setId(
+                        request.body.idProvider==request.body.idInitiator
+                            ?request.body.idProvider
+                            :request.body.idRequester);
+                let idProject:EntityID=new EntityID();
+                idProject.setId(request.body.idService);
+
+                let discution:Discussion=new Discussion(new EntityID());
+                discution.idProject=idProject
+                discution.inter1=to;
+
+                let message:Message=new Message(new EntityID());
+                message.to=to;
+                message.from=to;
+                message.date=(new Date()).toISOString();
+                message.content="you have been selected to carry out this project";
+                discution.chats.push(message);
+
+                return this.chatService.startDiscussion(discution);
+        })
+        .then((data:ActionResult) => {
             response.status(201).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Transaction started successfully",

@@ -6,6 +6,7 @@
 
 import { error } from "console";
 import { Request, Response } from "express";
+import Configuration from "../../../config-files/constants";
 import { Controller, DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
@@ -15,6 +16,7 @@ import { TransportColisService } from "./entities/transportcolisservice";
 import { TransportPersonService } from "./entities/transportpersontservice";
 import { TransportServiceType } from "./entities/transportservicetype";
 import { ServiceManager } from "./servicemanager";
+import { ServiceTypeFactory } from "./servicetypefactory";
 import { TransportServiceManager } from "./transportservicemanager";
 
 
@@ -37,6 +39,41 @@ export class RequesterServiceManager
         private crudService:CrudService
         ){}
 
+    
+    findProvider(
+        request:any,
+        response:any,
+        idService:any,
+        service:TransportServiceType,
+        message:String="Description saved successfully"):void
+    {
+        let listProvider:Record<string, any>[]=[];
+            //recherche des fournisseur a proximité
+            this.serviceManager.rechercherFounisseurProximite(service.from,service)
+            .then((data:ActionResult)=>{
+                listProvider=data.result;
+                return this.db.updateInCollection("RequestService",{
+                    "_id":idService
+                },{"providers":data.result},{})
+            })
+            .then((data:ActionResult)=>{
+                response.status(201).json({
+                    resultCode:ActionResult.SUCCESS,
+                    message,
+                    result:{
+                        "idService":service.id.toString(),
+                        "providers":listProvider
+                    }
+                });
+            })
+            .catch((error:ActionResult)=>{
+                response.status(500).json({
+                    resultCode:error.resultCode,
+                    message:error.message
+                });
+            })          
+    }
+
     /**
      * @description permet a un provider d'ajouter un service qu'il est capable de rendre
      * @param request requete de l'utilisation
@@ -44,7 +81,7 @@ export class RequesterServiceManager
      */
     addService(request:any,response:any):void
     {
-        console.log("Body",request.body)
+        // console.log("Body",request.body)
         let service:TransportServiceType;
         
         if(request.body.options.is_weak!=undefined)
@@ -71,33 +108,7 @@ export class RequesterServiceManager
         .then((data:any)=>
         {
             //calcul du rayon de couverture
-
-            let listProvider:Record<string, any>[]=[];
-            //recherche des fournisseur a proximité
-            this.serviceManager.rechercherFounisseurProximite(service.from,service)
-            .then((data:ActionResult)=>{
-                console.log("Provider ",data.result)
-                listProvider=data.result;
-                return this.db.updateInCollection("RequestService",{
-                    "_id":serviceData._id.toString()
-                },{"providers":data.result},{})
-            })
-            .then((data:ActionResult)=>{
-                response.status(201).json({
-                    resultCode:ActionResult.SUCCESS,
-                    message:"Description saved successfully",
-                    result:{
-                        "idService":service.id.toString(),
-                        "providers":listProvider
-                    }
-                });
-            })
-            .catch((error:ActionResult)=>{
-                response.status(500).json({
-                    resultCode:error.resultCode,
-                    message:error.message
-                });
-            })          
+            return this.findProvider(request,response,serviceData._id,service)            
         })
         .catch((error:ActionResult)=>
         {
@@ -116,7 +127,16 @@ export class RequesterServiceManager
      */
     updateService(request:any,response:any):void
     {
-
+        this.db.updateInCollection("RequestService",{"_id":request.params.idService},request.body,{})
+        .then((data:ActionResult)=>this.db.findInCollection(Configuration.collections.requester,{"_id":request.params.idService}))
+        .then((data:ActionResult)=>{
+            let service:TransportServiceType=ServiceTypeFactory.getInstance(data.result[0].type);
+            return this.findProvider(request,response,service._id,service,"Requester service updated successfully")
+        })
+        .catch((error:ActionResult)=>response.status(500).json({
+            resultCode:error.resultCode,
+            message:error.message
+        }));
     }
 
     /**
@@ -137,7 +157,7 @@ export class RequesterServiceManager
         {
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
-                message:"Description service found",
+                message:"Descriptiondfdqsqf service found",
                 result:data.result[0],
             });
         })
@@ -152,12 +172,13 @@ export class RequesterServiceManager
 
     getServiceList(request:any,response:any):void
     {
-        this.db.findInCollection("RequestService",{})
+        console.log("idRequester",request.decoded.id)
+        this.db.findInCollection("RequestService",{"idRequester":request.decoded.id})
         .then((data:ActionResult)=>
         {
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
-                message:"Description service found",
+                message:"Description service foundds",
                 result:data.result,
             });
         })

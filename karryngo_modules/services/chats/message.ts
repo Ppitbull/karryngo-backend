@@ -14,6 +14,7 @@ export class Message extends KarryngoPersistentEntity
     date:String="";
     title:String="";
     content:String="";
+    read:number=0;
 
     toString():any
     {
@@ -23,7 +24,8 @@ export class Message extends KarryngoPersistentEntity
             to:this.to.toObject(),
             date:this.date,
             title:this.title,
-            content:this.content
+            content:this.content,
+            read:this.read
         };
     }
 
@@ -35,6 +37,7 @@ export class Message extends KarryngoPersistentEntity
         this.date=this.purgeAttribute(entity,"date");
         this.title=this.purgeAttribute(entity,"title");
         this.content=this.purgeAttribute(entity,"content");
+        this.read=this.purgeAttribute(entity,"read");
     }
 
 

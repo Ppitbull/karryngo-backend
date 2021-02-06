@@ -17,6 +17,8 @@ export class Vehicle extends KarryngoPersistentEntity
     name:String="";
     marque:String="";
     photo:String[]=[];
+    placeNumbler:number=2;
+    description:String="";
 
     constructor(id:EntityID=new EntityID())
     {
@@ -29,7 +31,9 @@ export class Vehicle extends KarryngoPersistentEntity
         this.type=this.purgeAttribute(entity,"type");
         this.name=this.purgeAttribute(entity,"name");
         this.marque=this.purgeAttribute(entity,"marque");
-        this.photo=this.purgeAttribute(entity,"photo");           
+        this.photo=this.purgeAttribute(entity,"photo");   
+        this.placeNumbler=this.purgeAttribute(entity,"placeNumbler");
+        this.description=this.purgeAttribute(entity,"description");        
     }
 
     /**
@@ -43,6 +47,8 @@ export class Vehicle extends KarryngoPersistentEntity
             name:this.name,
             marque:this.marque,
             photo:this.photo,
+            placeNumbler:this.placeNumbler,
+            description:this.description,
         };
     }
 

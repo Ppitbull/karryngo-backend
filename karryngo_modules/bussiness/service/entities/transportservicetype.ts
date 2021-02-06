@@ -22,6 +22,8 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
     date_departure:String="";
     date_arrival:String="";
     title:String="";
+    suggestedPrice:number=0;
+
     constructor(
         id:EntityID=new EntityID(),
         is_urgent:Boolean=false,
@@ -63,6 +65,8 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
             })
         }
         ;
+
+        this.suggestedPrice=this.purgeAttribute(entity,"suggestedPrice");
 
         let adresse=this.purgeAttribute(entity,"address");
         this.from.hydrate(adresse.from);
@@ -106,6 +110,7 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
             images:this.images,
            },
            title:this.title,
+           suggestedPrice:this.suggestedPrice,
            
         };
         //stringify date format ISO 8601

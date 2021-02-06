@@ -91,11 +91,14 @@ export class TransportServiceManager
      */
     startTransaction(idTransportService:String,idProvider:String,idRequester:String):Promise<ActionResult>
     {
+        
         return new Promise<ActionResult>((resolve,reject)=>
         {
+            console.log("Transport service, ",idTransportService)
             //on recupere le service en fonction de son id
             this.db.findInCollection("RequestService",{"_id":idTransportService},1)
             .then((data:ActionResult)=>{ 
+                console.log("Transaction ",data)
                 if( data.result[0].idSelectedTransaction==undefined || 
                     data.result[0].idSelectedTransaction==""
                 )

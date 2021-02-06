@@ -98,19 +98,6 @@
         ]
     },
     {
-        "url":"/api/requester/service/:idService",
-        "module" :"/service/requesterservicemanager",
-        "actions":[
-            {
-                "method":"get",
-                "action": "getService",
-                "params":{
-                    "idService":"string"
-                }
-            }
-        ]
-    },
-    {
         "url":"/api/requester/service/list",
         "module" :"/service/requesterservicemanager",
         "actions":[
@@ -123,6 +110,33 @@
         ]
     },
     {
+        "url":"/api/requester/service/:idService",
+        "module" :"/service/requesterservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getService",
+                "params":{
+                    "idService":"string"
+                }
+            }
+        ]
+    },    
+    {
+        "url":"/api/requester/service/:idService",
+        "module" :"/service/requesterservicemanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "updateService",
+                "params":{
+                    "idService":"string"
+                }
+            }
+        ]
+    },
+    
+    {
         "url":"/api/requester/service/transaction/start",
         "module" :"/service/servicemanager",
         "actions":[
@@ -132,7 +146,8 @@
                 "params":{
                     "idService":"string",
                     "idProvider":"string",
-                    "idRequester":"string"
+                    "idRequester":"string",
+                    "idInitiator":"string"
                 }
             }
         ]
@@ -218,6 +233,41 @@
                 "action": "getService",
                 "params":{
                     "idProviderService":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/provider/service/vehicle/add",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "addVehicle",
+                "params":{
+                        "type":"string",
+                        "name":"string",
+                        "marque":"string",
+                        "photo":"string",
+                        "placeNumbler":"number",
+                        "description":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/provider/service/zone/add",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "addZone",
+                "params":{
+                    "long":"double",
+                    "lat":"double",
+                    "name":"string",
+                    "country":"string",
+                    "city":"string"
                 }
             }
         ]

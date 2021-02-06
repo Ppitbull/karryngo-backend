@@ -25,7 +25,7 @@ export class MongoDBManager extends NoSqlPersistenceManager
         }): Promise<ActionResult> {
         return new Promise<ActionResult>((resolve,reject)=>{
             let result:ActionResult=new ActionResult();
-            this.getCollection(collectionName).findOneAndUpdate(cond,{$set:toUpdate},options,(err:any,r:any)=>{
+            this.getCollection(collectionName).update(cond,toUpdate,options,(err:any,r:any)=>{
                 if(err)
                 {
                     result.resultCode=DataBaseException.DATABASE_UNKNOW_ERROR;

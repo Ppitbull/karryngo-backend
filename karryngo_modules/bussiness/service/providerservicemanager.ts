@@ -12,6 +12,7 @@ import { TransportServiceManager } from "./transportservicemanager";
 import { Location } from "./../../services/geolocalisation/entities/location";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { Vehicle } from "./entities/vehicle";
+import Configuration from "../../../config-files/constants";
 
 @Controller()
 @DBPersistence()
@@ -126,34 +127,45 @@ export class ProviderServiceManager
         });
     }
 
+    addVehicle(request:any,response:any):any
+    {
+        let vehicule:Vehicle=new Vehicle();
+        vehicule.hydrate(request.body);
+        this.db.updateInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{
+            $push:{"vehicles":vehicule.toString()}
+        })
+        .then((data:ActionResult)=>response.status(201).json({
+            resultCode:ActionResult.SUCCESS,
+            message:"Vehicle added successfully",
+            result:{
+                idVehicle:vehicule._id
+            }
+        }))
+        .catch((error:ActionResult)=> response.status(500).json({
+            resultCode:error.resultCode,
+            message:error.message
+        }));
+    }
     addZone(request:any,response:any):void
     {
-        /*let idProviderService=request.body.idProviderService;
-        //on recupere le service en fonction de son id
-        this.db.findInCollection("ProvideService",{"idProvider":idProviderService},1)
-        .then((data:ActionResult)=>{ 
-            if( data.result.length!=0)
-            {
-                let pservice:ProviderService=new ProviderService(new EntityID());
-                pservice.hydrate(data.result[0]);//on l'hydrate avec les données de la bd
+        let zone:Location=new Location();
+        zone.hydrate(request.body);
 
-                //on creer une nouvelle transaction, on spécific le demandeur et le founisseur et on l'on insere en bd
-                
-                let transaction=new TransactionService(new EntityID(),service)
-                transaction.idProvider=idProvider;
-                transaction.idRequester=idRequester;
-                return this.db.addToCollection("RequestService",transaction);//doit précisé que l'on veux insérer dans l'array transactions
+        //on recupere le service en fonction de son id
+        this.db.updateInCollection("ProvideService",{"providerId":request.decoded.id},{
+            $push:{"zones":zone.toString()}
+        })
+        .then((data:ActionResult)=>response.status(201).json({
+            resultCode:ActionResult.SUCCESS,
+            message:"Location added successfully",
+            result:{
+                idLocation:zone._id
             }
-            else
-            {
-                //si on ne peut plus créer une transaction a cette étape on rejete la promsee
-                // Voir document de spécification technique pour plus d'informations
-                data.result=null;
-                data.resultCode=ActionResult.RESSOURCE_ALREADY_EXIST_ERROR;
-                data.message="Impossible de créer une nouvelle transaction car le service est déjà accepté par un fournisseur";
-                return Promise.reject(data);
-            }
-        })*/
+        }))
+        .catch((error:ActionResult)=> response.status(500).json({
+            resultCode:error.resultCode,
+            message:error.message
+        }));
     }
 }
 
