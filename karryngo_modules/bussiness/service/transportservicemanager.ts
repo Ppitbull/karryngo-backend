@@ -97,7 +97,7 @@ export class TransportServiceManager
             // console.log("Transport service, ",idTransportService)
             //on recupere le service en fonction de son id
             let message:Record<string, any>={};
-
+            let idTransaction:EntityID=new EntityID()
             this.db.findInCollection("RequestService",{"_id":idTransportService},1)
             .then((data:ActionResult)=>{ 
                 if( data.result[0].idSelectedTransaction==undefined || 
@@ -110,7 +110,8 @@ export class TransportServiceManager
                     service.hydrate(data.result[0]);//on l'hydrate avec les données de la bd
 
                     //on creer une nouvelle transaction, on spécific le demandeur et le founisseur et on l'on insere en bd
-                    let transaction=new TransactionService(new EntityID(),service)
+                    
+                    let transaction=new TransactionService(idTransaction,service)
                     transaction.idProvider=idProvider;
                     transaction.idRequester=idRequester;
 
@@ -137,7 +138,10 @@ export class TransportServiceManager
                 }
             })
             .then((data:ActionResult)=>{
-                data.result=message;
+                data.result={
+                    message,
+                    idTransaction
+                };
                 resolve(data)
             })
             .catch((error:ActionResult)=>{

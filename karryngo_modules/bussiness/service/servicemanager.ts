@@ -81,15 +81,17 @@ export class ServiceManager
                 idProject.setId(request.body.idService);
 
                 let discution:Discussion=new Discussion(new EntityID());
+
                 discution.idProject=idProject
                 discution.inter1=to;
+                discution.idTransaction=data.result.idTransaction;
 
                 let message:Message=new Message(new EntityID());
                 message.to=to;
                 message.from=to;
                 message.date=(new Date()).toISOString();
                 message.content={
-                    ...data.result,
+                    ...data.result.message,
                     text:"you have been selected to carry out this project"
                 };
                 discution.chats.push(message);
