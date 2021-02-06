@@ -88,7 +88,10 @@ export class ServiceManager
                 message.to=to;
                 message.from=to;
                 message.date=(new Date()).toISOString();
-                message.content="you have been selected to carry out this project";
+                message.content={
+                    ...data.result,
+                    text:"you have been selected to carry out this project"
+                };
                 discution.chats.push(message);
 
                 return this.chatService.startDiscussion(discution);
@@ -100,6 +103,7 @@ export class ServiceManager
             })
         })
         .catch((error:ActionResult)=>{
+            console.log("Error: ",error)
             let code=500;
             if(error.resultCode==DataBaseException.DATABASE_UNKNOW_ERROR) code=404;
             else if(error.resultCode==ActionResult.RESSOURCE_ALREADY_EXIST_ERROR) code=400;

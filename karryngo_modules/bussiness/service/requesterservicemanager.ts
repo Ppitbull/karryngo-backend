@@ -48,13 +48,20 @@ export class RequesterServiceManager
         message:String="Description saved successfully"):void
     {
         let listProvider:Record<string, any>[]=[];
+            
             //recherche des fournisseur a proximité
             this.serviceManager.rechercherFounisseurProximite(service.from,service)
             .then((data:ActionResult)=>{
                 listProvider=data.result;
+                console.log("providers ",listProvider)
                 return this.db.updateInCollection("RequestService",{
                     "_id":idService
-                },{"providers":data.result},{})
+                },{
+                    $push:{
+                    "providers":data.result.map((pro:Record<string,any>)=>pro._id)
+                    }
+                },
+                {})
             })
             .then((data:ActionResult)=>{
                 response.status(201).json({
@@ -67,6 +74,7 @@ export class RequesterServiceManager
                 });
             })
             .catch((error:ActionResult)=>{
+                console.log(error)
                 response.status(500).json({
                     resultCode:error.resultCode,
                     message:error.message

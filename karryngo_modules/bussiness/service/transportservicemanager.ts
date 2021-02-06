@@ -94,11 +94,12 @@ export class TransportServiceManager
         
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            console.log("Transport service, ",idTransportService)
+            // console.log("Transport service, ",idTransportService)
             //on recupere le service en fonction de son id
+            let message:Record<string, any>={};
+
             this.db.findInCollection("RequestService",{"_id":idTransportService},1)
             .then((data:ActionResult)=>{ 
-                console.log("Transaction ",data)
                 if( data.result[0].idSelectedTransaction==undefined || 
                     data.result[0].idSelectedTransaction==""
                 )
@@ -112,7 +113,18 @@ export class TransportServiceManager
                     let transaction=new TransactionService(new EntityID(),service)
                     transaction.idProvider=idProvider;
                     transaction.idRequester=idRequester;
-                    return this.db.addToCollection("RequestService",transaction);//doit précisé que l'on veux insérer dans l'array transactions
+
+                    message={
+                        from_city:data.result[0].address.from.city,
+                        to_city:data.result[0].address.to.city,
+                        title:data.result[0].title
+                    };
+
+                    return this.db.updateInCollection("RequestService",{"_id":idTransportService.toString()},
+                    {
+                        $push:{"transactions":transaction.toString()}
+                    },
+                    {} );//doit précisé que l'on veux insérer dans l'array transactions
                 }
                 else
                 {
@@ -124,7 +136,10 @@ export class TransportServiceManager
                     return Promise.reject(data);
                 }
             })
-            .then((data:ActionResult)=>resolve(data))
+            .then((data:ActionResult)=>{
+                data.result=message;
+                resolve(data)
+            })
             .catch((error:ActionResult)=>{
                 reject(error);
             })

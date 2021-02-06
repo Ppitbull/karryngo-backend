@@ -311,6 +311,32 @@
         ]
     },
     {
+        "url":"/api/chat/unread",
+        "module" :"/chat/chatmanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "getUnreadDiscution",
+                "params":{
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/chat/mark_as_read",
+        "module" :"/chat/chatmanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "markAsRead",
+                "params":{
+                    "idMessage":"string",
+                    "idDiscussion":"string"
+                }
+            }
+        ]
+    },
+    {
         "url":"/api/chat/add",
         "module" :"/chat/chatmanager",
         "actions":[

@@ -40,4 +40,24 @@ export class ChatService
     {
         return this.db.addToCollection(Configuration.collections.chat,discution);
     }
+
+    getUnreadDiscution():Promise<ActionResult>
+    {
+        return this.db.findInCollection(Configuration.collections.chat,{"chats":{
+                $elemMatch:{
+                    "read":0
+                }
+            }},);
+    }
+    markAsRead(idDiscuss:String,idMessage:String):Promise<ActionResult>
+    {
+        return this.db.updateInCollection(Configuration.collections.chat,
+            {
+                "_id":idDiscuss,
+                "chats._id":idMessage
+            },
+            {
+                $set:{ "chats.$.read":1}
+            });
+    }
 }

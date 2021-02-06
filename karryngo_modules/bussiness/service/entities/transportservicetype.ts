@@ -60,7 +60,6 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
             this.carTypeList=this.purgeAttribute(options,"vehicle").map((v:Record<string, any>)=>{
                 let veh:Vehicle=new Vehicle();
                 veh.hydrate(v);
-                if(veh.id==null) veh.id = new EntityID();
                 return veh;
             })
         }
@@ -69,10 +68,9 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
         this.suggestedPrice=this.purgeAttribute(entity,"suggestedPrice");
 
         let adresse=this.purgeAttribute(entity,"address");
-        this.from.hydrate(adresse.from);
-        if(this.from.id==null) this.from.id=new EntityID();
+        this.from.hydrate(this.purgeAttribute(adresse,"from"));
 
-        this.to.hydrate(adresse.to);
+        this.to.hydrate(this.purgeAttribute(adresse,"to"));
         if(this.to.id==null) this.to.id=new EntityID();
 
         let deadline=this.purgeAttribute(entity,"deadline");

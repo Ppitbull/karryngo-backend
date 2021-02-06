@@ -13,7 +13,7 @@ export class Message extends KarryngoPersistentEntity
     to:EntityID=new EntityID();
     date:String="";
     title:String="";
-    content:String="";
+    content:any="";
     read:number=0;
 
     toString():any
