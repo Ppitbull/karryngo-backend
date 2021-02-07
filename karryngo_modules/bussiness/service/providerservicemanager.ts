@@ -50,7 +50,7 @@ export class ProviderServiceManager
             vehi.hydrate(v);
             return vehi
         });
-        this.db.addToCollection("ProvideService",pservice)
+        this.db.addToCollection(Configuration.collections.provider,pservice)
         .then((data:ActionResult)=>{
             response.status(201).json({
                 resultCode:ActionResult.SUCCESS,
@@ -87,7 +87,7 @@ export class ProviderServiceManager
 
     getServiceList(request:any,response:any):void
     {
-        this.db.findInCollection("ProvideService",{},50)
+        this.db.findInCollection(Configuration.collections.provider,{},50)
         .then((data:ActionResult)=>
         {
             response.status(200).json({
@@ -108,7 +108,7 @@ export class ProviderServiceManager
     getService(request:any,response:any):void
     {
         let idProviderService=request.body.idProviderService;
-        this.db.findInCollection("ProvideService",{"idProvider":idProviderService},1)
+        this.db.findInCollection(Configuration.collections.provider,{"providerId":idProviderService},1)
         .then((data:ActionResult)=>
         {
             response.status(200).json({
@@ -138,7 +138,7 @@ export class ProviderServiceManager
             resultCode:ActionResult.SUCCESS,
             message:"Vehicle added successfully",
             result:{
-                idVehicle:vehicule._id
+                idVehicle:vehicule._id.toString()
             }
         }))
         .catch((error:ActionResult)=> response.status(500).json({
@@ -148,12 +148,18 @@ export class ProviderServiceManager
     }
     getVehicleList(request:any,response:any):any
     {
-        this.db.findInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{"vehicles":true,_id:false})
-        .then((data:ActionResult)=>response.status(200).json({
-            resultCode:ActionResult.SUCCESS,
-            message:"successful vehicle recovery",
-            result:data.result
-        }))
+        this.db.findInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},
+        {
+            projection:{"vehicles":true,_id:false}
+        })
+        .then((data:ActionResult)=>{
+            console.log(data.result[0]);
+            response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"successful vehicle recovery",
+                result:data.result[0].vehicles
+            });
+        })
         .catch((error:ActionResult)=> response.status(500).json({
             resultCode:error.resultCode,
             message:error.message
@@ -161,11 +167,13 @@ export class ProviderServiceManager
     }
     getZoneList(request:any,response:any):any
     {
-        this.db.findInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{"zones":true,_id:false})
+        this.db.findInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{
+            projection:{"zones":true,_id:false}
+        })
         .then((data:ActionResult)=>response.status(200).json({
             resultCode:ActionResult.SUCCESS,
             message:"successful zones recovery",
-            result:data.result
+            result:data.result[0].zones
         }))
         .catch((error:ActionResult)=> response.status(500).json({
             resultCode:error.resultCode,
@@ -178,14 +186,14 @@ export class ProviderServiceManager
         zone.hydrate(request.body);
 
         //on recupere le service en fonction de son id
-        this.db.updateInCollection("ProvideService",{"providerId":request.decoded.id},{
+        this.db.updateInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{
             $push:{"zones":zone.toString()}
         })
         .then((data:ActionResult)=>response.status(201).json({
             resultCode:ActionResult.SUCCESS,
             message:"Location added successfully",
             result:{
-                idLocation:zone._id
+                idLocation:zone._id.toString()
             }
         }))
         .catch((error:ActionResult)=> response.status(500).json({

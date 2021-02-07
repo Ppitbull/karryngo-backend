@@ -4,6 +4,7 @@
 @created 13/10/2020
 */
 
+import Configuration from "../../../config-files/constants";
 import { Service ,DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
@@ -81,7 +82,7 @@ export class UserManagerService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.findInCollection("Users",{"_id":id.toString()},1)
+            this.db.findInCollection(Configuration.collections.user,{"_id":id.toString()},1)
             .then((result:ActionResult)=>
             {
                 let action=new ActionResult();
@@ -118,7 +119,7 @@ export class UserManagerService
      */
     saveUser(idUser:EntityID,toupdate:Record<string, any>):Promise<ActionResult>
     {
-        return this.db.updateInCollection("Users",{"_id":idUser.toString()},toupdate,{})
+        return this.db.updateInCollection(Configuration.collections.user,{"_id":idUser.toString()},toupdate,{})
     }
 
     /**
@@ -131,7 +132,7 @@ export class UserManagerService
         return new Promise<ActionResult>((resolve,reject)=>
         {
 
-            this.db.findInCollection("Users",{},50).
+            this.db.findInCollection(Configuration.collections.user,{},50).
             then((result:ActionResult)=>
             {
                 let action=new ActionResult();

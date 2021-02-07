@@ -10,7 +10,7 @@ var Configuration=
         'notification':'Notifications',
         'user':'Users',
         'provider':'ProviderService',
-        'requester':'RequesterService',
+        'requestservice':'RequestService',
         'chat':'Chats'
     }
 };

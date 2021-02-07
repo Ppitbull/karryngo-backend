@@ -54,7 +54,7 @@ export class RequesterServiceManager
             .then((data:ActionResult)=>{
                 listProvider=data.result;
                 console.log("providers ",listProvider)
-                return this.db.updateInCollection("RequestService",{
+                return this.db.updateInCollection(Configuration.collections.requestservice,{
                     "_id":idService
                 },{
                     $push:{
@@ -112,7 +112,7 @@ export class RequesterServiceManager
             "transactions":[],        
         };
         serviceData.toString=()=> serviceData;
-        this.db.addToCollection("RequestService",serviceData)
+        this.db.addToCollection(Configuration.collections.requestservice,serviceData)
         .then((data:any)=>
         {
             //calcul du rayon de couverture
@@ -135,8 +135,8 @@ export class RequesterServiceManager
      */
     updateService(request:any,response:any):void
     {
-        this.db.updateInCollection("RequestService",{"_id":request.params.idService},request.body,{})
-        .then((data:ActionResult)=>this.db.findInCollection(Configuration.collections.requester,{"_id":request.params.idService}))
+        this.db.updateInCollection(Configuration.collections.requestservice,{"_id":request.params.idService},request.body,{})
+        .then((data:ActionResult)=>this.db.findInCollection(Configuration.collections.requestservice,{"_id":request.params.idService}))
         .then((data:ActionResult)=>{
             let service:TransportServiceType=ServiceTypeFactory.getInstance(data.result[0].type);
             return this.findProvider(request,response,service._id,service,"Requester service updated successfully")
@@ -160,12 +160,12 @@ export class RequesterServiceManager
     getService(request:Request,response:Response):void
     {
         let idServiceDescription=request.params.idService;
-        this.db.findInCollection("RequestService",{"_id":idServiceDescription})
+        this.db.findInCollection(Configuration.collections.requestservice,{"_id":idServiceDescription})
         .then((data:ActionResult)=>
         {
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
-                message:"Descriptiondfdqsqf service found",
+                message:"Description service found",
                 result:data.result[0],
             });
         })
@@ -180,8 +180,8 @@ export class RequesterServiceManager
 
     getServiceList(request:any,response:any):void
     {
-        console.log("idRequester",request.decoded.id)
-        this.db.findInCollection("RequestService",{"idRequester":request.decoded.id})
+        // console.log("idRequester",request.decoded.id)
+        this.db.findInCollection(Configuration.collections.requestservice,{"idRequester":request.decoded.id})
         .then((data:ActionResult)=>
         {
             response.status(200).json({

@@ -13,6 +13,7 @@ import { Controller, DBPersistence } from "../../../karryngo_core/decorator/depe
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ServiceTypeFactory } from "./servicetypefactory";
 import { TransportServiceType } from "./entities/transportservicetype";
+import Configuration from "../../../config-files/constants";
 
 @DBPersistence()
 @Controller()
@@ -32,7 +33,7 @@ export class TransportServiceManager
         return new Promise<ActionResult>((resolve,reject)=>
         {
             //On recherche le service (description) en fonction de son id
-            this.db.findInCollection("RequestService",{"_id":idTransportService},1)
+            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idTransportService},1)
             .then((data:ActionResult)=>{//si on trouve
                 
                 //on instanci le bon type de service en fonction de son champ `type`
@@ -65,7 +66,7 @@ export class TransportServiceManager
 
                     //on repercute la transaction en bd
                     return this.db.updateInCollection(
-                        "RequestService",
+                        Configuration.collections.requestservice,
                         {"_id":idTransportService},
                         {"transactions":transactionList,"idSelectedTransaction":idTransaction,"idSelectedProvider":idProvider},{});
                 }
@@ -98,7 +99,7 @@ export class TransportServiceManager
             //on recupere le service en fonction de son id
             let message:Record<string, any>={};
             let idTransaction:EntityID=new EntityID()
-            this.db.findInCollection("RequestService",{"_id":idTransportService},1)
+            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idTransportService},1)
             .then((data:ActionResult)=>{ 
                 if( data.result[0].idSelectedTransaction==undefined || 
                     data.result[0].idSelectedTransaction==""
@@ -121,7 +122,7 @@ export class TransportServiceManager
                         title:data.result[0].title
                     };
 
-                    return this.db.updateInCollection("RequestService",{"_id":idTransportService.toString()},
+                    return this.db.updateInCollection(Configuration.collections.requestservice,{"_id":idTransportService.toString()},
                     {
                         $push:{"transactions":transaction.toString()}
                     },
@@ -171,7 +172,7 @@ export class TransportServiceManager
             let transactionIndex:number;
             let transactionList:Record<string, any>[];
             //on recupere le service en fonction de son identifiant
-            this.db.findInCollection("RequestService",{"_id":idService},1)
+            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idService},1)
             .then((data:ActionResult)=>{ 
                 if( data.result[0].idSelectedTransaction==undefined || 
                     data.result[0].idSelectedTransaction==""
@@ -209,7 +210,7 @@ export class TransportServiceManager
                 transactionList.splice(transactionIndex,1);
                     transactionList.push(transaction.toString());
                     return this.db.updateInCollection(
-                        "RequestService",
+                        Configuration.collections.requestservice,
                         {"_id":idService},
                         {"transactions":transactionList},{});
                 
@@ -231,7 +232,7 @@ export class TransportServiceManager
         return new Promise<ActionResult>((resolve,reject)=>
         {
             //on recupere le service en fonction de son identifiant
-            this.db.findInCollection("RequestService",{"_id":idService},1)
+            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idService},1)
             .then((data:ActionResult)=>{ 
                 if( data.result[0].idSelectedTransaction==undefined || 
                     data.result[0].idSelectedTransaction==""
@@ -259,7 +260,7 @@ export class TransportServiceManager
 
                     //on met a jour la bd
                     return this.db.updateInCollection(
-                        "RequestService",
+                        Configuration.collections.requestservice,
                         {"_id":idService},
                         {"transactions":transactionList},{});
                 

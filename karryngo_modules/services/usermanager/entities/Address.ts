@@ -16,6 +16,7 @@ export class Address extends KarryngoPersistentEntity
     public skypeNumber:String="";
     public zip:String="";
     public country:String="";
+    public city:String="";
 
     /**
      * @constructor
@@ -39,7 +40,8 @@ export class Address extends KarryngoPersistentEntity
             whatsAppNumber:this.whatsAppNumber,
             skypeNumber:this.skypeNumber,
             zip:this.zip,
-            country:this.country
+            country:this.country,
+            city:this.city,
         };
     }
 
@@ -57,5 +59,6 @@ export class Address extends KarryngoPersistentEntity
         this.skypeNumber=this.purgeAttribute(entity,"skypeNumber");
         this.zip=this.purgeAttribute(entity,"zip");
         this.country=this.purgeAttribute(entity,"country");
+        this.city=this.purgeAttribute(entity,"city");
     }
 }

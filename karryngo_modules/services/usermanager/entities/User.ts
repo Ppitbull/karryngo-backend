@@ -36,16 +36,18 @@ export class User extends KarryngoPersistentEntity
      */
     public adresse:Address;
 
-    public locations:Location[]=[];
 
-    constructor(_id:EntityID=new EntityID(),fname:String="",lname:String="",pwd:String="",add:Address=new Address(),locations:Location[]=[])
+    public username:String="";
+
+
+    constructor(_id:EntityID=new EntityID(),fname:String="",lname:String="",username:String="",pwd:String="",add:Address=new Address())
     {
         super(_id);
         this.firstname=fname;
         this.lastname=lname; 
         this.password=pwd;
         this.adresse=add;
-        this.locations=locations;
+        this.username=username;
     }
 
     /**
@@ -58,8 +60,8 @@ export class User extends KarryngoPersistentEntity
             "firstname":this.firstname,
             "lastname":this.lastname,
             "password":this.password,
+            "username":this.username,
             "address":this.adresse.toString(),
-            "locations":this.locations.map((zone:Location)=>zone.toString())
         }
     }
 
@@ -73,13 +75,6 @@ export class User extends KarryngoPersistentEntity
         this.lastname=this.purgeAttribute(entity,"lastname");
         this.password=this.purgeAttribute(entity,"password");
         if(entity.address) this.adresse.hydrate(entity.address);
-        this.locations=this.purgeAttribute(entity,"locations")==null
-            ?[]
-            :this.purgeAttribute(entity,"locations").map((zone:any)=>{
-                let local:Location=new Location();
-                local.hydrate(zone);
-                return local;
-            });
-
+        this.username=this.purgeAttribute(entity,"username");
     }   
 }

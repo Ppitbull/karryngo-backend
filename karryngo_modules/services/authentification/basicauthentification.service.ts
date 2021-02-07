@@ -1,3 +1,4 @@
+import Configuration from "../../../config-files/constants";
 import { DBPersistence, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
@@ -26,7 +27,7 @@ export class BasicAuthentificationService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.findInCollection("Users",{"address.email":user.adresse.email,"password":user.password},1)
+            this.db.findInCollection(Configuration.collections.user,{"address.email":user.adresse.email,"password":user.password},1)
             .then((data:ActionResult)=>
             {
                 let result=new ActionResult();

@@ -18,6 +18,7 @@ import { ChatService } from "../../services/chats/chat.service";
 import { Message } from "../../services/chats/message";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { Discussion } from "../../services/chats/discussion";
+import Configuration from "../../../config-files/constants";
 
 @DBPersistence()
 export class ServiceManager
@@ -33,7 +34,7 @@ export class ServiceManager
    rechercherFounisseurProximite(zone:Location,service:TransportServiceType):Promise<ActionResult>
    {
        return new Promise<ActionResult>((resolve,reject)=>{
-            this.db.findInCollection("ProvideService",
+            this.db.findInCollection(Configuration.collections.provider,
             {
                 "zones":{
                     $elemMatch: {
