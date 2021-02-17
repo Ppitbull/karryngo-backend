@@ -23,14 +23,14 @@ export default class AuthRequester
         private auth:BasicAuthentificationService,
         private userManagerService:UserManagerService,
         private jwtAuth:ApiAccess) {}
-    checkUserInformation(user:User):Boolean
+    checkUserInformation(user:Customer):Boolean
     {
         let status:Boolean=false;
         return status;
     }
     register(request:Request,response:Response):void
     {
-        let user=new User();
+        let user=new Customer();
         user.hydrate(request.body)
         this.userManagerService.findUserByEmail(user.adresse.email)
             .then((data:ActionResult)=> 
@@ -70,7 +70,7 @@ export default class AuthRequester
 
     login(request:Request,response:any):void
     {
-        let user:User=new User();
+        let user:Customer=new Customer();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
         this.auth.login(user)

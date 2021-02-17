@@ -9,6 +9,7 @@ import { Service ,DBPersistence } from "../../../karryngo_core/decorator/depende
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
+import { Customer } from "../../bussiness/authentification/entities/customer";
 import { CrudService } from "../crud/crud.service";
 import { User } from "./entities/User";
 
@@ -97,7 +98,7 @@ export class UserManagerService
                 {
                     action.result=people.map((person:any)=>
                     {
-                        let p:User=new User();
+                        let p:Customer=new Customer();
                         p.hydrate(person);
                         return p;
                     });
@@ -138,7 +139,7 @@ export class UserManagerService
                 let action=new ActionResult();
                 action.result=result.result.map((person:any)=>
                 {
-                    let p:User=new User();
+                    let p:Customer=new Customer();
                     p.hydrate(person);
                     return p;
                 });
