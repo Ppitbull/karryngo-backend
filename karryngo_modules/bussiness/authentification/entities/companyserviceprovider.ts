@@ -9,15 +9,20 @@ import { ServiceProvider } from "./serviceprovider";
 
 export class CompagnyServiceProvider extends CompagnyServiceRequester
 {
+    isAcceptedProvider:boolean=false;
+
     hydrate(entity: any):void
     {
         super.hydrate(entity);
+        this.isAcceptedProvider=this.purgeAttribute(entity,"isAcceptedProvider");
     }
 
     toString():any
     {
+
         return {
-            ...super.toString()
+            ...super.toString(),
+            isAcceptedProvider:this.isAcceptedProvider
         }
     }
 }

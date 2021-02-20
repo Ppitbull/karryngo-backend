@@ -21,7 +21,7 @@ export class Customer extends User
     {
         return {
             ...super.toString(),
-            isProvider:this.isProvider,
+            isProvider:this.isProvider,            
             "passportNumber":this.passportNumber
         }
     }
