@@ -11,6 +11,17 @@
         ]
     },
     {
+        "url":"/api/testupload",
+        "module" :"ControlBussTest",
+        "actions":[
+            {
+                "method":"post",
+                "action": "testUpload",
+                "secure":false
+            }
+        ]
+    },
+    {
         "url":"/api/auth/provider",
         "module" :"/authentification/authprovider",
         "actions":[

@@ -12,4 +12,8 @@ export class ControlBussTest
         .then((data)=>response.status(200).json(data))
         .catch((error)=> response.status(500).json(error));
     }
+    testUpload(req:any,response:any)
+    {
+        console.log(req);
+    }
 }
