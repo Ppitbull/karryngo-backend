@@ -7,7 +7,7 @@ import { Location } from "./../geolocalisation/entities/location"
 @ConfigService()
 export class GDistanceMatrice
 {
-    private configService:ConfigurableApp={};
+    private configService:any={};
     private configMap:{key?:string}={};
     
     constructor(private request:RestApi)

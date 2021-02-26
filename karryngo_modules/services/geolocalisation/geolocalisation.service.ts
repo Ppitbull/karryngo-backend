@@ -6,7 +6,7 @@ import { RestApi } from "../../../karryngo_core/http/client/restapi";
 @ConfigService()
 export class Geolocalisation
 {
-    private configService:ConfigurableApp={};
+    private configService:any={};
     private configMap:{key?:string}={};
     
     constructor(private request:RestApi)

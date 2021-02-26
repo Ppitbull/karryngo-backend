@@ -10,7 +10,7 @@ const gfs=require('multer-gridfs-storage');
 export class KarryngoFileStorage extends KarryngoApplicationEntity
 {
 
-    private configService:ConfigurableApp={};
+    private configService:any={};
 
     constructor()
     {

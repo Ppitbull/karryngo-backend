@@ -30,13 +30,13 @@ describe('Test du service de Persistance',()=>
     pos1.name="Villageois bar, Bangangté";
     pos1.longitude=122.5;
     pos1.latitude=558.22142;
-    user.locations.push(pos1);
+    // user.adresse.push(pos1);
 
     let pos2:Location=new Location();
     pos2.name="Simbock, Yaoundé";
     pos2.longitude=5514.5;
     pos2.latitude=88954.22142;
-    user.locations.push(pos2);
+    // user.locations.push(pos2);
 
 
     let add:Address=new Address();
@@ -73,7 +73,7 @@ describe('Test du service de Persistance',()=>
         }).catch((e:any)=>console.error(e));
        
         */
-       db.findInCollection("cedric",{})
+    //    db.findInCollection("cedric",{})
         //console.log("manager test ", );
         //chai.expect(res.resultCode).to.equal(ActionResult.SUCCESS);
     });    
