@@ -2,12 +2,14 @@ import * as assert from 'assert';
 import { KarryngoConfigurationServiceFactory } from '../config/KarryngoConfigurationServiceFactory';
 import { RouterService } from '../routing/RouterService';
 import * as express from 'express';
+import { RouterChecker } from '../routing/routerchecker';
+import { ApiAccess } from '../security/apiaccess';
 var chai=require('chai');
 
 describe('Test du service de routage',()=>
 {
     let jsonConfigFactory=new KarryngoConfigurationServiceFactory();
-    let router=new RouterService(jsonConfigFactory.getInstance(),express.Router());
+    let router=new RouterService(jsonConfigFactory.getInstance(),new RouterChecker(new ApiAccess()),express.Router());
     it("test de la liste des routes",()=>
     {
         chai.expect(router.getRouteList()).to.be.a("array");
