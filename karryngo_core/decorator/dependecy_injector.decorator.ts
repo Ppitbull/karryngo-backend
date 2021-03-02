@@ -6,6 +6,8 @@
 */
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
 import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
+import { KarryngoFileStorage } from "../fs/KarryngoFileStorage";
+import { KarryngoFileStorageFactory } from "../fs/KarryngoFileStorageFactory";
 import { InjectorContainer } from "../lifecycle/injector_container";
 import { Type } from "../lifecycle/type.interface";
 import { KarryngoPersistenceManagerFactory } from "../persistence/KarryngoPersistenceManagerFactory";
@@ -61,6 +63,17 @@ export function ConfigService()
         return class extends constructor {
             configService:ConfigurableApp=InjectorContainer.getInstance()
                 .getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory)
+                .getInstance();            
+        }
+    } 
+}
+
+export function KFileStorage()
+{
+    return function <T extends Type<any> >(constructor: T) {
+        return class extends constructor {
+            fs:KarryngoFileStorage=InjectorContainer.getInstance()
+                .getInstanceOf<KarryngoFileStorageFactory>(KarryngoFileStorageFactory)
                 .getInstance();            
         }
     } 

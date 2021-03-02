@@ -142,16 +142,17 @@ export class MongoDBManager extends NoSqlPersistenceManager
     getQueryBuilder(entity: SerializableEntity) {
         return this.getCollection(entity.constructor.name.toLowerCase());
     }
-
+    
     /**
-     * @inheritdoc
+     * @description Cette message permet de faire une connexion a une bd MongoDB
+     * @param configUrl parametre permetant de constitué l'url de connexion
      */
-    connect(): Promise<ActionResult> {
+    static connect(configUrl:Record<string, any>): Promise<ActionResult>
+    {
+        let result:ActionResult=new ActionResult();
+        let connexionString=`mongodb://${configUrl.hostname}:${configUrl.port}/`;
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            //creation de l'url de connexion a la bd a partir des informations du service de configuration
-            let connexionString=`mongodb://${this.configService.getValueOf("persistence").hostname}:${this.configService.getValueOf("persistence").port}/`;
-            let result:ActionResult=new ActionResult();
             let mongoClient = new MongoClient(connexionString);
             //connexion a la bd
             mongoClient.connect((err)=>{
@@ -166,13 +167,31 @@ export class MongoDBManager extends NoSqlPersistenceManager
                 else
                 {
                     //si la connexion s'ouvre alors on resoud la promise
-                    this.db=mongoClient.db(this.configService.getValueOf("persistence").database);
+                    result.result=mongoClient.db(configUrl.database);
                     //mongoClient.close();
                     resolve(result);
                 }
             });
             
         });
+    }
+    /**
+     * @inheritdoc
+     */
+    connect(): Promise<ActionResult> {
+        //creation de l'url de connexion a la bd a partir des informations du service de configuration        
+        return new Promise<ActionResult>((resolve,reject)=>{
+            MongoDBManager.connect(this.configService.getValueOf('persistence'))
+            .then((data:ActionResult)=>{
+                this.db=data.result;
+                data.result=null;
+                resolve(data);
+            })
+            .catch ((error:ActionResult)=> reject(error))
+        })
+        this.db;
+
+       
     }
 
     /**

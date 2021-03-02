@@ -1,50 +1,11 @@
-import { ConfigurableApp } from "../config/ConfigurableApp.interface";
-import { ConfigService } from "../decorator/dependecy_injector.decorator";
-import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
-import { KarryngoEntity } from "../KarryngoEntity";
+import { ActionResult } from "../utils/ActionResult";
+import { KFileOptions } from "./KFileOptions";
 
-const multer = require('multer'); 
-const gfs=require('multer-gridfs-storage');
 
-@ConfigService()
-export class KarryngoFileStorage extends KarryngoApplicationEntity
+
+export interface KarryngoFileStorage
 {
-
-    private configService:any={};
-
-    constructor()
-    {
-        super();
-        let persisConst=this.configService.getValueOf('persistence');
-        let connexionString:String=`mongodb://${persisConst.hostname}
-        :${persisConst.port}/${persisConst.database_file.database}`;
-
-    }
-    put()
-    {
-        var storage = multer.diskStorage({
-            destination: function (req:any, file:any, cb:any) {
-              cb(null, 'upload/')
-            },
-            filename: function (req:any, file:any, cb:any) {
-              cb(null, file.fieldname + '-' + Date.now())
-            }
-          })
-           
-          var upload = multer({ storage: storage })
-    }
-    get()
-    {
-        
-    }
-
-    toString() {
-        throw new Error("Method not implemented.");
-    }
-    hydrate(entity: KarryngoEntity): void {
-        throw new Error("Method not implemented.");
-    }
-
-
-
+    put(data: Buffer,options:KFileOptions):Promise<ActionResult>;
+    get(name:string):Promise<ActionResult>;
+    exist(name:string):Promise<ActionResult>;
 }

@@ -7,7 +7,7 @@
     "classe":"/karryngo_core/persistence/MongoDBManager",
     "database_file":{
         "database":"karryngo_file",
-        "classe":"/karryngo_core/fs/KarryngoFileStorage",
+        "classe":"/karryngo_core/fs/GridFileSystemService",
         "options":{
             "useNewUrlParser": true,
             "useUnifiedTopology": true
