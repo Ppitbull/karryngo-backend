@@ -10,14 +10,16 @@ export class CompagnyServiceRequester extends ServiceProvider
 {
     companyName:String="";
     registrationNumber:String="";
-    importExportCompagnyCode:String="";
+    importExportCompagnyCode:String="";    
+    companyAddress:String="";
 
     hydrate(entity: any):void
     {
         super.hydrate(entity);
         this.companyName=this.purgeAttribute(entity,"companyname");
         this.registrationNumber=this.purgeAttribute(entity,"registrationnumber");
-        this.importExportCompagnyCode=this.purgeAttribute(entity,"importexportcompagnycode");
+        this.importExportCompagnyCode=this.purgeAttribute(entity,"importexportcompagnycode"); 
+        this.companyAddress=this.purgeAttribute(entity,"companyAddress")       
     }
 
     toString():any
@@ -26,7 +28,8 @@ export class CompagnyServiceRequester extends ServiceProvider
             ...super.toString(),
             companyname:this.companyName,
             registrationnumber:this.registrationNumber,
-            importexportcompagnycode:this.importExportCompagnyCode
+            importexportcompagnycode:this.importExportCompagnyCode ,
+            companyAddress:this.companyAddress        
         }
     }
 }

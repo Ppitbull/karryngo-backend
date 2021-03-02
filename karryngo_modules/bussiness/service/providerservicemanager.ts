@@ -29,15 +29,14 @@ export class ProviderServiceManager
      */
     addService(request:any,response:any):void
     {
-        console.log("Requete Body",request.body)
-        let pservice:ProviderService=new ProviderService(new EntityID());
+        let idService:EntityID=new EntityID();
+        let pservice:ProviderService=new ProviderService(idService);
         
         let idProviderService = request.decoded.id;
         pservice.title=request.body.title;
         pservice.description=request.body.description;
         pservice.idProvider=idProviderService;
         request.body.zones=request.body.zones || [];
-        console.log("Requete ",pservice);
         pservice.deservedZone=request.body.zones.map((local:Record<string,string|number>)=>{
             let location:Location=new Location();
             location.hydrate(local);
@@ -54,7 +53,10 @@ export class ProviderServiceManager
         .then((data:ActionResult)=>{
             response.status(201).json({
                 resultCode:ActionResult.SUCCESS,
-                message:"Provider service successfully created"
+                message:"Provider service successfully created",
+                result:{
+                    idService:idService.toString()
+                }
             })
         })
         .catch((error:ActionResult)=>{

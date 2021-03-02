@@ -10,6 +10,7 @@ import { ServiceProvider } from "./serviceprovider";
 export class CompagnyServiceProvider extends CompagnyServiceRequester
 {
     isAcceptedProvider:boolean=false;
+    
 
     hydrate(entity: any):void
     {
