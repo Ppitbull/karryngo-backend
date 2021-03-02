@@ -22,6 +22,17 @@
         ]
     },
     {
+        "url":"/api/testdownload",
+        "module" :"ControlBussTest",
+        "actions":[
+            {
+                "method":"get",
+                "action": "testdownLoad",
+                "secure":false
+            }
+        ]
+    },
+    {
         "url":"/api/auth/provider",
         "module" :"/authentification/authprovider",
         "actions":[

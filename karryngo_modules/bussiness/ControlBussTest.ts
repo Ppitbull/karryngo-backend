@@ -40,4 +40,11 @@ export class ControlBussTest
         })
         
     }
+    testdownLoad(req:Request,response:Response)
+    {
+        console.log("Test dowload");
+        this.fs.get(req.body.filename)
+        .then((data:ActionResult)=>response.status(200).json(data.toString()))
+        .catch((error:ActionResult)=> response.status(500).json(error.toString()))
+    }
 }

@@ -48,21 +48,26 @@ export class GridFileSystemService implements KarryngoFileStorage
             
         })
     }
-    get(name: string): Promise<ActionResult> {
-        throw new Error("Method not implemented.");
+    get(name: String): Promise<ActionResult> {
+        let result:ActionResult=new ActionResult();
+        return new Promise<ActionResult>((resolve,reject)=>{
+            let stream=this.gridFS.openDownloadStreamByName(name.toString())
+            stream.addListener('data',(file: any)=>{
+                console.log(file);
+                result.result=file;
+                resolve(result);
+            });
+            stream.addListener('error',(error: any)=>{
+                result.resultCode=ActionResult.UNKNOW_ERROR;
+                result.message="Error occur when retreiving file data";
+                result.result=error;
+                reject(result)
+            });
+            
+        })
     }
     exist(name: string): Promise<ActionResult> {
         throw new Error("Method not implemented.");
     }
-     // var storage = multer.diskStorage({
-        //     destination: function (req:any, file:any, cb:any) {
-        //       cb(null, 'upload/')
-        //     },
-        //     filename: function (req:any, file:any, cb:any) {
-        //       cb(null, file.fieldname + '-' + Date.now())
-        //     }
-        //   })
-           
-        //   var upload = multer({ storage: storage })
     
 }
