@@ -121,7 +121,7 @@ export default class AuthRequester
     }
     getUserProfil(request:any,response:Response):void
     {
-        request.decoded.id=request.params.idService;
+        request.decoded.id=request.params.idProfil;
         this.getProfil(request,response);
     }
 }

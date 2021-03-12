@@ -98,7 +98,7 @@
         ]
     },
     {
-        "url":"/api/user/profil/:idService",
+        "url":"/api/user/profil/:idProfil",
         "module" :"/authentification/authrequester",
         "actions":[
             {
