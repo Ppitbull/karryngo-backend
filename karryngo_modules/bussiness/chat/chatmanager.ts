@@ -14,11 +14,18 @@ export class ChatManager
         let message:Message=new Message(new EntityID());
         message.hydrate(request.body);
         message.id=new EntityID();
+        if(({}).constructor==message.content.constructor)
+        {
+            
+        }
         this.chatService.send(message,request.body.idDiscussion)
         .then((data:ActionResult)=>{
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
-                message:"Message send successfully",
+                message:{
+                    idMessage:message.id,
+                    message:"Message send successfully"
+                },
                 result:null,
             });
         })

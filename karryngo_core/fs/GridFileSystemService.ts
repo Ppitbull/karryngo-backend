@@ -3,10 +3,10 @@ import { ConfigService } from "../decorator/dependecy_injector.decorator";
 import { KarryngoEntity } from "../KarryngoEntity";
 import { ActionResult } from "../utils/ActionResult";
 import { KarryngoFileStorage } from "./KarryngoFileStorage";
-import { KFileOptions } from "./KFileOptions";
 import { GridFSBucket } from  "mongodb";
 import { MongoDBManager } from "../persistence/MongoDBManager";
 import { EntityID } from "../utils/EntityID";
+import { KFile } from "./KFile";
 
 export class GridFileSystemService implements KarryngoFileStorage
 {
@@ -30,7 +30,7 @@ export class GridFileSystemService implements KarryngoFileStorage
         
 
     }
-    put(data: Buffer, options: KFileOptions): Promise<ActionResult> {
+    put(file:KFile): Promise<ActionResult> {
         let result:ActionResult=new ActionResult();
         return new Promise<ActionResult>((resolve,reject)=>{
             if(this.gridFS == null ) {
@@ -38,11 +38,11 @@ export class GridFileSystemService implements KarryngoFileStorage
                 result.message="Cannot connect to bd file";
                 return reject(result);
             }
-            let id:EntityID=new EntityID();
-            this.gridFS.openUploadStream(id.toString().toString(),{
-                contentType:options.type,
-            }).end(data,"base64",()=>{
-                result.result=id;
+            this.gridFS.openUploadStream(file._id.toString(),{
+                contentType:file.type,
+                size:file.size,
+                lastModified:file.lastModified
+            }).end(file.data,file.encoding,()=>{
                 return resolve(result);
             });
             

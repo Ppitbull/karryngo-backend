@@ -1,11 +1,11 @@
 import { ActionResult } from "../utils/ActionResult";
-import { KFileOptions } from "./KFileOptions";
+import { KFile } from "./KFile";
 
 
 
 export interface KarryngoFileStorage
 {
-    put(data: Buffer,options:KFileOptions):Promise<ActionResult>;
+    put(file:KFile):Promise<ActionResult>;
     get(name:string):Promise<ActionResult>;
     exist(name:string):Promise<ActionResult>;
 }

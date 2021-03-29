@@ -40,6 +40,7 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
     {
         //console.log("Entity ",entity._id)
         this.id=this.purgeAttribute(entity,"_id");
+        
     }
 
     /**

@@ -377,6 +377,24 @@
                 }
             }
         ]
+    },
+    {
+        "url":"/api/chat/message/add",
+        "module" :"/chat/chatmanager",
+        "actions":[
+            {
+                "method":"post",
+                "action": "addMessage",
+                "params":{
+                    "idDiscussion":"string",
+                    "from":"string",
+                    "to":"string",
+                    "date":"string",
+                    "title":"string",
+                    "content":"string"
+                }
+            }
+        ]
     }
 
 ]
