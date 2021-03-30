@@ -4,7 +4,7 @@
 @created 30/11/2020
 */
 
-import { Controller, DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Controller, DBPersistence, KFileStorage } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { ProviderService } from "./entities/providerservice";
@@ -13,13 +13,16 @@ import { Location } from "./../../services/geolocalisation/entities/location";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { Vehicle } from "./entities/vehicle";
 import Configuration from "../../../config-files/constants";
+import { KFile } from "../../../karryngo_core/fs/KFile";
+import { Address } from "../../services/usermanager/entities/Address";
 
 @Controller()
 @DBPersistence()
+@KFileStorage()
 export class ProviderServiceManager
 {
     private db:any={};
-    
+    private fs:any={};
     constructor(private transportservicemanager:TransportServiceManager){}
 
     /**
@@ -49,8 +52,27 @@ export class ProviderServiceManager
             vehi.hydrate(v);
             return vehi
         });
-        this.db.addToCollection(Configuration.collections.provider,pservice)
+        
+        pservice.addressForVerification=request.body.addressForVerification.map((add:Record<string | number, any>)=>{
+            let ad:Address = new Address(new EntityID());
+            ad.hydrate(add);
+            return ad;
+        })
+        
+        //upload file
+        let files:KFile[]= request.body.documents.map((file:Record<string| number,any>)=>{
+            let f:KFile=new KFile(new EntityID());
+            f.hydrate(file);
+            pservice.documents.push({link:`/files/${f._id.toString()}`})
+            return f;
+        })
+        Promise.all(files.map((file:KFile)=> this.fs.put(file)))
+        .then((result)=> {
+            console.log(result);
+           return this.db.addToCollection(Configuration.collections.provider,pservice)
+        })       
         .then((data:ActionResult)=>{
+            //add provider information to db
             response.status(201).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Provider service successfully created",

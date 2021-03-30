@@ -1,6 +1,7 @@
 import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { Location } from "./../../../services/geolocalisation/entities/location";
 import { Vehicle } from "./vehicle";
+import { Address } from "../../../services/usermanager/entities/Address";
 
 export class ProviderService extends KarryngoPersistentEntity
 {
@@ -10,6 +11,8 @@ export class ProviderService extends KarryngoPersistentEntity
     idProvider:String="";
     deservedZone:Location[]=[];
     listVehicle:Vehicle[]=[];
+    documents:{link?:String}[]=[];
+    addressForVerification:Address[]=[];
 
     toString():Record<string,any>
     {
@@ -21,6 +24,8 @@ export class ProviderService extends KarryngoPersistentEntity
             providerId:this.idProvider,
             zones:this.deservedZone.map((zone:Location)=>zone.toString()),
             vehicles:this.listVehicle.map((vehicle:Vehicle)=>vehicle.toString()),
+            documents:this.documents,
+            addressForVerification:this.addressForVerification.map((add:Address)=> add.toString())
         }
     }
     hydrate(entity:Record<string, any>):void
@@ -40,6 +45,11 @@ export class ProviderService extends KarryngoPersistentEntity
             v.hydrate(vehicle);
             return v;
         })
-
+        this.documents=this.purgeAttribute(entity,"documents");
+        this.addressForVerification=this.purgeAttribute(entity,"addressForVerification").map((add:Record<string, any>)=>{
+            let addr:Address=new Address();
+            add.hydrate(add);
+            return add;
+        })
     }
 }

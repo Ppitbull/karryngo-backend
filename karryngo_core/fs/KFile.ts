@@ -6,12 +6,13 @@ export class KFile extends KarryngoPersistentEntity {
   size:number=0.0;
   type:string="";
   data:Buffer=Buffer.from([]);
-  encoding:String="base64";
+  encoding:BufferEncoding="base64";
 
   hydrate(entity: Record<string | number,any>):void
   {
       for(const key of Object.keys(entity))
       {
+        if(key=="data") this.data=Buffer.from(entity[key],this.encoding);
           if(Reflect.has(this,key)) Reflect.set(this,key,entity[key]);
       }
   }

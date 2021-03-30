@@ -18,7 +18,7 @@ export class CompagnyServiceRequester extends ServiceProvider
         super.hydrate(entity);
         this.companyName=this.purgeAttribute(entity,"companyname");
         this.registrationNumber=this.purgeAttribute(entity,"registrationnumber");
-        this.importExportCompagnyCode=this.purgeAttribute(entity,"importexportcompagnycode"); 
+        this.importExportCompagnyCode=this.purgeAttribute(entity,"importExportCompagnyCode"); 
         this.companyAddress=this.purgeAttribute(entity,"companyAddress")       
     }
 
@@ -28,7 +28,7 @@ export class CompagnyServiceRequester extends ServiceProvider
             ...super.toString(),
             companyname:this.companyName,
             registrationnumber:this.registrationNumber,
-            importexportcompagnycode:this.importExportCompagnyCode ,
+            importExportCompagnyCode:this.importExportCompagnyCode ,
             companyAddress:this.companyAddress        
         }
     }

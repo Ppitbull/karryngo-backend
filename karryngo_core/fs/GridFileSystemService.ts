@@ -28,7 +28,7 @@ export class GridFileSystemService implements KarryngoFileStorage
             this.gridFS = new GridFSBucket(data.result);
         });
         
-
+ 
     }
     put(file:KFile): Promise<ActionResult> {
         let result:ActionResult=new ActionResult();
@@ -38,10 +38,12 @@ export class GridFileSystemService implements KarryngoFileStorage
                 result.message="Cannot connect to bd file";
                 return reject(result);
             }
-            this.gridFS.openUploadStream(file._id.toString(),{
+            this.gridFS.openUploadStreamWithId(file._id.toString(),file.name,{
                 contentType:file.type,
-                size:file.size,
-                lastModified:file.lastModified
+                metadata:{
+                    size:file.size,
+                    lastModified:file.lastModified
+                }               
             }).end(file.data,file.encoding,()=>{
                 return resolve(result);
             });

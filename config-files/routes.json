@@ -229,9 +229,7 @@
                 "method":"post",
                 "action": "addService",
                 "params":{
-                    "title":"string",
-                    "description":"string",
-                    "zone":"array"
+                    
                 }
             }
         ]

@@ -8,7 +8,7 @@ import { User } from "../../../services/usermanager/entities/User";
 
 export class Customer extends User
 {
-    public passportNumber:String="";
+    passportNumber:String="";
     isProvider:Boolean=false;
     isCompany:boolean=false;
 

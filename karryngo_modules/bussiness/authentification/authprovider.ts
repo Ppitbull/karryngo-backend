@@ -31,23 +31,30 @@ export class AuthProvider
     register(request:any,response:Response):void
     {
         // type: 0 personnel, 1 compagny
-        let data:Record<string, any>={isProvider:true};
+        let data:Record<string, any>=
+        {
+            isProvider:true,
+            isCompany:false,
+            passportNumber:request.body.passportNumber
+        };
         let userId:EntityID=new EntityID();
         userId.setId(request.decoded.id);
         if(request.body.type==1)
         {
-            data['companyname']=request.body.companyName,
-            data['registrationnumber']=request.body.registrationNumber,
-            data['importexportcompagnycode']=request.body.importexportcompagnycode;
+            data['companyName']=request.body.companyName,
+            data['registrationNumber']=request.body.registrationNumber,
+            data['importExportCompagnyCode']=request.body.importExportCompagnyCode;
+            data['companyAddress']=request.body.companyAddress;
             data['isCompany']=true;
         }
+        console.log("register provider")
         this.userManagerService.findUserById(userId)
-        .then((data:ActionResult)=> this.userManagerService.saveUser(userId,data))        
+        .then((dataResult:ActionResult)=>  this.userManagerService.saveUser(userId,data))        
         .then((data:ActionResult)=> this.providerServiceManager.addService(request,response))
         .catch((error:ActionResult)=>{
             if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) response.status(404).json({
                 resultCode:error.resultCode,
-                message:'User not found'
+                message: error.message
             })
             else response.status(500).json({
                 resultCode:error.resultCode,

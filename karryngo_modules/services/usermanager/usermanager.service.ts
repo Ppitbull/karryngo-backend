@@ -120,7 +120,8 @@ export class UserManagerService
      */
     saveUser(idUser:EntityID,toupdate:Record<string, any>):Promise<ActionResult>
     {
-        return this.db.updateInCollection(Configuration.collections.user,{"_id":idUser.toString()},toupdate,{})
+        console.log("To update ",toupdate)
+        return this.db.updateInCollection(Configuration.collections.user,{"_id":idUser.toString()},{$set:toupdate},{})
     }
 
     /**
