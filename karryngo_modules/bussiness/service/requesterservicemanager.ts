@@ -18,6 +18,7 @@ import { TransportServiceType } from "./entities/transportservicetype";
 import { ServiceManager } from "./servicemanager";
 import { ServiceTypeFactory } from "./servicetypefactory";
 import { TransportServiceManager } from "./transportservicemanager";
+import { FileService } from "../../services/files/file.service";
 
 
 export class ServiceTransportBy
@@ -36,7 +37,8 @@ export class RequesterServiceManager
     constructor(
         private transportservicemanager:TransportServiceManager,
         private serviceManager:ServiceManager,
-        private crudService:CrudService
+        private crudService:CrudService,
+        private fileUploadService:FileService
         ){}
 
     
@@ -89,10 +91,10 @@ export class RequesterServiceManager
      */
     addService(request:any,response:any):void
     {
-        // console.log("Body",request.body)
+
         let service:TransportServiceType;
-        
-        if(request.body.options.is_weak!=undefined)
+            
+        if(request.body.options.typeof!=TransportPersonService.typeof)
         {
             //service pour un colis
             service=new TransportColisService(new EntityID());
@@ -102,17 +104,22 @@ export class RequesterServiceManager
             service=new TransportPersonService(new EntityID());            
         }
         service.hydrate(request.body);
-        //sauvegarde en BD
-        let serviceData = {
-            ...service.toString(),
-            "idRequester":request.decoded.id,
-            "idSelectedProvider":"",
-            "idSelectedTransaction":"",
-            "providers":[],
-            "transactions":[],        
-        };
-        serviceData.toString=()=> serviceData;
-        this.db.addToCollection(Configuration.collections.requestservice,serviceData)
+            //sauvegarde en BD
+            let serviceData = {
+                ...service.toString(),
+                "idRequester":request.decoded.id,
+                "idSelectedProvider":"",
+                "idSelectedTransaction":"",
+                "providers":[],
+                "transactions":[],        
+            };
+            serviceData.toString=()=> serviceData;
+
+        this.fileUploadService.uploadAll(request.body.options.images)
+        .then((result:ActionResult)=>{
+            service.images=result.result;
+            return this.db.addToCollection(Configuration.collections.requestservice,serviceData);
+        })
         .then((data:any)=>
         {
             //calcul du rayon de couverture

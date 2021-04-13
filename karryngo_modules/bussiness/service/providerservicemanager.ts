@@ -15,15 +15,15 @@ import { Vehicle } from "./entities/vehicle";
 import Configuration from "../../../config-files/constants";
 import { KFile } from "../../../karryngo_core/fs/KFile";
 import { Address } from "../../services/usermanager/entities/Address";
+import { FileService } from "../../services/files/file.service";
 
 @Controller()
 @DBPersistence()
-@KFileStorage()
 export class ProviderServiceManager
 {
     private db:any={};
-    private fs:any={};
-    constructor(private transportservicemanager:TransportServiceManager){}
+    constructor(private transportservicemanager:TransportServiceManager,
+        private fileUploadService:FileService){}
 
     /**
      * @description permet a un provider d'ajouter un service qu'il est capable de rendre
@@ -60,15 +60,9 @@ export class ProviderServiceManager
         })
         
         //upload file
-        let files:KFile[]= request.body.documents.map((file:Record<string| number,any>)=>{
-            let f:KFile=new KFile(new EntityID());
-            f.hydrate(file);
-            pservice.documents.push({link:`/files/${f._id.toString()}`})
-            return f;
-        })
-        Promise.all(files.map((file:KFile)=> this.fs.put(file)))
+        this.fileUploadService.uploadAll(request.body.documents)
         .then((result)=> {
-            console.log(result);
+            // console.log(result);
            return this.db.addToCollection(Configuration.collections.provider,pservice)
         })       
         .then((data:ActionResult)=>{

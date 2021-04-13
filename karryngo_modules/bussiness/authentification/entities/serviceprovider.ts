@@ -10,23 +10,18 @@ import { ServiceRequester } from "./servicerequester";
 export class ServiceProvider extends ServiceRequester
 {
     public adressForVerification:Address[]=[];
+    isAcceptedProvider:boolean=false;
 
     hydrate(entity: any):void
     {
         super.hydrate(entity);
-        this.adressForVerification=this.purgeAttribute(entity,"addressforverification")==null
-        ?[]
-        :this.purgeAttribute(entity,"addressforverification").map((addr:any)=>{
-            let add:Address=new Address();
-            add.hydrate(addr);
-            return add;
-        });
+        this.isAcceptedProvider=this.purgeAttribute(entity,"isAcceptedProvider");
     }
     toString():any
     {
         return {
             ...super.toString(),
-            addressforverification:this.adressForVerification
+            isAcceptedProvider:this.isAcceptedProvider
         }
     }
 }

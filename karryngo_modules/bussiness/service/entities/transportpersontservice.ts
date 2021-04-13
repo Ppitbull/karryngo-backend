@@ -9,6 +9,7 @@ import { TransportServiceType } from "./transportservicetype";
 export class TransportPersonService extends TransportServiceType
 {
     static TYPE="TransportPersonService";
+    static typeof="person"
     time:Date=new Date();
     toString()
     {

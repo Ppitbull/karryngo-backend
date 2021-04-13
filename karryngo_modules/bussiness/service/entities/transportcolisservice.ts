@@ -30,14 +30,15 @@ export class TransportColisService extends TransportServiceType
         this.is_weak=this.purgeAttribute(options,"is_weak");
         this.typeof=this.purgeAttribute(options,"typeof");
         this.package_name=this.purgeAttribute(options,"package_name");
-        if(entity.hasOwnProperty('size'))
+        if(options.hasOwnProperty('size'))
         {
+            
             this.size_heigth=this.purgeAttribute(options.size,"heigth");
             this.size_depth=this.purgeAttribute(options.size,"depth");
             this.size_width=this.purgeAttribute(options.size,"width");
             this.size_piece_nber=this.purgeAttribute(options.size,"piece_nber");
         }
-        this.receiver.hydrate(entity.receiver);
+        this.receiver.hydrate(options.receiver);
         this.receiver.id=this.receiver.id==null?new EntityID():this.receiver.id;
     }
 

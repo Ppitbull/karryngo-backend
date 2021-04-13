@@ -12,6 +12,7 @@ import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { Customer } from "../../bussiness/authentification/entities/customer";
 import { CrudService } from "../crud/crud.service";
 import { User } from "./entities/User";
+import { UserFactory } from "../../bussiness/authentification/entities/userfactory";
 
 
 @Service()
@@ -46,7 +47,6 @@ export class UserManagerService
             this.db.findInCollection("Users",{"address.email":email},1)
             .then((result:ActionResult)=>
             {
-                console.log('Result Exist ',result)
                 let people:Record<string, any>[]= result.result;
                 let action=new ActionResult(); //si aucun utilisateur n'est trouvé on rejete la promise
                 if(people.length==0)
@@ -96,12 +96,7 @@ export class UserManagerService
                 }
                 else
                 {
-                    action.result=people.map((person:any)=>
-                    {
-                        let p:Customer=new Customer();
-                        p.hydrate(person);
-                        return p;
-                    });
+                    action.result=people.map((person:any)=> UserFactory.getInstance(person));
                     resolve(action);
                 }
                 
@@ -120,7 +115,6 @@ export class UserManagerService
      */
     saveUser(idUser:EntityID,toupdate:Record<string, any>):Promise<ActionResult>
     {
-        console.log("To update ",toupdate)
         return this.db.updateInCollection(Configuration.collections.user,{"_id":idUser.toString()},{$set:toupdate},{})
     }
 

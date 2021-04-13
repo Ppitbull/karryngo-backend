@@ -1,5 +1,9 @@
 import { KarryngoPersistentEntity } from "../persistence/KarryngoPersistentEntity";
 
+export interface KFileLink {
+  link:string
+};
+
 export class KFile extends KarryngoPersistentEntity {
   name:string="";
   lastModified:string="";

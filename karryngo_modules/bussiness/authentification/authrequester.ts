@@ -108,6 +108,7 @@ export default class AuthRequester
         id.setId(request.decoded.id)
         this.userManagerService.findUserById(id)
         .then((data:ActionResult)=>{
+            console.log("Provider: ",data);
             return response.status(200).json({
                 resultCode:data.resultCode,
                 result:data.result[0]

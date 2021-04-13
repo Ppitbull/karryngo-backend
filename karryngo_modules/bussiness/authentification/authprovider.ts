@@ -34,6 +34,7 @@ export class AuthProvider
         let data:Record<string, any>=
         {
             isProvider:true,
+            isAcceptedProvider:false,
             isCompany:false,
             passportNumber:request.body.passportNumber
         };
@@ -47,7 +48,7 @@ export class AuthProvider
             data['companyAddress']=request.body.companyAddress;
             data['isCompany']=true;
         }
-        console.log("register provider")
+        console.log("register provider",userId)
         this.userManagerService.findUserById(userId)
         .then((dataResult:ActionResult)=>  this.userManagerService.saveUser(userId,data))        
         .then((data:ActionResult)=> this.providerServiceManager.addService(request,response))

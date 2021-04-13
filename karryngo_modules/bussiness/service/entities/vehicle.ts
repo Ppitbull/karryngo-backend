@@ -16,7 +16,7 @@ export class Vehicle extends KarryngoPersistentEntity
     type:String="";
     name:String="";
     marque:String="";
-    photo:String[]=[];
+    photo:{link:string}[]=[];
     placeNumbler:number=2;
     description:String="";
 
@@ -31,7 +31,8 @@ export class Vehicle extends KarryngoPersistentEntity
         this.type=this.purgeAttribute(entity,"type");
         this.name=this.purgeAttribute(entity,"name");
         this.marque=this.purgeAttribute(entity,"marque");
-        this.photo=this.purgeAttribute(entity,"photo");   
+        
+        this.photo=this.photo=this.purgeAttribute(entity,"photo");   
         this.placeNumbler=this.purgeAttribute(entity,"placeNumbler");
         this.description=this.purgeAttribute(entity,"description");        
     }

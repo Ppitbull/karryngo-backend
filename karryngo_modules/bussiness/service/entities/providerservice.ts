@@ -2,6 +2,7 @@ import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/
 import { Location } from "./../../../services/geolocalisation/entities/location";
 import { Vehicle } from "./vehicle";
 import { Address } from "../../../services/usermanager/entities/Address";
+import { KFileLink } from "../../../../karryngo_core/fs/KFile";
 
 export class ProviderService extends KarryngoPersistentEntity
 {
@@ -11,7 +12,7 @@ export class ProviderService extends KarryngoPersistentEntity
     idProvider:String="";
     deservedZone:Location[]=[];
     listVehicle:Vehicle[]=[];
-    documents:{link?:String}[]=[];
+    documents:KFileLink[]=[];
     addressForVerification:Address[]=[];
 
     toString():Record<string,any>
