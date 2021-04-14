@@ -19,6 +19,8 @@ import { Message } from "../../services/chats/message";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { Discussion } from "../../services/chats/discussion";
 import Configuration from "../../../config-files/constants";
+import { ProviderService } from "./entities/providerservice";
+import { ServiceTypeFactory } from "./servicetypefactory";
 
 @DBPersistence()
 export class ServiceManager
@@ -48,6 +50,14 @@ export class ServiceManager
                 //doit contenir la liste des fournisseurs de service
                 // console.log("Found Provider",data)
                 //on resoud avec le resultat
+                data.result=data.result.map((provider:Record<string, any>)=>{
+                    let id:EntityID=new EntityID();
+                    id.setId(provider._id);
+                    let pro:ProviderService=new ProviderService(id);
+                    
+                    pro.hydrate(provider);
+                    return pro;
+                })
                 resolve(data);
             })
             .catch((error:ActionResult)=>{

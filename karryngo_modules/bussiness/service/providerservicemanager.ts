@@ -16,14 +16,76 @@ import Configuration from "../../../config-files/constants";
 import { KFile } from "../../../karryngo_core/fs/KFile";
 import { Address } from "../../services/usermanager/entities/Address";
 import { FileService } from "../../services/files/file.service";
+import { TransportServiceType } from "./entities/transportservicetype";
+import { ServiceManager } from "./servicemanager";
+import { UserManagerService } from "../../services/usermanager/usermanager.service";
+import { Customer } from "../authentification/entities/customer";
 
 @Controller()
 @DBPersistence()
 export class ProviderServiceManager
 {
     private db:any={};
-    constructor(private transportservicemanager:TransportServiceManager,
-        private fileUploadService:FileService){}
+    constructor(
+        private transportservicemanager:TransportServiceManager,
+        private fileUploadService:FileService,
+        private serviceManager:ServiceManager,
+        private userManager:UserManagerService){}
+
+    findProvider(
+        request:any,
+        response:any,
+        idService:any,
+        service:TransportServiceType,
+        message:String="Description saved successfully"):void
+    {
+        let listProvider:ProviderService[]=[];
+            
+            //recherche des fournisseur a proximité
+            this.serviceManager.rechercherFounisseurProximite(service.from,service)
+            .then((data:ActionResult)=>{
+                listProvider=[...data.result];
+                return this.serviceManager.rechercherFounisseurProximite(service.to,service);
+            })
+            .then((data:ActionResult)=>{
+                listProvider.push(...data.result);
+                console.log("listProvider: ",listProvider.map((pro:ProviderService)=> pro.deservedZone))
+                listProvider = listProvider.filter((provider:ProviderService,index)=> listProvider.map((pro:ProviderService)=> pro.idProvider.toString()).indexOf(provider.idProvider.toString()) !== index );
+                
+                return this.db.updateInCollection(Configuration.collections.requestservice,{
+                    "_id":idService
+                },{
+                    $push:{
+                    "providers":data.result.map((pro:Record<string,any>)=>pro._id)
+                    }
+                },
+                {})
+            })
+            .then((data:ActionResult)=>Promise.all(listProvider.map((pro:ProviderService)=> this.userManager.findUserById(pro.idProvider))))
+            .then((data:ActionResult[])=>{
+                response.status(201).json({
+                    resultCode:ActionResult.SUCCESS,
+                    message,
+                    result:{
+                        "idService":service.id.toString(),
+                        "providers":listProvider.map((pro:ProviderService,index)=> {
+                            return {
+                                service:pro.toString(),
+                                provider:data[index].result[0].toString()
+                            }
+                        })
+                    }
+                });
+            })
+            .catch((error:ActionResult)=>{
+                console.log(error)
+                response.status(500).json({
+                    resultCode:error.resultCode,
+                    message:error.message
+                });
+            })          
+    }
+            
 
     /**
      * @description permet a un provider d'ajouter un service qu'il est capable de rendre
@@ -218,6 +280,11 @@ export class ProviderServiceManager
             resultCode:error.resultCode,
             message:error.message
         }));
+    }
+    findServiceProviderByZone(request:any,response:any):void{
+        let zone:Location=new Location();
+        zone.hydrate(request.body);
+        // this.serviceManager.rechercherFounisseurProximite(zone,service)
     }
 }
 

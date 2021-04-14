@@ -19,6 +19,7 @@ import { ServiceManager } from "./servicemanager";
 import { ServiceTypeFactory } from "./servicetypefactory";
 import { TransportServiceManager } from "./transportservicemanager";
 import { FileService } from "../../services/files/file.service";
+import { ProviderServiceManager } from "./providerservicemanager";
 
 
 export class ServiceTransportBy
@@ -38,51 +39,12 @@ export class RequesterServiceManager
         private transportservicemanager:TransportServiceManager,
         private serviceManager:ServiceManager,
         private crudService:CrudService,
-        private fileUploadService:FileService
+        private fileUploadService:FileService,
+        private providerService:ProviderServiceManager
         ){}
 
     
-    findProvider(
-        request:any,
-        response:any,
-        idService:any,
-        service:TransportServiceType,
-        message:String="Description saved successfully"):void
-    {
-        let listProvider:Record<string, any>[]=[];
-            
-            //recherche des fournisseur a proximité
-            this.serviceManager.rechercherFounisseurProximite(service.from,service)
-            .then((data:ActionResult)=>{
-                listProvider=data.result;
-                console.log("providers ",listProvider)
-                return this.db.updateInCollection(Configuration.collections.requestservice,{
-                    "_id":idService
-                },{
-                    $push:{
-                    "providers":data.result.map((pro:Record<string,any>)=>pro._id)
-                    }
-                },
-                {})
-            })
-            .then((data:ActionResult)=>{
-                response.status(201).json({
-                    resultCode:ActionResult.SUCCESS,
-                    message,
-                    result:{
-                        "idService":service.id.toString(),
-                        "providers":listProvider
-                    }
-                });
-            })
-            .catch((error:ActionResult)=>{
-                console.log(error)
-                response.status(500).json({
-                    resultCode:error.resultCode,
-                    message:error.message
-                });
-            })          
-    }
+    
 
     /**
      * @description permet a un provider d'ajouter un service qu'il est capable de rendre
@@ -123,7 +85,7 @@ export class RequesterServiceManager
         .then((data:any)=>
         {
             //calcul du rayon de couverture
-            return this.findProvider(request,response,serviceData._id,service)            
+            return this.providerService.findProvider(request,response,serviceData._id,service)            
         })
         .catch((error:ActionResult)=>
         {
@@ -146,7 +108,7 @@ export class RequesterServiceManager
         .then((data:ActionResult)=>this.db.findInCollection(Configuration.collections.requestservice,{"_id":request.params.idService}))
         .then((data:ActionResult)=>{
             let service:TransportServiceType=ServiceTypeFactory.getInstance(data.result[0].type);
-            return this.findProvider(request,response,service._id,service,"Requester service updated successfully")
+            return this.providerService.findProvider(request,response,service._id,service,"Requester service updated successfully")
         })
         .catch((error:ActionResult)=>response.status(500).json({
             resultCode:error.resultCode,

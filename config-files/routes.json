@@ -220,7 +220,6 @@
             }
         ]
     },
-
     {
         "url":"/api/provider/service/add",
         "module" :"/service/providerservicemanager",
@@ -228,6 +227,19 @@
             {
                 "method":"post",
                 "action": "addService",
+                "params":{
+                    
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/provider/service/find",
+        "module" :"/service/providerservicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "findServiceProviderByZone",
                 "params":{
                     
                 }

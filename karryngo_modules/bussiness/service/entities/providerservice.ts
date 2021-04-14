@@ -3,13 +3,14 @@ import { Location } from "./../../../services/geolocalisation/entities/location"
 import { Vehicle } from "./vehicle";
 import { Address } from "../../../services/usermanager/entities/Address";
 import { KFileLink } from "../../../../karryngo_core/fs/KFile";
+import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 
 export class ProviderService extends KarryngoPersistentEntity
 {
     title:String="";
     name:String="Provider Name";
     description:String="";
-    idProvider:String="";
+    idProvider:EntityID=new EntityID();
     deservedZone:Location[]=[];
     listVehicle:Vehicle[]=[];
     documents:KFileLink[]=[];
@@ -22,7 +23,7 @@ export class ProviderService extends KarryngoPersistentEntity
             title:this.title,
             name:this.name,
             description:this.description,
-            providerId:this.idProvider,
+            providerId:this.idProvider.toString(),
             zones:this.deservedZone.map((zone:Location)=>zone.toString()),
             vehicles:this.listVehicle.map((vehicle:Vehicle)=>vehicle.toString()),
             documents:this.documents,
@@ -35,11 +36,13 @@ export class ProviderService extends KarryngoPersistentEntity
         this.title=this.purgeAttribute(entity,"title");
         this.name=this.purgeAttribute(entity,"name");
         this.description=this.purgeAttribute(entity,"description");
-        this.idProvider=this.purgeAttribute(entity,"providerId");
+        let idP:EntityID=new EntityID();
+        idP.setId(this.purgeAttribute(entity,"providerId"));
+        this.idProvider=idP;
         this.deservedZone=this.purgeAttribute(entity,"zones").map((zone:Record<string, any>)=>{
             let local:Location=new Location();
             local.hydrate(zone);
-
+            return local;
         });
         this.listVehicle=this.purgeAttribute(entity,"vehicles").map((vehicle:Record<string, any>)=>{
             let v:Vehicle=new Vehicle();
@@ -49,8 +52,8 @@ export class ProviderService extends KarryngoPersistentEntity
         this.documents=this.purgeAttribute(entity,"documents");
         this.addressForVerification=this.purgeAttribute(entity,"addressForVerification").map((add:Record<string, any>)=>{
             let addr:Address=new Address();
-            add.hydrate(add);
-            return add;
+            addr.hydrate(add);
+            return addr;
         })
     }
 }
