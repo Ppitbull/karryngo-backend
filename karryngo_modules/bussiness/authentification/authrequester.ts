@@ -32,6 +32,7 @@ export default class AuthRequester
     {
         let user=new Customer();
         user.hydrate(request.body)
+        console.log(user);
         this.userManagerService.findUserByEmail(user.adresse.email)
             .then((data:ActionResult)=> 
             {
@@ -111,7 +112,7 @@ export default class AuthRequester
             console.log("Provider: ",data);
             return response.status(200).json({
                 resultCode:data.resultCode,
-                result:data.result[0]
+                result:data.result[0].toString()
             })
         }).catch((error:ActionResult)=>{
             return response.status(404).json({
