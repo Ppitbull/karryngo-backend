@@ -32,7 +32,9 @@ export class ChatService
     readAll(idUser:String):Promise<ActionResult>
     {
         return this.db.findInCollection(
-            Configuration.collections.chat, { "_id": idUser },
+            Configuration.collections.chat, 
+            { "_id": idUser },
+            {},
             100
         );
     }
@@ -59,5 +61,30 @@ export class ChatService
             {
                 $set:{ "chats.$.read":1}
             });
+    }
+    getDiscussionList(idUser:EntityID):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>{
+            this.db.findInCollection(
+                Configuration.collections.chat, 
+                {
+                    "$or": [
+                        { "inter1": idUser.toString() },
+                        { "inter2": idUser.toString() }
+                    ]
+                },
+                {"chats":false},
+            )
+            .then((result:ActionResult)=>{
+                result.result = result.result.map((data:Record<string | number, any>)=>{
+                    let id:EntityID=new EntityID();
+                    id.setId(data._id);
+                    let dispo:Discussion = new Discussion(id);
+                    dispo.hydrate(data);
+                    return dispo
+                });
+                resolve(result);
+            })  
+        })
     }
 }

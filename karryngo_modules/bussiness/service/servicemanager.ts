@@ -33,7 +33,7 @@ export class ServiceManager
         private chatService:ChatService
         ){}
 
-   rechercherFounisseurProximite(zone:Location,service:TransportServiceType):Promise<ActionResult>
+   rechercherFounisseurProximite(zone:Location):Promise<ActionResult>
    {
        return new Promise<ActionResult>((resolve,reject)=>{
             this.db.findInCollection(Configuration.collections.provider,
@@ -48,7 +48,6 @@ export class ServiceManager
             .then((data:ActionResult)=>
             {
                 //doit contenir la liste des fournisseurs de service
-                // console.log("Found Provider",data)
                 //on resoud avec le resultat
                 data.result=data.result.map((provider:Record<string, any>)=>{
                     let id:EntityID=new EntityID();
@@ -69,7 +68,6 @@ export class ServiceManager
 
     startTransaction(request:any,response:any):void
     {
-        console.log("Data",request.body)
         this.transportServiceManager.startTransaction(
             request.body.idService,
             request.body.idProvider,
@@ -116,7 +114,6 @@ export class ServiceManager
             })
         })
         .catch((error:ActionResult)=>{
-            console.log("Error: ",error)
             let code=500;
             if(error.resultCode==DataBaseException.DATABASE_UNKNOW_ERROR) code=404;
             else if(error.resultCode==ActionResult.RESSOURCE_ALREADY_EXIST_ERROR) code=400;

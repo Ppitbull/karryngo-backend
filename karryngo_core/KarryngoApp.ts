@@ -21,9 +21,18 @@ export class KarryngoApp extends KarryngoApplicationEntity
      */
     protected routerService:RouterService;
 
-    constructor(router:any)
+    /**
+     * @description Permet de contenir l'objet qui fait refference de framework c'est a dire Express
+     * @type Express
+     */
+    protected httpServer:any;
+
+    constructor(router:any,httpServer:any)
     {
         super();       
+
+        this.httpServer=httpServer;
+
         InjectorContainer.getInstance().bootstrap();
         //obtention de l'instance du service de configuration
         let configurationInstance=InjectorContainer.getInstance().getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory).getInstance();
@@ -63,5 +72,10 @@ export class KarryngoApp extends KarryngoApplicationEntity
      */
     hydrate(entity: KarryngoEntity): void {
         throw new Error("Method not implemented.");
+    }
+
+    getServer():any 
+    {
+        return this.httpServer
     }
 }

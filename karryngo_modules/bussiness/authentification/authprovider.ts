@@ -48,7 +48,7 @@ export class AuthProvider
             data['companyAddress']=request.body.companyAddress;
             data['isCompany']=true;
         }
-        console.log("register provider",data)
+        // console.log("register provider",data)
         this.userManagerService.findUserById(userId)
         .then((dataResult:ActionResult)=>  this.userManagerService.saveUser(userId,data))        
         .then((data:ActionResult)=> this.providerServiceManager.addService(request,response))

@@ -55,7 +55,7 @@ export class GridFileSystemService implements KarryngoFileStorage
         return new Promise<ActionResult>((resolve,reject)=>{
             let stream=this.gridFS.openDownloadStreamByName(name.toString())
             stream.addListener('data',(file: any)=>{
-                console.log(file);
+               
                 result.result=file;
                 resolve(result);
             });

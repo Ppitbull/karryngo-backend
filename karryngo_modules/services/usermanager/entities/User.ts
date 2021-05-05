@@ -54,7 +54,7 @@ export class User extends KarryngoPersistentEntity
      * @inheritdoc
      */
     toString():any {
-        console.log("Adress",this.adresse.toString())
+        // console.log("Adress",this.adresse.toString())
         return {
             ...super.toString(),
             "firstname":this.firstname,

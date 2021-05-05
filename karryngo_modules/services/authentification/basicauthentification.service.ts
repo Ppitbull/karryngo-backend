@@ -44,7 +44,6 @@ export class BasicAuthentificationService
                     let p:User=new User();
                     
                     p.hydrate(data.result[0]);
-                    console.log(p,data.result[0])
                     result.result=p;
                     resolve(result);
                 }

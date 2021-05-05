@@ -1,17 +1,24 @@
-import { KarryngoApp } from "./karryngo_core/KarryngoApp";
-import { ActionResult } from "./karryngo_core/utils/ActionResult";
 
+import { Server } from "socket.io";
+import { KarryngoApp } from "./karryngo_core/KarryngoApp";
+import { InjectorContainer } from "./karryngo_core/lifecycle/injector_container";
+import { ActionResult } from "./karryngo_core/utils/ActionResult";
 
 const express = require('express');
 var cors = require('cors');
 const app = express();
 let bodyParser = require('body-parser');  //librairie qui permet de parser une chaîne en JSON
 let router=express.Router();
+const httpServer = require("http").Server(app);
 
 app.use(cors())
 
 //instanciation du coeur de Karryngo
-let karryngoApp=new KarryngoApp(router);
+
+let karryngoApp=new KarryngoApp(router,httpServer);
+
+InjectorContainer.getInstance().saveInstance<KarryngoApp>(KarryngoApp,karryngoApp);
+
 
 app.use(((request:any,response:any,next:any)=>
 {
@@ -39,6 +46,6 @@ app.get('/', (req:any, res:any) => res.send('Hello World with Express'));
 //app.use('/api', apiRoutes)
 
 // Launch app to listen to specified port
-app.listen(port, function () {
+httpServer.listen(port, function () {
     console.log("Running Karryngo on port " + port);
 });

@@ -14,7 +14,7 @@ export class Message extends KarryngoPersistentEntity
     date:String="";
     title:String="";
     content:any="";
-    read:number=0;
+    read:number=0;  /** O: pour non lue et 1 pour lu */
 
     toString():any
     {

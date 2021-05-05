@@ -42,5 +42,10 @@
             "car":"1km",
             "bike":"1km"
         }
+    },
+    "socket-io":
+    {
+        "port":2525,
+        "path":"/chat"
     }
 }

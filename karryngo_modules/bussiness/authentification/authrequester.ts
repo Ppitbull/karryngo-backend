@@ -11,6 +11,7 @@ import { ApiAccess } from "../../../karryngo_core/security/apiaccess";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { BasicAuthentificationService } from "../../services/authentification/basicauthentification.service";
+import { RealTimeChatManager } from "../chat/chat-realtimemanager";
 import { User } from "../../services/usermanager/entities/User";
 import { UserManagerService } from "../../services/usermanager/usermanager.service";
 import { Customer } from "./entities/customer";
@@ -22,7 +23,8 @@ export default class AuthRequester
     constructor (
         private auth:BasicAuthentificationService,
         private userManagerService:UserManagerService,
-        private jwtAuth:ApiAccess) {}
+        private jwtAuth:ApiAccess,
+        private realTimeChat:RealTimeChatManager) {}
     checkUserInformation(user:Customer):Boolean
     {
         let status:Boolean=false;
@@ -32,7 +34,6 @@ export default class AuthRequester
     {
         let user=new Customer();
         user.hydrate(request.body)
-        console.log(user);
         this.userManagerService.findUserByEmail(user.adresse.email)
             .then((data:ActionResult)=> 
             {
@@ -109,7 +110,7 @@ export default class AuthRequester
         id.setId(request.decoded.id)
         this.userManagerService.findUserById(id)
         .then((data:ActionResult)=>{
-            console.log("Provider: ",data);
+            // console.log("Provider: ",data);
             return response.status(200).json({
                 resultCode:data.resultCode,
                 result:data.result[0].toString()

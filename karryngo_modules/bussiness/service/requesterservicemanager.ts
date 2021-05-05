@@ -4,7 +4,6 @@
 @created 30/11/2020
 */
 
-import { error } from "console";
 import { Request, Response } from "express";
 import Configuration from "../../../config-files/constants";
 import { Controller, DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
@@ -82,14 +81,17 @@ export class RequesterServiceManager
             service.images=result.result;
             return this.db.addToCollection(Configuration.collections.requestservice,serviceData);
         })
-        .then((data:any)=>
-        {
-            //calcul du rayon de couverture
-            return this.providerService.findProvider(request,response,serviceData._id,service)            
+        .then((result:ActionResult)=>{
+            response.status(201).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"Requester service successfully created",
+                result:{
+                    idService:service.id.toString()
+                }
+            })
         })
         .catch((error:ActionResult)=>
         {
-            console.log("Result ",error);
             response.status(400).json({
                 resultCode:error.resultCode,
                 message:error.message
@@ -149,7 +151,6 @@ export class RequesterServiceManager
 
     getServiceList(request:any,response:any):void
     {
-        // console.log("idRequester",request.decoded.id)
         this.db.findInCollection(Configuration.collections.requestservice,{"idRequester":request.decoded.id})
         .then((data:ActionResult)=>
         {

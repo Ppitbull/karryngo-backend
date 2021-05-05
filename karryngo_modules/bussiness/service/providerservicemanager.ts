@@ -42,14 +42,14 @@ export class ProviderServiceManager
         let listProvider:ProviderService[]=[];
             
             //recherche des fournisseur a proximité
-            this.serviceManager.rechercherFounisseurProximite(service.from,service)
+            this.serviceManager.rechercherFounisseurProximite(service.from)
             .then((data:ActionResult)=>{
                 listProvider=[...data.result];
-                return this.serviceManager.rechercherFounisseurProximite(service.to,service);
+                return this.serviceManager.rechercherFounisseurProximite(service.to);
             })
             .then((data:ActionResult)=>{
                 listProvider.push(...data.result);
-                console.log("listProvider: ",listProvider.map((pro:ProviderService)=> pro.deservedZone))
+                // console.log("listProvider: ",listProvider.map((pro:ProviderService)=> pro.deservedZone))
                 listProvider = listProvider.filter((provider:ProviderService,index)=> listProvider.map((pro:ProviderService)=> pro.idProvider.toString()).indexOf(provider.idProvider.toString()) !== index );
                 
                 return this.db.updateInCollection(Configuration.collections.requestservice,{
@@ -78,7 +78,6 @@ export class ProviderServiceManager
                 });
             })
             .catch((error:ActionResult)=>{
-                console.log(error)
                 response.status(500).json({
                     resultCode:error.resultCode,
                     message:error.message
@@ -170,6 +169,7 @@ export class ProviderServiceManager
         this.db.findInCollection(Configuration.collections.provider,{},50)
         .then((data:ActionResult)=>
         {
+            
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Provider service found",
@@ -233,7 +233,6 @@ export class ProviderServiceManager
             projection:{"vehicles":true,_id:false}
         })
         .then((data:ActionResult)=>{
-            console.log(data.result[0]);
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"successful vehicle recovery",
@@ -281,10 +280,42 @@ export class ProviderServiceManager
             message:error.message
         }));
     }
+
     findServiceProviderByZone(request:any,response:any):void{
-        let zone:Location=new Location();
-        zone.hydrate(request.body);
-        // this.serviceManager.rechercherFounisseurProximite(zone,service)
+        // console.log("request", request.body)
+        let startZone:Location=new Location();
+        startZone.hydrate(request.body.start);
+
+        let endZone:Location= new Location();
+        endZone.hydrate(request.body.end);
+
+        let listProvider:ProviderService[]=[];
+
+        this.serviceManager.rechercherFounisseurProximite(startZone)
+            .then((data:ActionResult)=>{
+                listProvider=[...data.result];
+                return this.serviceManager.rechercherFounisseurProximite(endZone);
+            })
+            .then((data:ActionResult)=>{
+                listProvider.push(...data.result);
+                listProvider = listProvider.filter((provider:ProviderService,index)=> listProvider.map((pro:ProviderService)=> pro.idProvider.toString()).indexOf(provider.idProvider.toString()) !== index );
+                return Promise.resolve(new ActionResult())
+            })
+            .then((data:ActionResult)=>Promise.all(listProvider.map((pro:ProviderService)=> this.userManager.findUserById(pro.idProvider))))
+            .then((data:ActionResult[])=>{
+                response.status(200).json({
+                    resultCode:ActionResult.SUCCESS,
+                    message:"Provider found",
+                    result:{
+                        "providers":listProvider.map((pro:ProviderService,index)=> {
+                            return {
+                                service:pro.toString(),
+                                provider:data[index].result[0].toString()
+                            }
+                        })
+                    }
+                });
+            })
     }
 }
 

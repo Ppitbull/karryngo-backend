@@ -16,7 +16,7 @@ export class Customer extends User
     {
         super.hydrate(entity);
         this.isProvider=this.purgeAttribute(entity,"isProvider")
-        this.passportNumber=this.purgeAttribute(entity,"passportnumber");
+        this.passportNumber=this.purgeAttribute(entity,"passportNumber");
         this.isCompany=this.purgeAttribute(entity,"isCompany");
     }
     toString():any

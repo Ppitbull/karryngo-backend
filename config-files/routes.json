@@ -238,7 +238,7 @@
         "module" :"/service/providerservicemanager",
         "actions":[
             {
-                "method":"get",
+                "method":"post",
                 "action": "findServiceProviderByZone",
                 "params":{
                     

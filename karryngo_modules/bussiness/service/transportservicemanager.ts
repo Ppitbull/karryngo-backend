@@ -95,7 +95,6 @@ export class TransportServiceManager
         
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            // console.log("Transport service, ",idTransportService)
             //on recupere le service en fonction de son id
             let message:Record<string, any>={};
             let idTransaction:EntityID=new EntityID()
