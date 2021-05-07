@@ -11,12 +11,12 @@ import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { TransportService } from "./transportservice";
 import { TransportServiceType } from "./transportservicetype";
 
-export class TransactionServiceState
+export enum TransactionServiceState
 {
-    static INIT:Number=0;
-    static SERVICE_ACCEPTED_AND_WAITING_PAIEMENT:Number=1;
-    static SERVICE_PAIEMENT_DONE_AND_RUNNING:Number=2;
-    static SERVICE_DONE_AND_END:Number=3;
+    INIT,
+    SERVICE_ACCEPTED_AND_WAITING_PAIEMENT,
+    SERVICE_PAIEMENT_DONE_AND_RUNNING,
+    SERVICE_DONE_AND_END,
 }
 
 export class InvalideServiceStateException extends KarryngoException
@@ -33,7 +33,7 @@ export class InvalideServiceStateException extends KarryngoException
 
 export class TransactionService extends KarryngoPersistentEntity
 {
-    state:Number;
+    state:TransactionServiceState;
     service:TransportServiceType;
     idProvider:String="";
     idRequester:String="";

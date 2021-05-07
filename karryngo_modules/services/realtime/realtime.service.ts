@@ -28,11 +28,12 @@ export class RealTimeService
 
        this.serverSocket.on(RealTimeInitMessageType.NEW_CONNECTION,(socket:Socket)=>{
         console.log("New Connection")    
-        this.handShakeForNewConnection(socket);
+        this.handShakeForNewConnection(socket); 
         this.handDisconnect(socket)
         })
     }
     handDisconnect(socket: Socket) {
+        socket.on(RealTimeInitMessageType.DISCONNECT,()=>socket.removeAllListeners());
         socket.on(RealTimeInitMessageType.LOGOUT,(data:RealTimeMessage)=>{
             this.routerRealTime.removeUser(data.senderID);
             this.eventEmiter.emit(RealTimeEvent.REALTIME_CONNEXION_ENDED,data.senderID);

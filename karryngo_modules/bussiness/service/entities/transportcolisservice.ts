@@ -13,9 +13,8 @@ import { TransportServiceType } from "./transportservicetype";
 export class TransportColisService extends TransportServiceType
 {
     static TYPE="TransportColisService";
-
     is_weak:Boolean=false;
-    typeof:String="";
+    typeof:String="colis";
     size_heigth:Number=0.0;
     size_depth:Number=0.0;
     size_width:Number=0.0;
@@ -28,7 +27,6 @@ export class TransportColisService extends TransportServiceType
         super.hydrate(entity);        
         let options=this.purgeAttribute(entity,"options");
         this.is_weak=this.purgeAttribute(options,"is_weak");
-        this.typeof=this.purgeAttribute(options,"typeof");
         this.package_name=this.purgeAttribute(options,"package_name");
         if(options.hasOwnProperty('size'))
         {

@@ -42,9 +42,6 @@ export class RequesterServiceManager
         private providerService:ProviderServiceManager
         ){}
 
-    
-    
-
     /**
      * @description permet a un provider d'ajouter un service qu'il est capable de rendre
      * @param request requete de l'utilisation
@@ -65,21 +62,12 @@ export class RequesterServiceManager
             service=new TransportPersonService(new EntityID());            
         }
         service.hydrate(request.body);
-            //sauvegarde en BD
-            let serviceData = {
-                ...service.toString(),
-                "idRequester":request.decoded.id,
-                "idSelectedProvider":"",
-                "idSelectedTransaction":"",
-                "providers":[],
-                "transactions":[],        
-            };
-            serviceData.toString=()=> serviceData;
+        service.idRequester=request.decoded.id
 
         this.fileUploadService.uploadAll(request.body.options.images)
         .then((result:ActionResult)=>{
             service.images=result.result;
-            return this.db.addToCollection(Configuration.collections.requestservice,serviceData);
+            return this.db.addToCollection(Configuration.collections.requestservice,service);
         })
         .then((result:ActionResult)=>{
             response.status(201).json({

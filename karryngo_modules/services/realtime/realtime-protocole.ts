@@ -12,7 +12,8 @@ export enum RealTimeInitMessageType
  SEND_MESSAGE,   
  NEW_CONNECTION="connect",
  LOGGIN="loggin",
- LOGOUT="logout"
+ LOGOUT="logout",
+ DISCONNECT="disconnect"
 }
 
 export enum RealTimeInitErrorType
