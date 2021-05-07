@@ -22,7 +22,8 @@ export class RealTimeService
         this.serverSocket=new Server(this.kcore.getServer(),{
             cors:{
                origin: ["http://localhost:4200"]
-            } 
+            },
+             transports:["websocket"]
            }
        );
 
@@ -33,11 +34,15 @@ export class RealTimeService
         })
     }
     handDisconnect(socket: Socket) {
-        socket.on(RealTimeInitMessageType.DISCONNECT,()=>socket.removeAllListeners());
+        socket.on(RealTimeInitMessageType.DISCONNECT,()=>{
+            socket.removeAllListeners()
+            socket.disconnect()
+        });
         socket.on(RealTimeInitMessageType.LOGOUT,(data:RealTimeMessage)=>{
             this.routerRealTime.removeUser(data.senderID);
             this.eventEmiter.emit(RealTimeEvent.REALTIME_CONNEXION_ENDED,data.senderID);
             console.log('Disconnexion')
+            socket.removeAllListeners()
             socket.disconnect();
         })
     }
