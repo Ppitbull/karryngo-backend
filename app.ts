@@ -9,7 +9,7 @@ var cors = require('cors');
 const app = express();
 let bodyParser = require('body-parser');  //librairie qui permet de parser une chaîne en JSON
 let router=express.Router();
-const httpServer = require("http").Server(app);
+const httpServer = require("http").createServer(app);
 
 app.use(cors())
 

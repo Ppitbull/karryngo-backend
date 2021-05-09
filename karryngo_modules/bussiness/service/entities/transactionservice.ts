@@ -15,8 +15,11 @@ export enum TransactionServiceState
 {
     INIT,
     SERVICE_ACCEPTED_AND_WAITING_PAIEMENT,
-    SERVICE_PAIEMENT_DONE_AND_RUNNING,
-    SERVICE_DONE_AND_END,
+    SERVICE_PAIEMENT_DONE_AND_WAITING_START,
+    SERVICE_RUNNING,
+    SERVICE_DONE_AND_WAIT_PROVIDER_PAIEMENT,
+    SERVICE_PROVIDER_PAIEMENT_DONE,
+    SERVICE_END,
 }
 
 export class InvalideServiceStateException extends KarryngoException
@@ -25,6 +28,9 @@ export class InvalideServiceStateException extends KarryngoException
     static INVALID_PRICE_IN_TRANSACTION_ERROR:Number=-108;
     static TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR:Number=-107;
     static TRANSACTION_IS_NOT_IN_RUNNIG_STATE_ERROR:Number=-106;
+    static TRANSACTION_IS_NOT_IN_WAITING_START_STATE_ERROR:Number=-105
+    static TRANSACTION_IS_NOT_IN_WAITING_PROVIDER_PAIEMENT_STATE_ERROR:Number=-104;
+    static TRANSACTION_IS_NOT_IN_PROVIDER_PAIEMENT_DONE_STATE_ERROR:Number=-103;
     constructor(code:Number,description:String)
     {
         super(code,"Error in transaction: "+description,description);
@@ -34,16 +40,16 @@ export class InvalideServiceStateException extends KarryngoException
 export class TransactionService extends KarryngoPersistentEntity
 {
     state:TransactionServiceState;
-    service:TransportServiceType;
+    // service:TransportServiceType;
     idProvider:String="";
     idRequester:String="";
     price:String="";
 
-    constructor(id:EntityID,transportService:TransportServiceType,)
+    constructor(id:EntityID=new EntityID(),)
     {
         super(id);
         this.state=TransactionServiceState.INIT;
-        this.service=transportService;
+        // this.service=transportService;
     }
 
     /**
@@ -63,45 +69,66 @@ export class TransactionService extends KarryngoPersistentEntity
         this.price=`${price}`;
         this.state=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT;
     }
-    makePaiement():Promise<ActionResult>
+    makePaiement()
     {
-        let dataResult:ActionResult=new ActionResult();
-        return new Promise<ActionResult>((resolve,reject)=>{
-            if(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT)
-            {
-                dataResult.resultCode=InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR;
-                dataResult.message="Cannot make paiement in that step of transaction"
-                reject(dataResult)
-            }
-            else
-            {
-                //on fait le paiemement. ici cela consite a retirer les fonds 
-                //du compte bancaire|carte de crédit|compte paypal|... vers le compte bancaire de la plateforme
-                this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_RUNNING;
-                //on notifie les 2 utilisateur
-                resolve(dataResult)
-            }
-        })
+        if(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT)
+        {
+            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR,
+                "Cannot make paiement in that step of transaction")
+        }
+            //on fait le paiemement. ici cela consite a retirer les fonds 
+            //du compte bancaire|carte de crédit|compte paypal|... du client vers le compte bancaire de la plateforme
+        this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START;
     }
 
 
+    startService()
+    {
+        if(this.state!=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START)
+        {
+            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_START_STATE_ERROR,
+                "Cannot start service in that step of transaction")
+        }
+        this.state=TransactionServiceState.SERVICE_RUNNING;
+    }
+
+    serviceDone()
+    {
+        if(this.state!=TransactionServiceState.SERVICE_RUNNING)
+        {
+            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_RUNNIG_STATE_ERROR,
+                "Cannot done service in that step of transaction")
+        }
+        this.state=TransactionServiceState.SERVICE_DONE_AND_WAIT_PROVIDER_PAIEMENT;
+    }
+
+    makeProviderPaiement()
+    {
+        if(this.state!=TransactionServiceState.SERVICE_DONE_AND_WAIT_PROVIDER_PAIEMENT)
+        {
+            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PROVIDER_PAIEMENT_STATE_ERROR,
+                "Cannot make a provider payement in that step of transaction")
+        }
+        //un evenement asynchrone seras emit pour faire le paiement
+        //on fait le paiemement. ici cela consite a retirer les fonds 
+        //du compte bancaire de la plateforme vers le compte  bancaire|carte de crédit|compte paypal|... du client
+        this.state=TransactionServiceState.SERVICE_PROVIDER_PAIEMENT_DONE;
+    }
      /**
      * @description Permet de terminer le service. a cette étape le demandeur et le fournisseur de service
      *  valide que le service est terminer. 
      *  @throws new InvalideServiceStateException() si cette méthode n'est pas appeler a une étape 
      *  ou l'on doit demander la fin du service
      */
-    endService():Promise<ActionResult>
+    endService()
     {
         let dataResult:ActionResult=new ActionResult();
-        if(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT)
+        if(this.state!=TransactionServiceState.SERVICE_PROVIDER_PAIEMENT_DONE)
         {
-            dataResult.resultCode=InvalideServiceStateException.TRANSACTION_IS_NOT_IN_RUNNIG_STATE_ERROR;
-            dataResult.message="Cannot make paiement in that step of transaction"
-            return Promise.reject(dataResult)
+            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_PROVIDER_PAIEMENT_DONE_STATE_ERROR,
+                "Cannot end service in that step of transaction")
         }
-        this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_RUNNING;
-        return Promise.resolve(dataResult);
+        this.state=TransactionServiceState.SERVICE_END;
     }
 
     /**

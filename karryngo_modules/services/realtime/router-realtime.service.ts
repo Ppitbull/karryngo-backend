@@ -1,6 +1,6 @@
 import { Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import {Server, Socket } from "socket.io"
+import {Socket } from "socket.io"
 import { RealTimeMessage } from "./realtime-protocole";
 
 export interface RealTimeDiscussion {
@@ -12,13 +12,30 @@ export interface RealTimeDiscussion {
 @Service()
 export class RealTimeRouterService
 {
+    
     listDiscution:RealTimeDiscussion[]=[];
     listUserConnected:Map<string,Socket>=new Map<string,Socket>();
+    listSocketUser:Map<string,string>=new Map<string,string>();
     constructor(){}
 
     hasUser(userID:string):boolean
     {
         return this.listUserConnected.has(userID)
+    }
+    hasSocketUSer(socketID:string):boolean
+    {
+        return this.listSocketUser.has(socketID);
+    }
+    addSocketUSer(socketID:string,userID:string)
+    {
+        if(!this.hasSocketUSer(socketID)) this.listSocketUser.set(socketID,userID);
+    }
+    removeSocketUser(id: string) {
+        if(this.listSocketUser.has(id))
+        {
+            this.removeUser(`${this.listSocketUser.get(id)}`);
+            this.listSocketUser.delete(id);
+        }  
     }
     removeUser(userID:string)
     {

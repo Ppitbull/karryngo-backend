@@ -18,11 +18,13 @@ export enum RealTimeInitMessageType
 
 export enum RealTimeInitErrorType
 {
-    SUCCESS,
+    SUCCESS,    
     USER_ALREADY_EXIST,
     INVALID_USER_ID,
     INVALID_USER_TOKEN,
-    UNKNOW_ERROR
+    UNKNOW_ERROR,
+    USER_ALREADY_CONNECTED,
+    CONNEXION_ERROR="connect_error"
 }
 
 export enum RealTimeChatMessageType 
@@ -38,6 +40,16 @@ export enum RealTimeChatError
     MESSAGE_NOT_EXIST,   
 }
 
+export enum RealTimeTransactionMessageType 
+{
+    GET_TRANSACTION="get_transaction",
+}
+
+export enum RealTimeTransactionError
+{
+    TRANSACTION_NOT_EXIST,   
+}
+
 export interface RealTimeMessage{
     senderID:string,
     receiverID:string,
@@ -47,8 +59,8 @@ export interface RealTimeMessage{
 }
 
 
-export type RealTimeMessageType = RealTimeInitMessageType | RealTimeChatMessageType;
-export type RealTimeErrorType = RealTimeInitErrorType | RealTimeChatError
+export type RealTimeMessageType = RealTimeInitMessageType | RealTimeChatMessageType | RealTimeTransactionMessageType;
+export type RealTimeErrorType = RealTimeInitErrorType | RealTimeChatError | RealTimeTransactionError
 
 /**
  * Protocole d'échange enter pair dans le temps réel

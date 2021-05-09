@@ -1,6 +1,6 @@
 import { ConfigService, Controller, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { ChatService } from "../../services/chats/chat.service";
-import {Server, Socket } from "socket.io"
+// import {Server, Socket } from "socket.io"
 import { KarryngoApp } from "../../../karryngo_core/KarryngoApp";
 import * as http from 'http'
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
@@ -39,9 +39,9 @@ export class RealTimeChatManager
         private chatService:ChatService,
         private eventEmiter:KarryngoEventEmitter,
         private routerRealTimeService:RealTimeRouterService){
-                this.eventEmiter.on(RealTimeEvent.REALTIME_CONNEXION_STARTED,(socket:Socket)=>this.init(socket))
+                this.eventEmiter.on(RealTimeEvent.REALTIME_CONNEXION_STARTED,(socket:any)=>this.init(socket))
     }
-    init(socket:Socket)
+    init(socket:any)
     {
 
         socket.on(RealTimeChatMessageType.GET_DISCUSSIONS,(data:RealTimeMessage)=>{

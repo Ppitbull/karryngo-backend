@@ -55,7 +55,7 @@ export class TransportServiceManager
                 }
 
                 //on recupere la liste des transactions
-                let transaction:TransactionService=new TransactionService(transactionList[transactionIndex].id,transportService);
+                let transaction:TransactionService=new TransactionService(transactionList[transactionIndex].id);
                 //on essaie car les methodes de l'objet de transaction lance des exceptions celon des cas
                 try{
                     //on accepte le pix
@@ -111,7 +111,7 @@ export class TransportServiceManager
 
                     //on creer une nouvelle transaction, on spécific le demandeur et le founisseur et on l'on insere en bd
                     
-                    let transaction=new TransactionService(idTransaction,service)
+                    let transaction=new TransactionService(idTransaction)
                     transaction.idProvider=idProvider;
                     transaction.idRequester=idRequester;
 
@@ -194,7 +194,7 @@ export class TransportServiceManager
                     service.hydrate(data.result[0]);//on l'hydrade avec les données de la bd
 
                     //on recupere la transaction en fonction de son id et on l'hydrate
-                    transaction=new TransactionService(new EntityID(),service)
+                    transaction=new TransactionService(new EntityID())
                     transactionList= data.result[0].transactions;
                 
                     let transactionObj= transactionList.find((transact:Record<string, any>)=>transact.id==idTransaction);
@@ -253,7 +253,7 @@ export class TransportServiceManager
                     //on recupere la transaction en fonction de son id et on l'hydrate
                     let transactionObj= transactionList.find((transact:Record<string, any>)=>transact.id==idTransaction);
                     
-                    let transaction:TransactionService=new TransactionService(new EntityID(),service);
+                    let transaction:TransactionService=new TransactionService(new EntityID());
                     transaction.hydrate(transactionObj);
                     transaction.endService();//on finalise le service
 
@@ -270,5 +270,23 @@ export class TransportServiceManager
                 reject(error);
             })
         });
+    }
+    getTransaction(idService:EntityID,idTransaction:EntityID):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>{
+            this.db.findInCollection(Configuration.collections.requestservice,
+                {
+                    "_id":idService.toString(),
+                    "transactions._id":idTransaction.toString()
+                },
+                {"transactions":true}
+            ,1)
+            .then((data:ActionResult)=>{
+                let transaction:TransactionService = new TransactionService();
+                transaction.hydrate(data.result[0].transactions[0]);
+                data.result=transaction;
+                resolve(data);
+            })
+        })
     }
 }
