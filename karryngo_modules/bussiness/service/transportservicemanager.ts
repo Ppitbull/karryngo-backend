@@ -7,13 +7,14 @@
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { TransportService } from "./entities/transportservice";
 import { Location } from "./../../services/geolocalisation/entities/location";
-import { TransactionService, TransactionServiceState } from "./entities/transactionservice";
+import { InvalideServiceStateException, TransactionService, TransactionServiceState } from "./entities/transactionservice";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { Controller, DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ServiceTypeFactory } from "./servicetypefactory";
-import { TransportServiceType } from "./entities/transportservicetype";
+import { TransportServiceType, TransportServiceTypeState } from "./entities/transportservicetype";
 import Configuration from "../../../config-files/constants";
+import { Message } from "../../services/chats/message";
 
 @DBPersistence()
 @Controller()
@@ -28,60 +29,56 @@ export class TransportServiceManager
      * @param idProvider Identifiant du fournisseur de service
      * @param price prix lié au service
      */
-    acceptServicePrice(idTransportService:String,idTransaction:String,idProvider:String,price:Number):Promise<ActionResult>
-    {
-        return new Promise<ActionResult>((resolve,reject)=>
-        {
-            //On recherche le service (description) en fonction de son id
-            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idTransportService},1)
-            .then((data:ActionResult)=>{//si on trouve
-                
-                //on instanci le bon type de service en fonction de son champ `type`
-                let transportService:TransportServiceType=ServiceTypeFactory.getInstance(data.result[0].type);
-                transportService.hydrate(data.result[0]);//on l'hydrate avec les données recupéré de la bd
-
-                //liste des transactions
-                let transactionList:Record<string, any>[]= data.result[0].transactions;
-                
-                //on recherche la transaction courante
-                let transactionIndex= transactionList.findIndex((transact:Record<string, any>)=>transact.id==idTransaction);
-                
-                if(transactionIndex<0) //si on ne la retrouve pas (id de la transaction pas trouvé en bd) on rejete la promesse
-                {
-                    data.result=null;
-                    data.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
-                    data.message=`Transaction with id ${idTransaction} not found`;
-                    return Promise.reject(data);
+    acceptServicePrice(idTransportService:EntityID,idTransaction:EntityID):Promise<ActionResult>
+    {  //On recherche le service (description) en fonction de son id
+        return this.db.findInCollection(Configuration.collections.requestservice,
+            {
+                "transactions":{
+                    $elemMatch:{
+                        "_id":idTransaction.toString()
+                    }
                 }
+            }
+        )
+        .then((data:ActionResult)=>{//si on trouve
+            //on instanci le bon type de service en fonction de son champ `type`
+            let transportService:TransportServiceType=ServiceTypeFactory.getInstance(data.result[0].type);
+            transportService.hydrate(data.result[0]);//on l'hydrate avec les données recupéré de la bd
+            // console.log("DatSDFqa",transportService)
 
-                //on recupere la liste des transactions
-                let transaction:TransactionService=new TransactionService(transactionList[transactionIndex].id);
-                //on essaie car les methodes de l'objet de transaction lance des exceptions celon des cas
-                try{
-                    //on accepte le pix
-                    transaction.acceptPrice(price);
-                    //on met a jour le tableau des transactions
-                    transactionList.splice(transactionIndex,1);
-                    transactionList.push(transaction.toString());
-
-                    //on repercute la transaction en bd
-                    return this.db.updateInCollection(
-                        Configuration.collections.requestservice,
-                        {"_id":idTransportService},
-                        {"transactions":transactionList,"idSelectedTransaction":idTransaction,"idSelectedProvider":idProvider},{});
-                }
-                catch(e)
-                {
-                    //si une exception est lancé on la capture et on la traite
-                    data.result=null;
-                    data.message=e.getMessage();
-                    data.resultCode=e.getCode();
-                    return Promise.reject(data);
-                }
-            })
-            .then((data:ActionResult)=>resolve(data))
-            .catch((error:ActionResult)=>reject(error));
-        });
+            //on recupere on instancie la transaction en question
+            let transaction:TransactionService=transportService.transactions[0];
+            //on essaie car les methodes de l'objet de transaction lance des exceptions celon des cas
+            try{
+                //on accepte le pix
+                transaction.acceptPrice(transportService.suggestedPrice);
+                //on met a jour la bd
+                return this.db.updateInCollection(
+                    Configuration.collections.requestservice,
+                    {
+                        "_id":idTransportService.toString(),
+                        "transactions._id":idTransaction.toString()
+                    },
+                    {
+                        $set:{
+                            "idSelectedProvider":transaction.idProvider.toString(),
+                            "state":TransportServiceTypeState.SERVICE_IN_TRANSACTION_STATE,
+                            "idSelectedTransaction":idTransaction.toString(),
+                            "transactions.$.state":transaction.state,
+                            "transactions.$.price":transaction.price
+                        }
+                    }
+                );
+            }
+            catch(e)
+            {
+                //si une exception est lancé on la capture et on la traite
+                data.result=null;
+                data.message=e.getMessage();
+                data.resultCode=e.getCode();
+                return Promise.reject(data);
+            }
+        })
     }
 
     /**
@@ -91,8 +88,7 @@ export class TransportServiceManager
      * @param idRequester Identifiant du demandeur de service
      */
     startTransaction(idTransportService:String,idProvider:String,idRequester:String):Promise<ActionResult>
-    {
-        
+    {        
         return new Promise<ActionResult>((resolve,reject)=>
         {
             //on recupere le service en fonction de son id
@@ -157,133 +153,133 @@ export class TransportServiceManager
             //doit faire intéragir les notifications
         })
     }
+    updateServicePrice(transaction:TransactionService):Promise<ActionResult>
+    {
+        return this.db.updateInCollection(Configuration.collections.requestservice,
+            {
+                "transactions._id":transaction.id.toString()
+            },
+            {
+                $set:{ 
+                    "transactions.$.price":transaction.price,
+                    "suggestedPrice":transaction.price
+                }
+            })
+    }
 
     /**
      * @description Permet au demandeur de service d'effectué le paiement sur la plateforme
      * @param idService Identifiant du service
      * @param idTransaction Identifiant de la transaction
      */
-    makePaiement(idService:String,idTransaction:String):Promise<ActionResult>
+    makePaiement(idTransaction:EntityID):Promise<ActionResult>
     {
-        return new Promise<ActionResult>((resolve,reject)=>
-        {
-            let transaction:TransactionService;
-            let transactionIndex:number;
-            let transactionList:Record<string, any>[];
+        let transaction:TransactionService;
+
+        console.log("Ici le paiement")
             //on recupere le service en fonction de son identifiant
-            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idService},1)
-            .then((data:ActionResult)=>{ 
-                if( data.result[0].idSelectedTransaction==undefined || 
-                    data.result[0].idSelectedTransaction==""
-                )
-                {
-                    //si le service ne permet pas encore de faire le paiement (l'étape n'est pas 
-                    //le bon ) on rejete la promesse avec le message d'érreur associer
-                    data.result=null;
-                    data.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
-                    data.message="Impossible de faire le paiement a cette étape";
-                    return Promise.reject(data);
-                }
-                else
-                {
-                    
-                    //si on peut faire le paiemement
-
-                    // on instanci le service en fonction de son champ `type`
-                    let service:TransportServiceType=ServiceTypeFactory.getInstance(data.result[0].type);
-                    service.hydrate(data.result[0]);//on l'hydrade avec les données de la bd
-
-                    //on recupere la transaction en fonction de son id et on l'hydrate
-                    transaction=new TransactionService(new EntityID())
-                    transactionList= data.result[0].transactions;
-                
-                    let transactionObj= transactionList.find((transact:Record<string, any>)=>transact.id==idTransaction);
-                    transaction.hydrate(transactionObj);
-
-                    //on fait le paiement
-                    return transaction.makePaiement()
-                }
-            })
-            .then((data:ActionResult)=>{
-                //on met a jour le tableau des transactions et on repercute la modification en bd
-                transactionList.splice(transactionIndex,1);
-                    transactionList.push(transaction.toString());
-                    return this.db.updateInCollection(
-                        Configuration.collections.requestservice,
-                        {"_id":idService},
-                        {"transactions":transactionList},{});
-                
-            })
-            .then((data:ActionResult)=>resolve(data))
-            .catch((error:ActionResult)=>{
-                reject(error);
-            })
-        });
+        return this.getTransaction(idTransaction)
+        .then((data:ActionResult)=>{ 
+            // on instanci le service en fonction de son champ `type`
+            
+            //on fait le paiement
+            try
+            {
+                transaction=data.result;
+                transaction.makePaiement();
+                return this.db.updateInCollection(Configuration.collections.requestservice,
+                    {
+                        "transactions._id":idTransaction.toString()
+                    },
+                    {
+                        $set:{ 
+                            "transactions.$.state":transaction.state,
+                        }
+                    });
+            }
+            catch(error:any)
+            {
+                data.resultCode=ActionResult.INVALID_ARGUMENT;
+                data.message=error.getMessage();
+                data.result=null;
+                return Promise.reject(data);
+            } 
+        })
     }
 
+    startRunningTransaction(idTransaction:EntityID):Promise<ActionResult>
+    {
+        return this.getTransaction(idTransaction)
+            .then((result:ActionResult)=>{
+
+                 let transaction:TransactionService=result.result;
+                 try {
+                    transaction.startService();
+                    return this.db.updateInCollection(Configuration.collections.requestservice,
+                        {
+                            "transactions._id":transaction.id.toString()
+                        },
+                        {
+                            $set:{ 
+                                "transactions.$.state":transaction.state,
+                            }
+                        });
+                 } catch (error) {
+                    result.resultCode=ActionResult.INVALID_ARGUMENT;
+                    result.message=error.getMessage();
+                    result.result=null;
+                    return Promise.reject(result);
+                 }
+            })
+        
+    }
     /**
      * 
      * @param idService identifiant du service
      * @param idTransaction identifiant de la transaction
      */
-    endTransaction(idService:String,idTransaction:String):Promise<ActionResult>
+    endTransaction(idTransaction:EntityID):Promise<ActionResult>
     {
-        return new Promise<ActionResult>((resolve,reject)=>
-        {
-            //on recupere le service en fonction de son identifiant
-            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idService},1)
-            .then((data:ActionResult)=>{ 
-                if( data.result[0].idSelectedTransaction==undefined || 
-                    data.result[0].idSelectedTransaction==""
-                )
-                {
-                    //si on est pas encore a l'étape permettant de finalisé le service
-                    data.result=null;
-                    data.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
-                    data.message="Impossible de finalisé le service a cette étape";
-                    return Promise.reject(data);
-                }
-                else
-                {                    
-                    //on recupere le service en fonction de son identifiant 
-                    let service:TransportServiceType=ServiceTypeFactory.getInstance(data.result[0].type);
-                    service.hydrate(data.result[0]);//on l'hydrate avec les données de la bd
-                    let transactionList= data.result[0].transactions;
-                    
-                    //on recupere la transaction en fonction de son id et on l'hydrate
-                    let transactionObj= transactionList.find((transact:Record<string, any>)=>transact.id==idTransaction);
-                    
-                    let transaction:TransactionService=new TransactionService(new EntityID());
-                    transaction.hydrate(transactionObj);
-                    transaction.endService();//on finalise le service
+        return this.getTransaction(idTransaction)
+            .then((result:ActionResult)=>{
 
-                    //on met a jour la bd
-                    return this.db.updateInCollection(
-                        Configuration.collections.requestservice,
-                        {"_id":idService},
-                        {"transactions":transactionList},{});
-                
-                }
+                 let transaction:TransactionService=result.result;
+                 try {
+                    transaction.serviceDone();
+                    return this.db.updateInCollection(Configuration.collections.requestservice,
+                        {
+                            "transactions._id":transaction.id.toString()
+                        },
+                        {
+                            $set:{ 
+                                "transactions.$.state":transaction.state,
+                            }
+                        });
+                 } catch (error) {
+                    result.resultCode=ActionResult.INVALID_ARGUMENT;
+                    result.message=error.getMessage();
+                    result.result=null;
+                    return Promise.reject(result);
+                 }
             })
-            .then((data:ActionResult)=>resolve(data))
-            .catch((error:ActionResult)=>{
-                reject(error);
-            })
-        });
     }
-    getTransaction(idService:EntityID,idTransaction:EntityID):Promise<ActionResult>
+    getTransaction(idTransaction:EntityID):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             this.db.findInCollection(Configuration.collections.requestservice,
                 {
-                    "_id":idService.toString(),
-                    "transactions._id":idTransaction.toString()
+                    "transactions":{
+                        $elemMatch:{
+                            "_id":idTransaction.toString()
+                        }
+                    }
                 },
-                {"transactions":true}
-            ,1)
+            )
             .then((data:ActionResult)=>{
+                
                 let transaction:TransactionService = new TransactionService();
                 transaction.hydrate(data.result[0].transactions[0]);
+                console.log("Transaction ",transaction)
                 data.result=transaction;
                 resolve(data);
             })

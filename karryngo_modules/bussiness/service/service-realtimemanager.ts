@@ -26,29 +26,30 @@ export class RealTimeChatManager
     }
     init(socket:any)
     {
-
-        socket.on(RealTimeTransactionMessageType.GET_TRANSACTION,(data:RealTimeMessage)=>{
-            let senderId=new EntityID();
-            senderId.setId(data.senderID);
-            let serviceID=new EntityID()
-            serviceID.setId(data.data.idProjet);
-            let transactionID:EntityID=new EntityID();
-            transactionID.setId(data.data.idTransaction)
-            // console.log("senderID ",senderId.toString())
-            this.transportServiceManager.getTransaction(serviceID,transactionID)
-            .then((result:ActionResult)=> this.routerRealTimeService.send({
-                senderID:UNKNOW_SENDER,
-                receiverID:data.senderID,
-                type:RealTimeTransactionMessageType.GET_TRANSACTION,
-                data:result.result.toString(),
-                error:RealTimeInitErrorType.SUCCESS
-            }))
-            .catch((error:ActionResult)=> this.routerRealTimeService.send({
-                senderID:UNKNOW_SENDER,
-                receiverID:data.senderID,
-                type:RealTimeTransactionMessageType.GET_TRANSACTION,
-                error:RealTimeTransactionError.TRANSACTION_NOT_EXIST
-            }))
-        })
+        console.log("Start transaction socket")
+        // socket.on(RealTimeTransactionMessageType.GET_TRANSACTION,(data:RealTimeMessage)=>{
+        //     console.log("Transaction here")
+        //     let senderId=new EntityID();
+        //     senderId.setId(data.senderID);
+        //     let serviceID=new EntityID()
+        //     serviceID.setId(data.data.idProjet);
+        //     let transactionID:EntityID=new EntityID();
+        //     transactionID.setId(data.data.idTransaction)
+        //     // console.log("senderID ",senderId.toString())
+        //     this.transportServiceManager.getTransaction(serviceID,transactionID)
+        //     .then((result:ActionResult)=> this.routerRealTimeService.send({
+        //         senderID:UNKNOW_SENDER,
+        //         receiverID:data.senderID,
+        //         type:RealTimeTransactionMessageType.GET_TRANSACTION,
+        //         data:result.result.toString(),
+        //         error:RealTimeInitErrorType.SUCCESS
+        //     }))
+        //     .catch((error:ActionResult)=> this.routerRealTimeService.send({
+        //         senderID:UNKNOW_SENDER,
+        //         receiverID:data.senderID,
+        //         type:RealTimeTransactionMessageType.GET_TRANSACTION,
+        //         error:RealTimeTransactionError.TRANSACTION_NOT_EXIST
+        //     }))
+        // })
     }
 }

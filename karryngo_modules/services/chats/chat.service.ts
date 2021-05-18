@@ -9,6 +9,7 @@ import { DBPersistence, Service } from "../../../karryngo_core/decorator/depende
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
+import { TransactionService } from "../../bussiness/service/entities/transactionservice";
 import { Discussion } from "./discussion";
 import { Message } from "./message";
 
@@ -18,6 +19,48 @@ export class ChatService
 {
     private db:any={};
 
+    findDiscussByTransactionAndSendMessage(transaction:TransactionService,message:Message)
+    {
+        this.findDisccussByTransaction(transaction)
+        .then((result:ActionResult)=>{
+            return this.send(message,result.result.id);
+        })
+    }
+    findDisccussByTransactionID(idTransaction:EntityID):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve, reject)=>{
+            this.db.findInCollection(
+                Configuration.collections.chat,
+                { "idTransaction":idTransaction.toString() },
+                {"chats":false}
+            ).then((result:ActionResult)=>
+            {
+                let disc:Discussion=new Discussion(result.result[0]._id);
+                disc.hydrate(result.result[0]);
+                result.result=disc;
+                resolve(result);
+            })
+        })
+    }
+    findDisccussByTransaction(transaction:TransactionService):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve, reject)=>{
+            this.db.findInCollection(
+                Configuration.collections.chat,
+                { "idTransaction":transaction.id.toString() },
+                {"chats":false}
+            ).then((result:ActionResult)=>
+            {
+                let id:EntityID=new EntityID();
+                id.setId(result.result[0]._id);
+                let disc:Discussion=new Discussion(id);
+                // console.log("Discuss ",result.result[0])
+                disc.hydrate(result.result[0]);
+                result.result=disc;
+                resolve(result);
+            })
+        })
+    }
     send(message:Message,idDiscuss:String=new EntityID().toString()):Promise<ActionResult>
     {
         return this.db.updateInCollection(
@@ -59,7 +102,10 @@ export class ChatService
                 "chats._id":idMessage
             },
             {
-                $set:{ "chats.$.read":1}
+                $set:{ 
+                    "chats.$.read":1,
+                    "read":0
+                }
             });
     }
     getDiscussionList(idUser:EntityID):Promise<ActionResult>

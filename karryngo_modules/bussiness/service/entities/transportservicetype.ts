@@ -7,6 +7,7 @@
 import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { Location } from "../../../services/geolocalisation/entities/location";
+import { TransactionService } from "./transactionservice";
 import { TransportService } from "./transportservice";
 import { Vehicle } from "./vehicle";
 
@@ -30,14 +31,14 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
     date_departure:String="";
     date_arrival:String="";
     title:String="";
-    suggestedPrice:number=0;
+    suggestedPrice:String="0";
     state:TransportServiceTypeState=TransportServiceTypeState.SERVICE_INIT_STATE;
 
     idRequester:string=""
     idSelectedProvider:string="";
     idSelectedTransaction:string="";
     providers:any[]=[];
-    transactions:any[]=[];
+    transactions:TransactionService[]=[];
 
     constructor(
         id:EntityID=new EntityID(),
@@ -106,7 +107,11 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
         }
         if(entity.transactions)
         {
-            this.transactions=this.purgeAttribute(entity,"transactions")
+            this.transactions=entity.transactions.map((trans:Record<string,any>)=>{
+                let transaction=new TransactionService(trans._id);
+                transaction.hydrate(trans);
+                return transaction;
+            })
         }
 
     }
@@ -141,7 +146,7 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
             idSelectedProvider:this.idSelectedProvider,
             idSelectedTransaction:this.idSelectedTransaction,
             providers:this.providers,
-            transactions:this.transactions
+            transactions:this.transactions.map((trans:TransactionService)=>trans.toString())
         };
         //stringify date format ISO 8601
     }

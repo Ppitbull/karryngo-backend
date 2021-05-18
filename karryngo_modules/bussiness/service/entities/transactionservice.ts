@@ -52,6 +52,12 @@ export class TransactionService extends KarryngoPersistentEntity
         // this.service=transportService;
     }
 
+    updatePrice(price:String)
+    {
+        let p : number=+price;
+        if(p<0) throw new Error("price can't be negatve");
+        this.price=`${p}`;
+    }
     /**
      * @description Permet d'accepter de prix par le fournisseurs de service. il permet a 
      *  la transaction de passé a un l'état Service accepter (voir diagramme d'état transition de 
@@ -60,13 +66,15 @@ export class TransactionService extends KarryngoPersistentEntity
      * @throws new InvalideServiceStateException() si cette méthode n'est pas appeler a une étape 
      *  ou l'on doit demander d'accepter le prix du service
      */
-    acceptPrice(price:Number)
+    acceptPrice(price:String)
     {
         if(this.state!=TransactionServiceState.INIT) 
             throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_INIT_STATE_ERROR,"la transaction doit être dans son état initial")
-        if(price<0)
+        
+        let p=parseInt(price.toString());
+        if(p<0)
             throw new InvalideServiceStateException(InvalideServiceStateException.INVALID_PRICE_IN_TRANSACTION_ERROR,"Le prix doit être supérieur a 0")
-        this.price=`${price}`;
+        this.price=price;
         this.state=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT;
     }
     makePaiement()

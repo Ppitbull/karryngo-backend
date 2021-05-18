@@ -13,6 +13,7 @@ export class ActionResult
     result:any="";
     static RESSOURCE_NOT_FOUND_ERROR=-1;
     static NETWORK_ERROR=-2;
+    static INVALID_ARGUMENT=-3;
     static UNKNOW_ERROR=-10;
     static SUCCESS=0;
     static RESSOURCE_ALREADY_EXIST_ERROR:Number=-4;

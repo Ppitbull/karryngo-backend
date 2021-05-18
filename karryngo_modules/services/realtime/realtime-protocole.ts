@@ -49,18 +49,32 @@ export enum RealTimeTransactionError
 {
     TRANSACTION_NOT_EXIST,   
 }
+export enum RealTimeChatMessageUpdateDataType
+{
+    PACKAGE_UPDATED="package_update",
+}
+
+export interface RealTimeUpdateData
+{
+    type:RealTimeChatMessageUpdateDataType
+    data:Record<string,any>
+}
+
 
 export interface RealTimeMessage{
     senderID:string,
     receiverID:string,
-    data?:any,
+    data?:any | RealTimeUpdateData,
     type:RealTimeMessageType,
+    subtype?:RealTimeSubMessageType,
     error?:RealTimeErrorType
 }
 
 
 export type RealTimeMessageType = RealTimeInitMessageType | RealTimeChatMessageType | RealTimeTransactionMessageType;
-export type RealTimeErrorType = RealTimeInitErrorType | RealTimeChatError | RealTimeTransactionError
+export type RealTimeErrorType = RealTimeInitErrorType | RealTimeChatError | RealTimeTransactionError;
+
+export type RealTimeSubMessageType = RealTimeUpdateData;
 
 /**
  * Protocole d'échange enter pair dans le temps réel

@@ -2,6 +2,7 @@ import { Controller } from "../../../karryngo_core/decorator/dependecy_injector.
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { ChatService } from "../../services/chats/chat.service";
+import { Discussion } from "../../services/chats/discussion";
 import { Message } from "../../services/chats/message";
 
 @Controller()
@@ -60,6 +61,25 @@ export class ChatManager
             message:error.message
         }));
     }
+
+    getDiscutionList(request:any,response:any):void
+    {
+        let id:EntityID=new EntityID();
+        id.setId(request.decoded.id);
+        this.chatService
+        .getDiscussionList(id)
+        .then((result)=>{
+            response.status(200).json({
+                resultCode:result.resultCode,
+                result:result.result.map((disc:Discussion)=>disc.toString())
+            })
+        })
+        .catch((error:ActionResult)=> response.status(500).json({
+            resultCode:error.resultCode,
+            message:error.message
+        }));
+    }
+
 
     markAsRead(request:any,response:any):void
     {
