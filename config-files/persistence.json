@@ -1,9 +1,5 @@
 {
     "persistence_type":"NoSQL",
-    "database":"karryngo",
-    "hostname":"localhost",
-    "username":"root",
-    "password":"",
     "classe":"/karryngo_core/persistence/MongoDBManager",
     "database_file":{
         "database":"karryngo_file",
