@@ -36,43 +36,81 @@ export class RealTimeChatManager
     configService:any={};
     
     constructor(
-        // private realtimeService:RealTimeService,
+        private realtimeService:RealTimeService,
         private chatService:ChatService,
         private eventEmiter:KarryngoEventEmitter,
-        // private routerRealTimeService:RealTimeRouterService
+        private routerRealTimeService:RealTimeRouterService
         ){
-                // this.eventEmiter.on(RealTimeEvent.REALTIME_CONNEXION_STARTED,(socket:any)=>this.init(socket))
+                this.eventEmiter.on(RealTimeEvent.REALTIME_CONNEXION_STARTED,(socket:any)=>this.init(socket))
     }
     init(socket:any)
     {
 
-        // socket.on(RealTimeChatMessageType.GET_DISCUSSIONS,(data:RealTimeMessage)=>{
-        //     let senderId=new EntityID();
-        //     senderId.setId(data.senderID);
-        //     // console.log("senderID ",senderId.toString())
-        //     this.chatService.getDiscussionList(senderId)
-        //     .then((result:ActionResult)=>{
-        //         // console.log("Realt time discu: ",result)
-        //         this.routerRealTimeService.send({
-        //             senderID:UNKNOW_SENDER,
-        //             receiverID:data.senderID,
-        //             type:RealTimeChatMessageType.GET_DISCUSSIONS,
-        //             data:result.result.map((data:Discussion)=>data.toString()),
-        //             error:RealTimeInitErrorType.SUCCESS
-        //         });
+        socket.on(RealTimeChatMessageType.GET_DISCUSSIONS,(data:RealTimeMessage)=>{
+            let senderId=new EntityID();
+            senderId.setId(data.senderID);
+            // console.log("senderID ",senderId.toString())
+            this.chatService.getDiscussionList(senderId)
+            .then((result:ActionResult)=>{
+                // console.log("Realt time discu: ",result)
+                this.routerRealTimeService.send({
+                    senderID:UNKNOW_SENDER,
+                    receiverID:data.senderID,
+                    type:RealTimeChatMessageType.GET_DISCUSSIONS,
+                    data:result.result.map((data:Discussion)=>data.toString()),
+                    error:RealTimeInitErrorType.SUCCESS
+                });
 
-        //     })
-        //     .catch((error:ActionResult)=>{
-        //         this.routerRealTimeService.send({
-        //             senderID:UNKNOW_SENDER,
-        //             receiverID:data.senderID,
-        //             type:RealTimeChatMessageType.GET_DISCUSSIONS,
-        //             error:RealTimeInitErrorType.UNKNOW_ERROR
-        //         })
-        //     })
-        // })
+            })
+            .catch((error:ActionResult)=>{
+                this.routerRealTimeService.send({
+                    senderID:UNKNOW_SENDER,
+                    receiverID:data.senderID,
+                    type:RealTimeChatMessageType.GET_DISCUSSIONS,
+                    error:RealTimeInitErrorType.UNKNOW_ERROR
+                })
+            })
+        })
+
+        socket.on(RealTimeChatMessageType.SEND_MESSAGE,(data:RealTimeMessage)=>this.handleSendMessage(data))
     }
 
+    handleSendMessage(data:RealTimeMessage)
+    {
+        // console.log("new msessa" ,data)
+        let id:EntityID=new EntityID();
+        id.setId(data.data._id)
+        let fromId:EntityID  = new EntityID();
+        fromId.setId(data.data.from);
+        let toId:EntityID=new EntityID();
+        toId.setId(data.data.to);
+
+        let discId:EntityID=new EntityID();
+        discId.setId(data.data.idDiscussion);
+
+        let message =new Message(id);
+        message.to.setId(data.data.to);
+        message.from.setId(data.data.from);
+        message.date=data.data.date;
+        message.content=data.data.content;
+        
+
+        this.chatService.findMessageByDiscussionId(id,discId)
+        .then((result)=>{
+            console.log("result ",result)
+            if(result.result && result.result.length==0)
+            {
+                this.chatService.send(message,data.data.idDiscussion)
+                .then((result:ActionResult)=>this.routerRealTimeService.send(data))
+            }
+        })
+        .catch((error)=>{
+            console.log("error ",error)
+            this.chatService.send(message,data.data.idDiscussion)
+            .then((result:ActionResult)=>this.routerRealTimeService.send(data))
+        })
+        
+    }
     notifyUser(discuss:Discussion,currentUserId:EntityID,transactionID:EntityID,messageContent:any,subType:boolean=false,subMessage:any={}):Message
     {
             let message:Message=new Message(new EntityID());
@@ -85,29 +123,29 @@ export class RealTimeChatManager
                 :discuss.inter1.toString()
             );
 
-            // this.routerRealTimeService.send({
-            //     senderID:message.from.toString().toString(),
-            //     receiverID:message.to.toString().toString(),
-            //     type:RealTimeChatMessageType.SEND_MESSAGE,
-            //     error:RealTimeInitErrorType.SUCCESS,
-            //     data:{
-            //         idDisccuss:discuss.id.toString(),
-            //         idTransaction:transactionID.toString().toString(),
-            //         message:message.toString()
-            //     }
-            // })
+            this.routerRealTimeService.send({
+                senderID:message.from.toString().toString(),
+                receiverID:message.to.toString().toString(),
+                type:RealTimeChatMessageType.SEND_MESSAGE,
+                error:RealTimeInitErrorType.SUCCESS,
+                data:{
+                    idDisccuss:discuss.id.toString(),
+                    idTransaction:transactionID.toString().toString(),
+                    message:message.toString()
+                }
+            })
 
-            // this.routerRealTimeService.send({
-            //     senderID:message.from.toString().toString(),
-            //     receiverID:message.from.toString().toString(),
-            //     type:RealTimeChatMessageType.SEND_MESSAGE,
-            //     error:RealTimeInitErrorType.SUCCESS,
-            //     data:{
-            //         idDisccuss:discuss.id.toString(),
-            //         idTransaction:transactionID.toString().toString(),
-            //         message:message.toString()
-            //     }
-            // });
+            this.routerRealTimeService.send({
+                senderID:message.from.toString().toString(),
+                receiverID:message.from.toString().toString(),
+                type:RealTimeChatMessageType.SEND_MESSAGE,
+                error:RealTimeInitErrorType.SUCCESS,
+                data:{
+                    idDisccuss:discuss.id.toString(),
+                    idTransaction:transactionID.toString().toString(),
+                    message:message.toString()
+                }
+            });
             return message;
     }
 }

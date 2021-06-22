@@ -2,6 +2,7 @@ import { Service, KFileStorage } from "../../../karryngo_core/decorator/dependec
 import { KFile, KFileLink  } from "../../../karryngo_core/fs/KFile";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
+import { FileSystemException } from "../../../karryngo_core/exception/FileSystemException";
 
 
 @Service()
@@ -12,20 +13,20 @@ export class FileService {
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let links:KFileLink[]=[];
-            let files:KFile[]= docs.map((file:Record<string| number,any>)=>{
+            docs.forEach((file:Record<string| number,any>)=>{
                 let f:KFile=new KFile(new EntityID());
                 f.hydrate(file);
                 links.push({link:`/files/${f._id.toString()}`})
                 return f;
             })
 
-            Promise.all(files.map((file:KFile)=> this.fs.put(file)))
+            Promise.all(docs.map((f)=>this.uploadOnce(f)) ) //files.map((file:KFile)=> this.fs.put(file))
             .then((result:any)=>{
                 let r:ActionResult=new ActionResult();
                 r.result=links;
                 resolve(r);
             })
-            .catch((error:ActionResult)=> reject(error));
+            .catch((error:ActionResult)=>reject(error));
         });
     }
 
@@ -42,7 +43,13 @@ export class FileService {
                 r.result=link;
                 resolve(r);
             })
-            .catch((error:ActionResult)=> reject(error));
+            .catch((e:any)=> {
+                let error = new ActionResult();
+                error.resultCode=FileSystemException.UNABLE_TO_IMPORT_ERROR;
+                error.description=error.message;
+                error.message=`Unable to import filename ${file.name}`
+                reject(error)
+            });
         });
     }
 }

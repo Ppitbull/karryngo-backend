@@ -15,6 +15,6 @@ export class ConfigurationException extends KarryngoException
     
     constructor(code:Number,description:String)
     {
-        super(code,"Erreur de configuration",description);
+        super(code,"Erreur de configuration "+description,description);
     }
 }

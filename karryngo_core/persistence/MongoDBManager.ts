@@ -12,6 +12,7 @@ import { MongoClient } from  "mongodb";
 
 import { NoSqlPersistenceManager } from "./NoSqlPersistenceManager";
 import { DataBaseException } from "../exception/DataBaseException";
+import Configuration from "../../config-files/constants";
 
 export class MongoDBManager extends NoSqlPersistenceManager
 {
@@ -72,7 +73,8 @@ export class MongoDBManager extends NoSqlPersistenceManager
             .insertOne(entity.toString(),
                 (err:any,res:any)=>{
                     if(err!=undefined && err!=null) {
-                        result.message="Cannot add document to "+collectionName;
+                        result.resultCode=DataBaseException.DATABASE_UNKNOW_ERROR;
+                        result.message="Unable to insert data  in "+collectionName;
                         result.result=err;
                         reject(result);
                     }
@@ -143,17 +145,41 @@ export class MongoDBManager extends NoSqlPersistenceManager
         return this.getCollection(entity.constructor.name.toLowerCase());
     }
     
+    static connexionStringBuilder(configUrl:{
+        server_prefix:String,
+        username?:String,
+        password?:String,
+        hostname:String,
+        database:String,
+        params?:String
+    }):String
+    {
+        let connexionString=configUrl.server_prefix+'://';
+        if(configUrl.username && configUrl.password) connexionString+=`${configUrl.username}:${configUrl.password}@`;
+        connexionString+=`${configUrl.hostname}/${configUrl.database}`;
+        if(configUrl.params) connexionString+=`${configUrl.params}`
+        return connexionString;
+    }
+
     /**
      * @description Cette message permet de faire une connexion a une bd MongoDB
      * @param configUrl parametre permetant de constitué l'url de connexion
      */
-    static connect(configUrl:Record<string, any>): Promise<ActionResult>
+    static connect(configUrl:{
+        server_prefix:String,
+        username?:String,
+        password?:String,
+        hostname:String,
+        database:String,
+        params?:String
+    }): Promise<ActionResult>
     {
         let result:ActionResult=new ActionResult();
-        let connexionString=`mongodb://${configUrl.hostname}:${configUrl.port}/`;
+        let connexionString=MongoDBManager.connexionStringBuilder(configUrl).toString();
+        // let connexionString=`mongodb+srv://admin:KFBbc7ebBHHloYyd@cluster0.kiwom.mongodb.net/karryngo?retryWrites=true&w=majority`
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            let mongoClient = new MongoClient(connexionString);
+            let mongoClient = new MongoClient(connexionString, { useNewUrlParser: true, useUnifiedTopology: true });
             //connexion a la bd
             mongoClient.connect((err)=>{
                 if(err)
@@ -167,7 +193,7 @@ export class MongoDBManager extends NoSqlPersistenceManager
                 else
                 {
                     //si la connexion s'ouvre alors on resoud la promise
-                    result.result=mongoClient.db(configUrl.database);
+                    result.result=mongoClient.db(configUrl.database.toString());
                     //mongoClient.close();
                     resolve(result);
                 }
@@ -181,7 +207,9 @@ export class MongoDBManager extends NoSqlPersistenceManager
     connect(): Promise<ActionResult> {
         //creation de l'url de connexion a la bd a partir des informations du service de configuration        
         return new Promise<ActionResult>((resolve,reject)=>{
-            MongoDBManager.connect(this.configService.getValueOf('persistence'))
+            
+            // MongoDBManager.connect(this.configService.getValueOf('persistence'))
+            MongoDBManager.connect(this.configService.getValueOf('persistence')[Configuration.env_mode].database_data)
             .then((data:ActionResult)=>{
                 this.db=data.result;
                 data.result=null;
@@ -189,9 +217,6 @@ export class MongoDBManager extends NoSqlPersistenceManager
             })
             .catch ((error:ActionResult)=> reject(error))
         })
-        this.db;
-
-       
     }
 
     /**

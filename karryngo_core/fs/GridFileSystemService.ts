@@ -7,6 +7,7 @@ import { GridFSBucket } from  "mongodb";
 import { MongoDBManager } from "../persistence/MongoDBManager";
 import { EntityID } from "../utils/EntityID";
 import { KFile } from "./KFile";
+import Configuration from "../../config-files/constants";
 
 export class GridFileSystemService implements KarryngoFileStorage
 {
@@ -15,16 +16,9 @@ export class GridFileSystemService implements KarryngoFileStorage
     private gridFS:any=null; 
     constructor(configService:ConfigurableApp)
     {
-        this.configService=configService;
+        this.configService=configService; 
 
-        let persisConst=this.configService.getValueOf('persistence');
-        let connexionString:String=`mongodb://${persisConst.hostname}
-        :${persisConst.port}/${persisConst.database_file.database}`;
-        MongoDBManager.connect({
-            hostname: persisConst.hostname,
-            port: persisConst.port,
-            database:persisConst.database_file.database
-        }).then((data:ActionResult)=>{
+        MongoDBManager.connect(this.configService.getValueOf('persistence')[Configuration.env_mode].database_file).then((data:ActionResult)=>{
             this.gridFS = new GridFSBucket(data.result);
         });
         

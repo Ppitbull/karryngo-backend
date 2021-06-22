@@ -10,6 +10,7 @@ export class FileSystemException extends KarryngoException
 {
     static FILE_NOT_FOUND:Number=-50;
     static UNKNOW_ERROR:Number=-49;
+    static UNABLE_TO_IMPORT_ERROR:Number=-48;
     
     constructor(code:Number,description:String)
     {

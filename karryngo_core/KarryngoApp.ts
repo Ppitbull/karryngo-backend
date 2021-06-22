@@ -12,6 +12,7 @@ import { KarryngoPersistenceManagerFactory } from "./persistence/KarryngoPersist
 import { RouterService } from "./routing/RouterService";
 import { InjectorContainer } from "./lifecycle/injector_container";
 import { RouterChecker } from "./routing/routerchecker";
+import { ActionResult } from "./utils/ActionResult";
 
 export class KarryngoApp extends KarryngoApplicationEntity
 {
@@ -27,7 +28,7 @@ export class KarryngoApp extends KarryngoApplicationEntity
      */
     protected httpServer:any;
 
-    constructor(router:any,httpServer:any)
+    constructor(router:any,httpServer:any,frameworkExpress:any)
     {
         super();       
 
@@ -37,16 +38,30 @@ export class KarryngoApp extends KarryngoApplicationEntity
         //obtention de l'instance du service de configuration
         let configurationInstance=InjectorContainer.getInstance().getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory).getInstance();
 
-        //connexion a la bd
-        InjectorContainer.getInstance().getInstanceOf<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory).getInstance()
-            .connect();
-
         //obtention de l'instance du service de routage avec injection du service de routing
-        //offerte par le framework Express et du service de configuration
+                //offerte par le framework Express et du service de configuration
         this.routerService=new RouterService(
             configurationInstance,
             InjectorContainer.getInstance().getInstanceOf<RouterChecker>(RouterChecker),
             router);
+
+        frameworkExpress.use((request:any,response:any,next:any)=>
+        {
+            //connexion a la bd
+            InjectorContainer.getInstance().getInstanceOf<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory).getInstance()
+            .connect()
+            .then((result)=>{
+                next();
+            })
+            .catch((error)=> {
+                response.status(500).json({
+                    resultCode:ActionResult.UNKNOW_ERROR,
+                    message:"Cannot connect to the bd",
+                    result:error
+                })
+            })
+            
+        });        
     }
 
     /**

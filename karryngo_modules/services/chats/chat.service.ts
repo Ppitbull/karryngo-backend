@@ -94,6 +94,16 @@ export class ChatService
                 }
             }},);
     }
+    findMessageByDiscussionId(messageId:EntityID,discussID:EntityID):Promise<ActionResult>
+    {
+        return this.db.findInCollection(
+            Configuration.collections.chat,
+            {
+                "_id":discussID.toString(),
+                "chats._id":messageId.toString()
+            },
+        )
+    }
     markAsRead(idDiscuss:String,idMessage:String):Promise<ActionResult>
     {
         return this.db.updateInCollection(Configuration.collections.chat,

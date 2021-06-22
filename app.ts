@@ -15,7 +15,7 @@ app.use(cors())
 
 //instanciation du coeur de Karryngo
 
-let karryngoApp=new KarryngoApp(router,httpServer);
+let karryngoApp=new KarryngoApp(router,httpServer,app);
 
 InjectorContainer.getInstance().saveInstance<KarryngoApp>(KarryngoApp,karryngoApp);
 

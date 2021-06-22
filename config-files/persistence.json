@@ -3,11 +3,41 @@
     "classe":"/karryngo_core/persistence/MongoDBManager",
     "database_file":{
         "database":"karryngo_file",
-        "classe":"/karryngo_core/fs/GridFileSystemService",
-        "options":{
-            "useNewUrlParser": true,
-            "useUnifiedTopology": true
+        "classe":"/karryngo_core/fs/GridFileSystemService"
+    },
+    "port":27017,
+    "prod_mode":{
+        "database_data":{
+            "server_prefix":"mongodb+srv",
+            "username":"admin",
+            "password":"KFBbc7ebBHHloYyd",
+            "hostname":"cluster0.kiwom.mongodb.net",
+            "database":"karryngo",
+            "params":"retryWrites=true&w=majority"
+        },
+        "database_file":{
+            "server_prefix":"mongodb+srv",
+            "username":"admin",
+            "password":"KFBbc7ebBHHloYyd",
+            "hostname":"cluster0.kiwom.mongodb.net",
+            "database":"karryngo_file",
+            "params":"retryWrites=true&w=majority"
         }
     },
-    "port":27017
+    "dev_mode":{
+        "database_data":{
+            "server_prefix":"mongodb",
+            "username":"admin",
+            "password":"",
+            "hostname":"localhost",
+            "database":"karryngo"
+        },
+        "database_file":{
+            "server_prefix":"mongodb",
+            "username":"admin",
+            "password":"",
+            "hostname":"localhost",
+            "database":"karryngo_file"
+        }
+    }    
 }

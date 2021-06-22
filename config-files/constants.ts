@@ -12,6 +12,8 @@ var Configuration=
         'provider':'ProviderService',
         'requestservice':'RequestService',
         'chat':'Chats'
-    }
+    },
+    'env_mode':"dev_mode"
+    // 'env_mode':"prod_mode"
 };
 export default Configuration;
