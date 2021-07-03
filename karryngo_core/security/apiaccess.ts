@@ -9,6 +9,12 @@ import jsonwebtoken from "jsonwebtoken";
 import { ConfigService } from "../decorator/dependecy_injector.decorator";
 import { ActionResult } from "../utils/ActionResult";
 
+export enum ApiAccessError
+{
+    JsonWebTokenError="JsonWebTokenError",
+    TokenExpiredError="TokenExpiredError"
+}
+
 @ConfigService()
 export class ApiAccess
 {
@@ -36,9 +42,9 @@ export class ApiAccess
      *  ce resultat est accompagné d'un token a utiliser pendans un nombre de temps configurer
      *  dans le fichier de configuration
      */
-    JWTRegister(username:String,password:String,id:String):Promise<ActionResult>
+    JWTRegister(email:String,id:String):Promise<ActionResult>
     {
-        return this.textToJWT(JSON.stringify({username,password,id}));
+        return this.textToJWT(JSON.stringify({email,id}));
     }
 
     textToJWT(data:any):Promise<ActionResult>
@@ -46,17 +52,22 @@ export class ApiAccess
         return new Promise<ActionResult>((resolve,reject)=>
         {
             let result:ActionResult=new ActionResult();
-
-            jsonwebtoken.sign(data,this.configService.getValueOf('jwt').secret_key,{
-                algorithm:this.configService.getValueOf('jwt').algorithm,
-                //expiresIn:this.configService.getValueOf("jwt").timeout
-            },(err:any,token:any)=>
+            jsonwebtoken.sign(
+                {
+                    exp: Math.floor(Date.now() / 1000) + this.configService.getValueOf("jwt").timeout,
+                    data
+                },
+                this.configService.getValueOf('jwt').secret_key
+                ,{
+                    algorithm:this.configService.getValueOf('jwt').algorithm,                    
+                },
+            (err:any,token:any)=>
             {
-                //console.log("jwt ",this.configService.getValueOf("jwt"),"data ",token,"error ",err);
+                // console.log("jwt ",this.configService.getValueOf("jwt"),"data ",token,"error ",err);
                 if(err)
                 {
-                    //console.log("JWT Error ",this.configService.getValueOf("jwt").secret_key,err);
-                    result.message="Error";
+                    result.message=err.name;
+                    result.description=err.message;
                     result.resultCode=ActionResult.UNKNOW_ERROR;
                     result.description=err;
                     reject(result);
@@ -80,7 +91,7 @@ export class ApiAccess
             },(err,decoded)=>{
                 if(err)
                 {
-                    result.message=`Error: ${err.name}`;
+                    result.message=`${err.name}`;
                     result.description=err.message;
                     result.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
                     reject(result);

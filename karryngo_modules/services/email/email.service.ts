@@ -13,7 +13,19 @@ export class EmailService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            //let sender=nodemailer this.configService.getValueOf('mail'); 
+            let sender=nodemailer.createTransport({
+                service:this.configService.getValueOf('mail').service,
+                auth:this.configService.getValueOf('mail').auth
+            });
+            sender.sendMail(email.toString(),(error,infos)=>{
+                let result:ActionResult=new ActionResult();
+                if(error) {
+                    result.resultCode=ActionResult.UNKNOW_ERROR;
+                    result.result=error;
+                    reject(result);
+                }
+                else resolve(result);
+            })
         });
     }
 }

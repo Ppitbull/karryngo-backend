@@ -1,6 +1,7 @@
+import { EventEmitter } from "events";
 import Server, {Socket} from "socket.io"
 import { ConfigService, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
-import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent"
+// import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent"
 import { KarryngoApp } from "../../../karryngo_core/KarryngoApp";
 import { RouterChecker } from "../../../karryngo_core/routing/routerchecker";
 import { ChatService } from "../chats/chat.service";
@@ -18,7 +19,7 @@ export class RealTimeService
     constructor(
         private kcore:KarryngoApp, 
         private routerchecker:RouterChecker,
-        private eventEmiter:KarryngoEventEmitter,
+        private eventEmiter:EventEmitter,
         private routerRealTime:RealTimeRouterService)
     {
         this.serverSocket=new Server(this.kcore.getServer(),{           

@@ -71,6 +71,33 @@
         ]
     },
     {
+        "url":"/api/auth/forget-password",
+        "module" :"/authentification/authrequester",
+        "actions":[
+            {
+                "method":"post",
+                "action": "forgotPassword",
+                "secure": false,
+                "params":{
+                    "email":"string"
+                }
+            }
+        ]
+    },
+    {
+        "url":"/api/auth/reset-password",
+        "module" :"/authentification/authrequester",
+        "actions":[
+            {
+                "method":"post",
+                "action": "resetPassword",
+                "params":{
+                    "password":"string"
+                }
+            }
+        ]
+    },
+    {
         "url":"/api/auth/login",
         "module" :"/authentification/authrequester",
         "actions":[

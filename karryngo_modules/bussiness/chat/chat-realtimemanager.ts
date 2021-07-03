@@ -8,11 +8,13 @@ import { RealTimeErrorType, RealTimeEvent, RealTimeInitErrorType, RealTimeMessag
 import { ConfigurableApp } from "../../../karryngo_core/config/ConfigurableApp.interface";
 import { RouterChecker } from "../../../karryngo_core/routing/routerchecker";
 import { RealTimeService } from "../../services/realtime/realtime.service";
-import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent";
+// import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent";
 import { RealTimeRouterService } from "../../services/realtime/router-realtime.service";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { Discussion } from "../../services/chats/discussion";
 import { Message } from "../../services/chats/message";
+import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent";
+import { EventEmitter } from "events";
 
 export enum RealTimeChatMessageType
 {
@@ -38,7 +40,7 @@ export class RealTimeChatManager
     constructor(
         private realtimeService:RealTimeService,
         private chatService:ChatService,
-        private eventEmiter:KarryngoEventEmitter,
+        private eventEmiter:EventEmitter,
         private routerRealTimeService:RealTimeRouterService
         ){
                 this.eventEmiter.on(RealTimeEvent.REALTIME_CONNEXION_STARTED,(socket:any)=>this.init(socket))

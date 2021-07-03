@@ -4,7 +4,7 @@
   "description": "Backend de l'application karryngo",
   "main": "app.js",
   "scripts": {
-    "test": "mocha --reporter spec  --require ts-node/register **/databasePersistanceTest.test.ts",
+    "test": "mocha --reporter spec  --require ts-node/register **/email.test.ts",
     "start": "nodemon app.ts",
     "doc": "typedoc --out docs . --exclude ./node_modules",
     "build": "tsc --project ./"
@@ -36,13 +36,13 @@
     "reflect-metadata": "^0.1.13",
     "socket.io": "^2.2.0",
     "socket.io-redis": "^6.1.0",
-    "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
   },
   "devDependencies": {
     "@types/googlemaps": "^3.43.2",
     "@types/multer": "^1.4.5",
     "@types/socket.io": "^2.1.13",
+    "ts-node": "^9.1.1",
     "typedoc": "^0.19.2"
   }
 }

@@ -76,7 +76,7 @@ export default class AuthRequester
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
         this.auth.login(user)
-        .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,user.password,data.result.id))
+        .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,data.result.id))
         .then((data:ActionResult)=>
         {
             data.description="Authentification successful";
@@ -126,5 +126,54 @@ export default class AuthRequester
     {
         request.decoded.id=request.params.idProfil;
         this.getProfil(request,response);
+    }
+
+    resetPassword(request:any,response:Response):void
+    {
+        let user:User=new User();
+        user.password=request.body.password;
+        user.adresse.email=request.decoded.email
+        this.auth.resetPassword(user)
+        .then((result:ActionResult)=> {
+            response.status(200).json({
+                resultCode:result.resultCode,
+                message:"password was updated successfully"
+            });
+        })
+        .catch((error:ActionResult)=>{
+            response.status(500).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        });
+
+    }
+    forgotPassword(request:Request,response:Response):void
+    {
+        let user:User=new User();
+        user.adresse.email=request.body.email;
+        this.auth.forgotPassword(user)
+        .then((result:ActionResult)=>{
+            response.status(200).json({
+                resultCode:result.resultCode,
+                message:"The link for reset password has been send by email"
+            });
+        })
+        .catch((result:ActionResult)=>{
+            if(result.resultCode===ActionResult.RESSOURCE_NOT_FOUND_ERROR)
+             {
+                return response.status(404).json({
+                    resultCode:result.resultCode,
+                    message:"User not found"
+                })
+             }
+             else(result.resultCode===ActionResult.UNKNOW_ERROR)
+             {
+                return response.status(500).json({
+                    resultCode:result.resultCode,
+                    message:result.message
+                });
+             }
+        })
     }
 }

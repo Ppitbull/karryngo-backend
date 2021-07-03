@@ -1,7 +1,7 @@
 import { KarryngoCore } from "../decorator/core.decorator";
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";
-import { ApiAccess } from "../security/apiaccess";
+import { ApiAccess, ApiAccessError } from "../security/apiaccess";
 import { ActionResult } from "../utils/ActionResult";
 import { Action } from "./Action";
 import { Route } from "./Route";
@@ -56,18 +56,30 @@ export class RouterChecker extends KarryngoApplicationEntity
                 this.checkApiAccess(token)
                 .then((data:ActionResult)=>
                 {
-                    req.decoded=data.result;
+                    req.decoded=data.result;             
                     next();
                 })
                 .catch((data:ActionResult)=>
                 {
+                    console.log("Error token ",data)
+                    let message:String="";
+                    switch(data.message)
+                    {
+                        case ApiAccessError.JsonWebTokenError:
+                            message=data.description;
+                            data.resultCode=-2
+                            break;
+                        case ApiAccessError.TokenExpiredError: 
+                            message="Token expired"
+                            data.resultCode=-3
+                    };
                     return res.status(401).json({
-                        resultCode: -2,
-                        message: 'Bad token'
+                        resultCode: data.resultCode,
+                        message
                         });
                 });
             }
-            else return res.status(401).json({
+            else return res.status(403).json({
                 resultCode: -1,
                 message: 'Auth token is not supplied'
                 });
