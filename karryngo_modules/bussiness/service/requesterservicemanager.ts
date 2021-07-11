@@ -29,10 +29,10 @@ export class ServiceTransportBy
 }
 
 @Controller()
-@DBPersistence()
 export class RequesterServiceManager
 {
-    private db:any=null;
+    @DBPersistence()
+    private db:PersistenceManager;
 
     constructor(
         private transportservicemanager:TransportServiceManager,

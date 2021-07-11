@@ -10,7 +10,6 @@ import { RealTimeRouterService } from "./router-realtime.service";
 
 const io = require('socket.io')
 
-@ConfigService()
 @Service()
 export class RealTimeService
 {

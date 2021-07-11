@@ -1,4 +1,5 @@
 import Configuration from "../../../config-files/constants";
+import { ConfigurableApp } from "../../../karryngo_core/config/ConfigurableApp.interface";
 import { ConfigService, DBPersistence, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ApiAccess } from "../../../karryngo_core/security/apiaccess";
@@ -9,12 +10,13 @@ import { User } from "../usermanager/entities/User";
 import { UserManagerService } from "../usermanager/usermanager.service";
 
 @Service()
-@DBPersistence()
-@ConfigService()
 export class BasicAuthentificationService
 {
-    protected db:any={};
-    private configService:any={};
+    @DBPersistence()
+    protected db:PersistenceManager;
+
+    @ConfigService()
+    private configService:ConfigurableApp;
 
     constructor(
         private userManagerService:UserManagerService,
@@ -36,7 +38,7 @@ export class BasicAuthentificationService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.findInCollection(Configuration.collections.user,{"address.email":user.adresse.email,"password":user.password},1)
+            this.db.findInCollection(Configuration.collections.user,{"address.email":user.adresse.email,"password":user.password})
             .then((data:ActionResult)=>
             {
                 let result=new ActionResult();

@@ -16,10 +16,10 @@ import { UserFactory } from "../../bussiness/authentification/entities/userfacto
 
 
 @Service()
-@DBPersistence()
 export class UserManagerService
 {
-    protected db:any ={};//PersistenceManager
+    @DBPersistence()
+    protected db:PersistenceManager;
 
     constructor(private crud:CrudService){}
     /**
@@ -44,7 +44,7 @@ export class UserManagerService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.findInCollection("Users",{"address.email":email},1)
+            this.db.findInCollection("Users",{"address.email":email})
             .then((result:ActionResult)=>
             {
                 let people:Record<string, any>[]= result.result;
@@ -83,7 +83,7 @@ export class UserManagerService
     {
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            this.db.findInCollection(Configuration.collections.user,{"_id":id.toString()},1)
+            this.db.findInCollection(Configuration.collections.user,{"_id":id.toString()})
             .then((result:ActionResult)=>
             {
                 let action=new ActionResult();
@@ -128,7 +128,7 @@ export class UserManagerService
         return new Promise<ActionResult>((resolve,reject)=>
         {
 
-            this.db.findInCollection(Configuration.collections.user,{},50).
+            this.db.findInCollection(Configuration.collections.user,{}).
             then((result:ActionResult)=>
             {
                 let action=new ActionResult();

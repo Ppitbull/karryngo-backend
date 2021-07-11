@@ -16,11 +16,12 @@ import { TransportServiceType, TransportServiceTypeState } from "./entities/tran
 import Configuration from "../../../config-files/constants";
 import { Message } from "../../services/chats/message";
 
-@DBPersistence()
+
 @Controller()
 export class TransportServiceManager
 {
-    private db:any=null;
+    @DBPersistence()
+    private db:PersistenceManager=null;
 
     /**
      * @description Permet au fournisseur du service d'accepté le prix proposé par le demandeur
@@ -94,7 +95,7 @@ export class TransportServiceManager
             //on recupere le service en fonction de son id
             let message:Record<string, any>={};
             let idTransaction:EntityID=new EntityID()
-            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idTransportService},1)
+            this.db.findInCollection(Configuration.collections.requestservice,{"_id":idTransportService})
             .then((data:ActionResult)=>{ 
                 if( data.result[0].idSelectedTransaction==undefined || 
                     data.result[0].idSelectedTransaction==""
@@ -176,7 +177,6 @@ export class TransportServiceManager
     {
         let transaction:TransactionService;
 
-        console.log("Ici le paiement")
             //on recupere le service en fonction de son identifiant
         return this.getTransaction(idTransaction)
         .then((data:ActionResult)=>{ 

@@ -3,10 +3,10 @@ import { ConfigService, Service } from "../../../karryngo_core/decorator/depende
 import { RestApi } from "../../../karryngo_core/http/client/restapi";
 
 @Service()
-@ConfigService()
 export class Geolocalisation
 {
-    private configService:any={};
+    @ConfigService()
+    private configService:ConfigurableApp;
     private configMap:{key?:string}={};
     
     constructor(private request:RestApi)

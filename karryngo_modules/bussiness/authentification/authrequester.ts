@@ -167,7 +167,7 @@ export default class AuthRequester
                     message:"User not found"
                 })
              }
-             else(result.resultCode===ActionResult.UNKNOW_ERROR)
+             else //(result.resultCode===ActionResult.UNKNOW_ERROR)
              {
                 return response.status(500).json({
                     resultCode:result.resultCode,

@@ -90,7 +90,7 @@ export interface PersistenceManager
 
     removeToCollection(collectionName:String,entity:SerializableEntity): Promise<ActionResult>;
 
-    findInCollection(collectionName:String,options:Record<string,any>,othersOption:Record<string, any>,limit:Number):Promise<ActionResult>
+    findInCollection(collectionName:String,options:Record<string,any>,othersOption?:Record<string, any>,limit?:Number):Promise<ActionResult>
 
     /**
      * @description Cette methode permet de mettre a jour un document. elle recherche en base de données
@@ -102,5 +102,5 @@ export interface PersistenceManager
      * @param options autres options utiles 
      * @see Mongodb.MongoClient.Collection.findOneAndUpdate()
      */
-    updateInCollection(collectionName:String,cond:Record<string,any>,toUpdate:Record<string,any>,options:Record<string, any>):Promise<ActionResult>
+    updateInCollection(collectionName:String,cond:Record<string,any>,toUpdate:Record<string,any>,options?:Record<string, any>):Promise<ActionResult>
 }

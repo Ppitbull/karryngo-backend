@@ -31,11 +31,12 @@ export enum RealTimeChatError
 }
 
 
-@ConfigService()
+
 @Controller()
 export class RealTimeChatManager
 {
-    configService:any={};
+    @ConfigService()
+    configService:ConfigurableApp;
     
     constructor(
         private realtimeService:RealTimeService,

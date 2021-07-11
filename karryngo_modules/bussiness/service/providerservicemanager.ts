@@ -22,10 +22,10 @@ import { UserManagerService } from "../../services/usermanager/usermanager.servi
 import { Customer } from "../authentification/entities/customer";
 
 @Controller()
-@DBPersistence()
 export class ProviderServiceManager
 {
-    private db:any={};
+    @DBPersistence()
+    private db:PersistenceManager;
     constructor(
         private transportservicemanager:TransportServiceManager,
         private fileUploadService:FileService,
@@ -166,7 +166,7 @@ export class ProviderServiceManager
 
     getServiceList(request:any,response:any):void
     {
-        this.db.findInCollection(Configuration.collections.provider,{},50)
+        this.db.findInCollection(Configuration.collections.provider,{})
         .then((data:ActionResult)=>
         {
             
@@ -188,7 +188,7 @@ export class ProviderServiceManager
     getService(request:any,response:any):void
     {
         let idProviderService=request.body.idProviderService;
-        this.db.findInCollection(Configuration.collections.provider,{"providerId":idProviderService},1)
+        this.db.findInCollection(Configuration.collections.provider,{"providerId":idProviderService})
         .then((data:ActionResult)=>
         {
             response.status(200).json({
@@ -211,9 +211,12 @@ export class ProviderServiceManager
     {
         let vehicule:Vehicle=new Vehicle();
         vehicule.hydrate(request.body);
-        this.db.updateInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},{
-            $push:{"vehicles":vehicule.toString()}
-        })
+        this.db.updateInCollection(Configuration.collections.provider,
+            {"providerId":request.decoded.id},
+            {
+                $push:{"vehicles":vehicule.toString()}
+            }
+        )
         .then((data:ActionResult)=>response.status(201).json({
             resultCode:ActionResult.SUCCESS,
             message:"Vehicle added successfully",

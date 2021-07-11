@@ -5,10 +5,11 @@ import { Email } from "./entities/email";
 import nodemailer from "nodemailer";
 
 @Service()
-@ConfigService()
 export class EmailService
 {
-    private configService:any={};
+    @ConfigService()
+    private configService:ConfigurableApp;
+    
     send(email:Email):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>

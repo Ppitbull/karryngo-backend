@@ -13,24 +13,23 @@ class Personigir
     }
 }
   
-  @Controller()
   class Greeter2 {    
-    proper:PersistenceManager|any={};
+    @DBPersistence() proper:PersistenceManager;
 
-    constructor(private config:KarryngoConfigurationServiceFactory,private man:any) { this.test()}
+    constructor() { this.test()}
     test()
     {
        // console.log("class_for_configuration",this.config.getInstance());
-       // console.log("property value",this);
+       console.log("property value",this.proper);
 
     }
   }
   
 
-@DBPersistence()
 class Greeter {
     
-    property = "property";
+  @DBPersistence()
+    property;
     hello: string;
     protected db="klhjlhjpj";
     constructor(m: string) {
@@ -43,5 +42,6 @@ class Greeter {
 }
   
   
-  let g= new Greeter("mlkùmùmqlgk");
+  let g= new Greeter2();
   g.test();
+

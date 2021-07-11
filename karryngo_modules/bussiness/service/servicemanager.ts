@@ -24,13 +24,12 @@ import { ServiceTypeFactory } from "./servicetypefactory";
 import { Request } from "express";
 import { RealTimeRouterService } from "../../services/realtime/router-realtime.service";
 import { RealTimeChatManager } from "../chat/chat-realtimemanager";
+import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 
-
-
-@DBPersistence()
 export class ServiceManager
 {
-    private db:any=null;
+    @DBPersistence()
+    private db:PersistenceManager;
 
     constructor(
         private crudService:CrudService,

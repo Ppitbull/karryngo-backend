@@ -7,15 +7,15 @@ import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { Message } from "../chats/message";
 
 @Service()
-@DBPersistence()
 export class NotificationService
 {
-    private db:any={};
+    @DBPersistence()
+    private db:PersistenceManager;
     
     send(message:Message):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
-            this.db.findInCollection(Configuration.collections.notification,{"_id":message.to.toString()},1)
+            this.db.findInCollection(Configuration.collections.notification,{"_id":message.to.toString()})
             .then((data:ActionResult)=> this.db.updateInCollection(Configuration.collections.notification,
                 {"_id":message.to.toString()},{
                     $push:{ messages : message.toString()}

@@ -14,10 +14,10 @@ import { Discussion } from "./discussion";
 import { Message } from "./message";
 
 @Service()
-@DBPersistence()
 export class ChatService
 {
-    private db:any={};
+    @DBPersistence()
+    private db:PersistenceManager;
 
     findDiscussByTransactionAndSendMessage(transaction:TransactionService,message:Message)
     {

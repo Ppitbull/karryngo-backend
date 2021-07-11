@@ -47,34 +47,29 @@ export function Controller<T extends Type<any> >()
     }
 }
 
+
 export function DBPersistence() {
-    return function <T extends Type<any> >(constructor: T) {
-        return class extends constructor {
-            db=InjectorContainer.getInstance()
-                .getInstanceOf<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory)
-                .getInstance();            
-        }
-    }
+    return (target: any, property: string) => {
+        target[property] = InjectorContainer.getInstance()
+        .getInstanceOf<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory)
+        .getInstance();;
+    };
 }
 
 export function ConfigService()
 {
-    return function <T extends Type<any> >(constructor: T) {
-        return class extends constructor {
-            configService:ConfigurableApp=InjectorContainer.getInstance()
-                .getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory)
-                .getInstance();            
-        }
-    } 
+    return (target: any, property: string) => {
+        target[property] = InjectorContainer.getInstance()
+        .getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory)
+        .getInstance();;
+    };
 }
 
 export function KFileStorage()
 {
-    return function <T extends Type<any> >(constructor: T) {
-        return class extends constructor {
-            fs:KarryngoFileStorage=InjectorContainer.getInstance()
-                .getInstanceOf<KarryngoFileStorageFactory>(KarryngoFileStorageFactory)
-                .getInstance();            
-        }
-    } 
+    return (target: any, property: string) => {
+        target[property] = InjectorContainer.getInstance()
+        .getInstanceOf<KarryngoFileStorageFactory>(KarryngoFileStorageFactory)
+        .getInstance();;
+    }; 
 }
