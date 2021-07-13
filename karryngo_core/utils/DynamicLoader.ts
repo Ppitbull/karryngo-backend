@@ -50,6 +50,7 @@ export class DynamicLoader
         let moduleRequire:any={};
         try
         {
+            console.log(module)
             moduleRequire=require(`${process.cwd()}/${module}`);
             for (let key in moduleRequire) keyClass=key;
         }

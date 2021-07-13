@@ -6,7 +6,7 @@
 */
 
 import { Request,Response } from "express";
-import { Controller } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Controller } from "../../../karryngo_core/decorator";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { BasicAuthentificationService } from "../../services/authentification/basicauthentification.service";

@@ -9,12 +9,14 @@ import { TransportService } from "./entities/transportservice";
 import { Location } from "./../../services/geolocalisation/entities/location";
 import { InvalideServiceStateException, TransactionService, TransactionServiceState } from "./entities/transactionservice";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { Controller, DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ServiceTypeFactory } from "./servicetypefactory";
 import { TransportServiceType, TransportServiceTypeState } from "./entities/transportservicetype";
 import Configuration from "../../../config-files/constants";
 import { Message } from "../../services/chats/message";
+import { ToupesuPaiement } from "../../services/toupesu/toupesupayment.service";
+import { PaiementMethodType, ToupesuPaiementMethodFactory } from "../../services/toupesu/toupesupaiementmethodbuilder";
+import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
 
 
 @Controller()
@@ -22,6 +24,10 @@ export class TransportServiceManager
 {
     @DBPersistence()
     private db:PersistenceManager=null;
+
+
+    constructor(private toupesuPaiement:ToupesuPaiement){}
+
 
     /**
      * @description Permet au fournisseur du service d'accepté le prix proposé par le demandeur
@@ -187,7 +193,8 @@ export class TransportServiceManager
             {
                 transaction=data.result;
                 transaction.makePaiement();
-                return this.db.updateInCollection(Configuration.collections.requestservice,
+                return this.toupesuPaiement.makePaiement(ToupesuPaiementMethodFactory.getMethodPaiment(PaiementMethodType.BANQUE))
+                .then((value:ActionResult)=> this.db.updateInCollection(Configuration.collections.requestservice,
                     {
                         "transactions._id":idTransaction.toString()
                     },
@@ -195,7 +202,8 @@ export class TransportServiceManager
                         $set:{ 
                             "transactions.$.state":transaction.state,
                         }
-                    });
+                    })
+                )
             }
             catch(error:any)
             {

@@ -1,6 +1,6 @@
 import { EventEmitter } from "events";
 import Server, {Socket} from "socket.io"
-import { ConfigService, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Service } from "../../../karryngo_core/decorator";
 // import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent"
 import { KarryngoApp } from "../../../karryngo_core/KarryngoApp";
 import { RouterChecker } from "../../../karryngo_core/routing/routerchecker";

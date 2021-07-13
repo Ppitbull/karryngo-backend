@@ -4,7 +4,6 @@
 @created 28/11/2020
 */
 
-import { DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { CrudService } from "../../services/crud/crud.service";
 import { TransportServiceType } from "./entities/transportservicetype";
@@ -25,6 +24,7 @@ import { Request } from "express";
 import { RealTimeRouterService } from "../../services/realtime/router-realtime.service";
 import { RealTimeChatManager } from "../chat/chat-realtimemanager";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
+import { DBPersistence } from "../../../karryngo_core/decorator";
 
 export class ServiceManager
 {

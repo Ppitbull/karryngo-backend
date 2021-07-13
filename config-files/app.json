@@ -48,5 +48,14 @@
     {
         "port":2525,
         "path":"/chat"
+    },
+    "paiement":
+    {
+        "product":"Karryngo",
+        "errorUrl":"/error",
+        "successUrl":"/success",
+        "cancelUrl":"/cancel",
+        "moneyCode":"ZAR"
     }
+
 }

@@ -5,7 +5,7 @@
 */
 
 import Configuration from "../../../config-files/constants";
-import { DBPersistence, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Service, DBPersistence } from "../../../karryngo_core/decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";

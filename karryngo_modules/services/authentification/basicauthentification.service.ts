@@ -1,6 +1,6 @@
 import Configuration from "../../../config-files/constants";
 import { ConfigurableApp } from "../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService, DBPersistence, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Service, DBPersistence, ConfigService } from "../../../karryngo_core/decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ApiAccess } from "../../../karryngo_core/security/apiaccess";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";

@@ -1,8 +1,8 @@
 import { ConfigurableApp } from "../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { Email } from "./entities/email";
 import nodemailer from "nodemailer";
+import { Service, ConfigService } from "../../../karryngo_core/decorator";
 
 @Service()
 export class EmailService

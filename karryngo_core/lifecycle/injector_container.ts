@@ -48,8 +48,10 @@ export class InjectorContainer extends Map
     {
         //obtention des métadonnées de la classe. ces méthodes concerne particulierement
         //les parametres du constructor de la classe
+
         const tokens=Reflect.getMetadata('design:paramtypes',target) || [];
-        //console.log("class ",target,tokens,Reflect.getMetadata('design:paramtypes',target));
+        // console.log("class ",target,tokens,Reflect.getMetadata('design:paramtypes',target));
+
 
         //pour chaque parametres du constructor appelle recuresivement la méthode resolveAndSave()
         //afin d'obtenir une instance du parametre. Le tout est retourné sous forme de tableau
@@ -66,7 +68,7 @@ export class InjectorContainer extends Map
         //console.log(`DI-Container created class ${newClassInstance.constructor.name}`);
         
         //si non on retourne l'instance associer
-        return new target(...injections);
+        return newClassInstance
     }
 
     /**
@@ -75,7 +77,7 @@ export class InjectorContainer extends Map
      * @see InjectorContainer.resolve()
      * @param target la classe dont on désire resoudre toute les dépendance
      */
-    public resolveAndSave<T>(target:Type<any>):void
+    public resolveAndSave<T>(target:Type<any>):T
     {
         this.set(target,this.resolve<T>(target));
         return this.get(target);
@@ -91,7 +93,6 @@ export class InjectorContainer extends Map
                 value['release']();
             }
         }
-
         this.clear();
     }
 
@@ -99,9 +100,10 @@ export class InjectorContainer extends Map
     {
         let instance=this.get(classe);
         if(instance) return instance;
-        instance=this.resolve<any>(classe);
-        this.set(classe,instance);
-        return instance;
+        // instance=this.resolve<any>(classe);
+        // this.set(classe,instance);
+        // return instance;
+        return this.resolveAndSave(classe);
     }
 
     public saveInstance<T>(classe:Type<any>,instance:T)

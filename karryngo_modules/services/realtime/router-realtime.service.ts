@@ -1,7 +1,7 @@
-import { Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import {Socket } from "socket.io"
 import { RealTimeMessage } from "./realtime-protocole";
+import { Service } from "../../../karryngo_core/decorator";
 
 export interface RealTimeDiscussion {
     idUser1:EntityID,

@@ -1,5 +1,4 @@
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
-import { ConfigService } from "../decorator/dependecy_injector.decorator";
 import { KarryngoEntity } from "../KarryngoEntity";
 import { ActionResult } from "../utils/ActionResult";
 import { KarryngoFileStorage } from "./KarryngoFileStorage";
@@ -8,16 +7,18 @@ import { MongoDBManager } from "../persistence/MongoDBManager";
 import { EntityID } from "../utils/EntityID";
 import { KFile } from "./KFile";
 import Configuration from "../../config-files/constants";
+import { Service } from "../decorator";
+import { ConfigService } from "./../decorator/configuration.decorator"
 
+@Service()
 export class GridFileSystemService implements KarryngoFileStorage
 {
-       
+    @ConfigService()
     private configService:ConfigurableApp;
-    private gridFS:any=null; 
-    constructor(configService:ConfigurableApp)
-    {
-        this.configService=configService; 
 
+    private gridFS:any=null; 
+    constructor()
+    {
         MongoDBManager.connect(this.configService.getValueOf('persistence')[Configuration.env_mode].database_file).then((data:ActionResult)=>{
             this.gridFS = new GridFSBucket(data.result);
         });

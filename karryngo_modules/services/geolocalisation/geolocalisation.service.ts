@@ -1,5 +1,5 @@
 import { ConfigurableApp } from "../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Service, ConfigService } from "../../../karryngo_core/decorator";
 import { RestApi } from "../../../karryngo_core/http/client/restapi";
 
 @Service()

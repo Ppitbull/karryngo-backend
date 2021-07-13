@@ -6,7 +6,6 @@
 
 import { Request, Response } from "express";
 import Configuration from "../../../config-files/constants";
-import { Controller, DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
@@ -19,6 +18,7 @@ import { ServiceTypeFactory } from "./servicetypefactory";
 import { TransportServiceManager } from "./transportservicemanager";
 import { FileService } from "../../services/files/file.service";
 import { ProviderServiceManager } from "./providerservicemanager";
+import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
 
 
 export class ServiceTransportBy

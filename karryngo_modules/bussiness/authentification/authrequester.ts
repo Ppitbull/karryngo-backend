@@ -6,7 +6,6 @@
 */
 
 import { Request, Response } from "express";
-import { Controller } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { ApiAccess } from "../../../karryngo_core/security/apiaccess";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
@@ -16,6 +15,7 @@ import { User } from "../../services/usermanager/entities/User";
 import { UserManagerService } from "../../services/usermanager/usermanager.service";
 import { Customer } from "./entities/customer";
 import { ServiceRequester } from "./entities/servicerequester";
+import { Controller } from "../../../karryngo_core/decorator";
 
 @Controller()
 export default class AuthRequester

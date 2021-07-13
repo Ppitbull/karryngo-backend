@@ -1,4 +1,4 @@
-import { Controller } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Controller } from "../../../karryngo_core/decorator";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { ChatService } from "../../services/chats/chat.service";

@@ -1,5 +1,5 @@
 import { ConfigurableApp } from "../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService, Controller } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Controller, ConfigService } from "../../../karryngo_core/decorator";
 import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";

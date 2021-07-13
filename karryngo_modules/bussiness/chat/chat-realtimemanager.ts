@@ -1,4 +1,3 @@
-import { ConfigService, Controller, Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { ChatService } from "../../services/chats/chat.service";
 // import {Server, Socket } from "socket.io"
 import { KarryngoApp } from "../../../karryngo_core/KarryngoApp";
@@ -15,6 +14,7 @@ import { Discussion } from "../../services/chats/discussion";
 import { Message } from "../../services/chats/message";
 import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent";
 import { EventEmitter } from "events";
+import { Controller, ConfigService } from "../../../karryngo_core/decorator";
 
 export enum RealTimeChatMessageType
 {

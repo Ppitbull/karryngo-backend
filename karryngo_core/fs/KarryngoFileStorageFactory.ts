@@ -6,7 +6,7 @@
 */
 
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
-import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
+import { ConfigService } from "../decorator/configuration.decorator";
 import { KarryngoCore } from "../decorator/core.decorator";
 
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
@@ -19,10 +19,13 @@ export class KarryngoFileStorageFactory extends KarryngoApplicationEntity
 {
     protected kfs:KarryngoFileStorage;
 
-    constructor(protected configServiceFactory:KarryngoConfigurationServiceFactory)
+    @ConfigService()
+    configService:ConfigurableApp
+
+    constructor()
     {
         super();
-        this.kfs=DynamicLoader.load(this.configServiceFactory.getInstance().getValueOf('persistence').database_file.classe,[this.configServiceFactory.getInstance()]);
+        this.kfs=DynamicLoader.load(this.configService.getValueOf('persistence').database_file.classe);
     }
     
     /**

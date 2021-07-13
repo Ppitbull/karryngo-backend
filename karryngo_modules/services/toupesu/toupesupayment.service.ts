@@ -1,4 +1,4 @@
-import { Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Service } from "../../../karryngo_core/decorator";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { PaiementMethod } from "./paiementmethod.interface";
 

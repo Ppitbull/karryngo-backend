@@ -5,7 +5,6 @@
 */
 
 import Configuration from "../../../config-files/constants";
-import { Service ,DBPersistence } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
@@ -13,6 +12,7 @@ import { Customer } from "../../bussiness/authentification/entities/customer";
 import { CrudService } from "../crud/crud.service";
 import { User } from "./entities/User";
 import { UserFactory } from "../../bussiness/authentification/entities/userfactory";
+import { Service, DBPersistence } from "../../../karryngo_core/decorator";
 
 
 @Service()

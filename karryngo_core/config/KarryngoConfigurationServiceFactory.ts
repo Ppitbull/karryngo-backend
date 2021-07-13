@@ -1,4 +1,3 @@
-import Configuration from "../../config-files/constants";
 /**
 @author: Cedric nguendap
 @description: Cette classe est une classe fabrique permettant de fabriquer l'unité 
@@ -6,12 +5,11 @@ import Configuration from "../../config-files/constants";
 @created: 23/09/2020
 */
 
+import Configuration from "../../config-files/constants";
 import { ConfigurableApp } from "./ConfigurableApp.interface";
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";
-import { ConfigurationException } from "../exception/ConfigurationException";
 import { DynamicLoader } from "../utils/DynamicLoader";
-
 
 export class KarryngoConfigurationServiceFactory extends KarryngoApplicationEntity
 {

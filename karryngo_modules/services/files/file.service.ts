@@ -1,9 +1,9 @@
-import { Service, KFileStorage } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { KFile, KFileLink  } from "../../../karryngo_core/fs/KFile";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { FileSystemException } from "../../../karryngo_core/exception/FileSystemException";
 import { KarryngoFileStorage } from "../../../karryngo_core/fs/KarryngoFileStorage";
+import { Service, KFileStorage } from "../../../karryngo_core/decorator";
 
 
 @Service()

@@ -4,7 +4,6 @@
 @created 30/11/2020
 */
 
-import { Controller, DBPersistence, KFileStorage } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { ProviderService } from "./entities/providerservice";
@@ -20,6 +19,7 @@ import { TransportServiceType } from "./entities/transportservicetype";
 import { ServiceManager } from "./servicemanager";
 import { UserManagerService } from "../../services/usermanager/usermanager.service";
 import { Customer } from "../authentification/entities/customer";
+import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
 
 @Controller()
 export class ProviderServiceManager

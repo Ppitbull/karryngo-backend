@@ -1,4 +1,4 @@
-import { Service } from "../../../karryngo_core/decorator/dependecy_injector.decorator";
+import { Service } from "../../../karryngo_core/decorator";
 import { GOAuth2Service } from "./oauth2.service";
 
 @Service()

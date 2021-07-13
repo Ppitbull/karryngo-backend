@@ -6,7 +6,8 @@
 
 
 import jsonwebtoken from "jsonwebtoken";
-import { ConfigService } from "../decorator/dependecy_injector.decorator";
+import { ConfigurableApp } from "../config/ConfigurableApp.interface";
+import { ConfigService } from "../decorator";
 import { ActionResult } from "../utils/ActionResult";
 
 export enum ApiAccessError
@@ -15,10 +16,11 @@ export enum ApiAccessError
     TokenExpiredError="TokenExpiredError"
 }
 
-@ConfigService()
+
 export class ApiAccess
 {
-    private configService:any={};
+    @ConfigService()
+    private configService:ConfigurableApp;
     
 
     /**
