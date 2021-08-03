@@ -1,23 +1,17 @@
 import { RestApi } from "../../../karryngo_core/http/client/restapi";
-import { PaiementMethod } from "./paiementmethod.interface";
-import { BanquePaiementStrategy } from "./paiementstrategi/banquepaiementmethod";
+import { PaiementStrategyType } from "./enums";
+import { PaiementMethodStrategy } from "./paiementmethod.interface";
+import { BankPaiementStrategy } from "./paiementstrategi/bankpaiementmethod";
 
-export enum PaiementMethodType
-{
-    BANQUE="banque",
-    ORANGE_MONEY="orange_money",
-    MTN_MONEY="mtn_money",
-    CREDIT_CARD="credit_card"
-}
 
 export class ToupesuPaiementMethodFactory
 {
-    static getMethodPaiment(method:PaiementMethodType):PaiementMethod
+    static getMethodPaiment(method:PaiementStrategyType):PaiementMethodStrategy
     {
-        let paiementMethodStrategi:PaiementMethod=new BanquePaiementStrategy();
+        let paiementMethodStrategi:PaiementMethodStrategy=new BankPaiementStrategy();
         switch(method)
         {
-            case PaiementMethodType.BANQUE:
+            case PaiementStrategyType.BANK:
                 break;
         }
         return paiementMethodStrategi

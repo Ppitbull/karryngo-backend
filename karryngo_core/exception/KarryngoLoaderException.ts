@@ -8,8 +8,8 @@ import {KarryngoException} from './KarryngoException';
 
 export class KarryngoLoaderException extends KarryngoException
 {
-    static CLASS_NOT_FOUND:Number=-10;
-    static METHOD_NOT_FOUND:Number=-9;
+    static CLASS_NOT_FOUND:Number=-30;
+    static METHOD_NOT_FOUND:Number=-29;
     constructor(code:Number,description:String)
     {
         super(code,"Erreur de chargement : "+description,description);

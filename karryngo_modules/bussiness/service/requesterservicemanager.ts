@@ -19,6 +19,12 @@ import { TransportServiceManager } from "./transportservicemanager";
 import { FileService } from "../../services/files/file.service";
 import { ProviderServiceManager } from "./providerservicemanager";
 import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
+import { UserHistory } from "../../services/historique/history";
+import { HistoryService } from "../../services/historique/historyService";
+import { User } from "../../services/usermanager/entities/User";
+import { FinancialTransaction } from "../../services/toupesu/entities/financialtransaction";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType } from "../../services/toupesu/enums";
+import { Customer } from "../authentification/entities/customer";
 
 
 export class ServiceTransportBy
@@ -39,7 +45,8 @@ export class RequesterServiceManager
         private serviceManager:ServiceManager,
         private crudService:CrudService,
         private fileUploadService:FileService,
-        private providerService:ProviderServiceManager
+        private providerService:ProviderServiceManager,
+        private userHistoryService:HistoryService
         ){}
 
     /**
@@ -68,6 +75,22 @@ export class RequesterServiceManager
         .then((result:ActionResult)=>{
             service.images=result.result;
             return this.db.addToCollection(Configuration.collections.requestservice,service);
+        })
+        .then((result:ActionResult)=>{
+            let history:UserHistory=new UserHistory(new EntityID());
+            history.serviceTransportID.setId(service.id.toString());
+
+            let financialTransaction:FinancialTransaction=new FinancialTransaction(new EntityID());
+            financialTransaction.state=FinancialTransactionState.FINANCIAL_TRANSACTION_START;
+            financialTransaction.type=FinancialTransactionType.DEPOSIT;
+            // financialTransaction.ref=FinancialTransaction.generateRef();
+            financialTransaction.error=FinancialTransactionErrorType.NO_ERROR;
+
+            history.financialTransaction=financialTransaction;
+
+            let user:Customer=new Customer();
+            user.id.setId(service.idRequester);
+            return this.userHistoryService.addHistory(user,history)
         })
         .then((result:ActionResult)=>{
             response.status(201).json({
@@ -118,8 +141,9 @@ export class RequesterServiceManager
 
     getService(request:Request,response:Response):void
     {
-        let idServiceDescription=request.params.idService;
-        this.db.findInCollection(Configuration.collections.requestservice,{"_id":idServiceDescription})
+        let idServiceDescription=new EntityID();
+        idServiceDescription.setId(request.params.idService);
+        this.transportservicemanager.getServiceById(idServiceDescription)
         .then((data:ActionResult)=>
         {
             response.status(200).json({

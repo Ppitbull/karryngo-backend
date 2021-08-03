@@ -20,11 +20,16 @@ import { Discussion } from "../../services/chats/discussion";
 import Configuration from "../../../config-files/constants";
 import { ProviderService } from "./entities/providerservice";
 import { ServiceTypeFactory } from "./servicetypefactory";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { RealTimeRouterService } from "../../services/realtime/router-realtime.service";
 import { RealTimeChatManager } from "../chat/chat-realtimemanager";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { DBPersistence } from "../../../karryngo_core/decorator";
+import { FinancialTransactionErrorType, FinancialTransactionState } from "../../services/toupesu/enums";
+import { UserHistory } from "../../services/historique/history";
+import { FinancialTransaction } from "../../services/toupesu/entities/financialtransaction";
+import { Customer } from "../authentification/entities/customer";
+import { HistoryService } from "../../services/historique/historyService";
 
 export class ServiceManager
 {
@@ -35,6 +40,7 @@ export class ServiceManager
         private crudService:CrudService,
         private transportServiceManager:TransportServiceManager,
         private chatService:ChatService,
+        private userHistoryService:HistoryService
         // private chatRealTimeService:RealTimeChatManager,
         // private realTimeRouterService:RealTimeRouterService
         ){}
@@ -118,7 +124,7 @@ export class ServiceManager
             
             discution.chats.push(message);
             return this.chatService.startDiscussion(discution);
-        })
+        }) 
         .then((data:ActionResult) => {
             response.status(201).json({
                 resultCode:ActionResult.SUCCESS,
@@ -170,34 +176,108 @@ export class ServiceManager
             })
         });
     }
+    checkPaiement(request:any,response:Response):void
+    {
+        let refID=request.params.ref;
+        let userID:EntityID=new EntityID();
+        userID.setId(request.decoded.id);
+
+        if(refID==null || refID==undefined)
+        {
+            response.status(400).json({
+                resultCode:ActionResult.INVALID_ARGUMENT,
+                message:"Request reference not provided"
+            })
+        }
+        else
+        {
+            this.transportServiceManager.checkPaiement(parseInt(refID),userID)
+            .then((result:ActionResult)=>{
+                response.status(200).json({
+                    resultCode:ActionResult.SUCCESS,
+                    message:"Payment transaction found",
+                    data:result.result.toString()
+                })
+            })
+            .catch((error:ActionResult)=>{
+                let code=500;
+                let resultCode=error.resultCode;
+                let message=error.message;
+                if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) {
+                    code=404;
+                    resultCode=-1;
+                    message="Payment transaction not found";
+                }
+                response.status(code).json({
+                    resultCode,
+                    message
+                })
+            })
+        }
+    }
+
+    updateStatus(request:any,response:any):void
+    {
+        
+    }
 
     makePaiement(request:any,response:any):void
     {
-        let transactionID=new EntityID();
-        transactionID.setId(request.body.idTransaction);
+        let serviceID=new EntityID();
+        serviceID.setId(request.body.idService);
         let currentUserId:EntityID = new EntityID();
         currentUserId.setId(request.decoded.id);
-        this.transportServiceManager.makePaiement(transactionID)
-        .then((data:ActionResult)=> this.chatService.findDisccussByTransactionID(transactionID))
+        let idTransaction:EntityID=new EntityID();
+        let history:UserHistory;
+
+        this.transportServiceManager.makePaiement(serviceID,request.body.paiement_mode,currentUserId)
+        .then((data:ActionResult)=> 
+        {            
+            history=data.result.history;
+            idTransaction.setId(data.result.service.idSelectedTransaction)
+            return this.chatService.findDisccussByTransactionID(idTransaction)
+        })
         .then((data:ActionResult)=> {
-            let message:Message=this.notifyUser(data.result,currentUserId,transactionID,"the payment has been confirmed")
-            
+            let message:Message=this.notifyUser(data.result,currentUserId,idTransaction,"the payment has been confirmed")            
             return this.chatService.send(message,data.result.id.toString())     
         })
         .then((result:ActionResult)=>{
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Successful confirmation paiement",
+                data:history.financialTransaction.toString()
             })
         })
         .catch((error:ActionResult)=>{{
             let code=500;
-            // console.log(error)
-            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) code=404;
-            else if(error.resultCode==ActionResult.INVALID_ARGUMENT) code=400;
+            let resultCode=error.resultCode;
+            let message=error.message;
+            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) {
+                code=404;
+                resultCode=-1;
+                message="Service not found";
+            }
+            else if(error.resultCode==ActionResult.INVALID_ARGUMENT)
+            {
+                code=400;
+                resultCode=-3;
+                message="Cannot make paiement in that step of transaction";
+            }
+            else if(error.resultCode==FinancialTransactionErrorType.BURER_NOT_FOUND_ERROR)
+            {
+                code=400;
+                resultCode=-201;
+                message="Service requester payment account not found";
+            }
+            else if(error.resultCode==FinancialTransactionErrorType.INSUFFICIENT_AMOUNT_ERROR)
+            {
+                code=400;
+                resultCode=-204;
+                message="Insufficient account amount";
+            }
             response.status(code).json({
-                resultCode:error.resultCode,
-                message:error.message
+                resultCode,
+                message
             })
         }})
     }

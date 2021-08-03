@@ -161,14 +161,26 @@
         ]
     },
     {
-        "url":"/api/requester/service/make_paiement",
+        "url":"/api/requester/service/make_paiement/:ref",
+        "module" :"/service/servicemanager",
+        "actions":[
+            {
+                "method":"get",
+                "action": "checkPaiement",
+                "params":{
+                }
+            }
+        ]
+    },{
+        "url":"/api/requester/service/check_paiement",
         "module" :"/service/servicemanager",
         "actions":[
             {
                 "method":"post",
                 "action": "makePaiement",
                 "params":{
-                    "idTransaction":"string"
+                    "idService":"string",
+                    "paiement_mode":"string"
                 }
             }
         ]

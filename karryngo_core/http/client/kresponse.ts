@@ -18,12 +18,12 @@ export type Method =
 export class KResponse extends KarryngoApplicationEntity
 {
     
-    _header:Record<string | number,string>={}; 
-    _status:number=200;
-    _statusText:String='OK';
-    _config:Record<string | number,string>={};
-    _data:Record<string | number,string>={};
-    _request:Record<string | number,string>={}; 
+    private _header:Record<string | number,string>={}; 
+    private _status:number=200;
+    private _statusText:String='OK';
+    private _config:Record<string | number,string>={};
+    private _data:any={};
+    private _request:Record<string | number,string>={}; 
 
     
     header(key:string,value:any):KResponse
@@ -60,11 +60,19 @@ export class KResponse extends KarryngoApplicationEntity
     toString() 
     {
         return {
-           
+           config:this._config,
+           header:this._header,
+            status:this._status,
+            data:this._data
         }
     }
 
     hydrate(entity: KarryngoEntity): void {
         
+    }
+
+    getData():any
+    {
+        return this._data
     }
 }

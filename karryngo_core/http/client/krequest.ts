@@ -21,7 +21,7 @@ export class KRequest extends KarryngoApplicationEntity
         throw new Error("Method not implemented.");
     }    
     headerData:Record<string | number,string>={}; 
-    requestType:String="";
+    requestType:String="json";
     dataObj:any=null;
     accesstoken:any=null;
     link:String="";
@@ -74,6 +74,12 @@ export class KRequest extends KarryngoApplicationEntity
         this.requestType="json";
         return this;
     }
+    form():KRequest
+    {
+        this.headerData['Content-Type']="Content-Type': 'multipart/form-data";
+        this.requestType="form-data"
+        return this;
+    }
     text():KRequest
     {
         this.requestType="text";
@@ -97,15 +103,45 @@ export class KRequest extends KarryngoApplicationEntity
         }
         return endpoint;
     }
+    toJSON()
+    {
+        return JSON.parse(JSON.stringify(this.dataObj));
+    }
+
+    toFormData()
+    {
+        let formData:FormData=new FormData();
+        if(this.dataObj.constructor===({}).constructor)
+        {
+            for(let key in this.dataObj)
+            {
+                formData.append(key,this.dataObj[key]);
+            }
+        }
+        else if(this.dataObj.constructor===([]).constructor)
+        {
+            for(let i=0;i<this.dataObj.length;i++)
+            {
+                formData.append(i.toString(),this.dataObj[i])
+            }
+        }
+        else 
+        {
+            formData.append("data",this.dataObj);
+        }
+        return formData;
+    }
+
     toString() 
     {
+        let data;
+        if(this.requestType=="form-data") data= this.toFormData();
+        if(this.requestType=="json") data =this.toJSON();
         return {
             url:this.link.toString(),
             method:this.method,
-            data:this.dataObj,
-            params:this.headerData
+            headers:this.headerData,
+            data,
         }
-    }
-    
-    
+    }    
 }

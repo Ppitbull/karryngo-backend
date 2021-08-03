@@ -15,8 +15,15 @@ import { TransportServiceType, TransportServiceTypeState } from "./entities/tran
 import Configuration from "../../../config-files/constants";
 import { Message } from "../../services/chats/message";
 import { ToupesuPaiement } from "../../services/toupesu/toupesupayment.service";
-import { PaiementMethodType, ToupesuPaiementMethodFactory } from "../../services/toupesu/toupesupaiementmethodbuilder";
+import {  ToupesuPaiementMethodFactory } from "../../services/toupesu/toupesupaiementmethodbuilder";
 import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "../../services/toupesu/enums";
+import { UserManagerService } from "../../services/usermanager/usermanager.service";
+import { Customer } from "../authentification/entities/customer";
+import { Collection } from "mongoose";
+import { FinancialTransaction } from "../../services/toupesu/entities/financialtransaction";
+import { UserHistory } from "../../services/historique/history";
+import { HistoryService } from "../../services/historique/historyService";
 
 
 @Controller()
@@ -26,7 +33,9 @@ export class TransportServiceManager
     private db:PersistenceManager=null;
 
 
-    constructor(private toupesuPaiement:ToupesuPaiement){}
+    constructor(private toupesuPaiement:ToupesuPaiement,
+        private userService:UserManagerService,
+        private userHistoryService:HistoryService){}
 
 
     /**
@@ -124,11 +133,27 @@ export class TransportServiceManager
                         title:data.result[0].title
                     };
 
-                    return this.db.updateInCollection(Configuration.collections.requestservice,{"_id":idTransportService.toString()},
+                     
+                    let history:UserHistory=new UserHistory(new EntityID());
+                    history.serviceTransportID.setId(service.id.toString());
+            
+                    let financialTransaction:FinancialTransaction=new FinancialTransaction(new EntityID());
+                    financialTransaction.state=FinancialTransactionState.FINANCIAL_TRANSACTION_START;
+                    financialTransaction.type=FinancialTransactionType.WITHDRAW;
+                    // financialTransaction.ref=FinancialTransaction.generateRef();
+                    financialTransaction.error=FinancialTransactionErrorType.NO_ERROR;
+            
+                    history.financialTransaction=financialTransaction;
+            
+                    let user:Customer=new Customer();
+                    user.id.setId(transaction.idProvider);
+                    return this.userHistoryService.addHistory(user,history)
+                    .then((result:ActionResult)=> this.db.updateInCollection(Configuration.collections.requestservice,{"_id":idTransportService.toString()},
                     {
                         $push:{"transactions":transaction.toString()}
                     },
-                    {} );//doit précisé que l'on veux insérer dans l'array transactions
+                    {} ));//doit précisé que l'on veux insérer dans l'array transactions)
+                   
                 }
                 else
                 {
@@ -177,41 +202,93 @@ export class TransportServiceManager
     /**
      * @description Permet au demandeur de service d'effectué le paiement sur la plateforme
      * @param idService Identifiant du service
-     * @param idTransaction Identifiant de la transaction
+     * @param paiementMethodStrategi  Mode de paiement de type `PaiementStrategyType`
+     * @param buyerID Identitifiant du payeur
      */
-    makePaiement(idTransaction:EntityID):Promise<ActionResult>
+    makePaiement(idService:EntityID,paiementMethodStrategi:PaiementStrategyType,buyerID:EntityID):Promise<ActionResult>
     {
-        let transaction:TransactionService;
+        return new Promise<ActionResult>((resolve,reject)=>{
+            let transaction:TransactionService;
+            let history:UserHistory;
 
             //on recupere le service en fonction de son identifiant
-        return this.getTransaction(idTransaction)
-        .then((data:ActionResult)=>{ 
-            // on instanci le service en fonction de son champ `type`
-            
-            //on fait le paiement
-            try
-            {
-                transaction=data.result;
-                transaction.makePaiement();
-                return this.toupesuPaiement.makePaiement(ToupesuPaiementMethodFactory.getMethodPaiment(PaiementMethodType.BANQUE))
-                .then((value:ActionResult)=> this.db.updateInCollection(Configuration.collections.requestservice,
-                    {
-                        "transactions._id":idTransaction.toString()
-                    },
-                    {
-                        $set:{ 
-                            "transactions.$.state":transaction.state,
-                        }
+            this.getServiceById(idService)
+            .then((data:ActionResult)=>{ 
+                // on instanci le service en fonction de son champ `type`
+                
+                //on fait le paiement
+                try
+                {
+                    let service:TransportServiceType=data.result;
+                    transaction=service.transactions.find((trans:TransactionService)=>trans.id.toString()==service.idSelectedTransaction);
+                    transaction.makePaiement();
+                    this.userService.findUserById(buyerID)
+                    .then((result:ActionResult)=>this.toupesuPaiement.makePaiement(
+                        ToupesuPaiementMethodFactory.getMethodPaiment(paiementMethodStrategi),
+                        service,result.result[0]
+                        ,paiementMethodStrategi))
+                    .then((value:ActionResult)=> {
+                        history=value.result;
+                        return this.db.updateInCollection(Configuration.collections.requestservice,
+                            {
+                                "id":idService.toString()
+                            },
+                            {
+                                $set:{ 
+                                    "transactions.$.state":transaction.state,
+                                }
+                            })
                     })
+                    .then((value:ActionResult)=> {
+                        value.result={
+                            service,
+                            history
+                        };
+                        resolve(value)
+                    })
+                }
+                catch(error:any)
+                {
+                    data.resultCode=ActionResult.INVALID_ARGUMENT;
+                    data.message=error.getMessage();
+                    data.result=null;
+                    return Promise.reject(data);
+                } 
+            })
+            .catch((error:ActionResult)=>reject(error))
+        })
+        
+    }
+
+    checkPaiement(refID:number,buyerID:EntityID):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>{
+            let userHistory:UserHistory;
+            this.userHistoryService.findHistoryByRefTransaction(refID)
+            .then((result:ActionResult)=>{
+                userHistory=result.result;
+                return this.getServiceById(userHistory.serviceTransportID)
+            })
+            .then((result:ActionResult)=>{
+                let service:TransportServiceType=result.result;
+                let buyer:Customer=new Customer(buyerID);
+                return this.toupesuPaiement.checkPaiement(
+                    ToupesuPaiementMethodFactory.getMethodPaiment(userHistory.financialTransaction.paiementMode),
+                    service,
+                    userHistory.financialTransaction,
+                    buyer,
+                    userHistory.financialTransaction.paiementMode
                 )
-            }
-            catch(error:any)
+            })
+            .then((result:ActionResult)=>
             {
-                data.resultCode=ActionResult.INVALID_ARGUMENT;
-                data.message=error.getMessage();
-                data.result=null;
-                return Promise.reject(data);
-            } 
+                let financialTransaction:FinancialTransaction=userHistory.financialTransaction;
+                financialTransaction.state=result.result.state;
+                financialTransaction.endDate=result.result.endDate;
+                result.result=financialTransaction;
+                resolve(result)
+            })
+            .catch((error:ActionResult)=>reject(error))
         })
     }
 
@@ -292,5 +369,32 @@ export class TransportServiceManager
                 resolve(data);
             })
         })
+    }
+
+    getServiceById(serviceID:EntityID):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>{
+            this.db.findInCollection(Configuration.collections.requestservice,{"_id":serviceID})
+            .then((result:ActionResult)=>{
+                if(result.result.length==0)
+                {
+                    result.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
+                    result.result=null;
+                    return reject(result);
+                }
+                let service:TransportServiceType=ServiceTypeFactory.getInstance(result.result.type);
+                service.hydrate(result.result);
+                result.result=service;
+                resolve(result)
+            })
+            .catch((error:ActionResult)=>reject(error))
+        })
+    }
+
+    updatePaiementStatus():Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resove,reject)=>{
+            
+        }) 
     }
 }

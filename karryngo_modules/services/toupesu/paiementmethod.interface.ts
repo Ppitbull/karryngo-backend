@@ -1,10 +1,13 @@
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
+import { Customer } from "../../bussiness/authentification/entities/customer";
 import { TransactionService } from "../../bussiness/service/entities/transactionservice";
-import { User } from "../usermanager/entities/User";
+import { FinancialTransaction } from "./entities/financialtransaction";
+import { PaiementMethodEntity } from "./entities/paiementmethodentity";
 
-export interface PaiementMethod
+
+export interface PaiementMethodStrategy
 {
-    buy(transaction:TransactionService,buyer:User):Promise<ActionResult>
-    check(transaction:TransactionService,buyer:User):Promise<ActionResult>
-    cancel(transaction:TransactionService,buyer:User):Promise<ActionResult>
+    buy(transaction:TransactionService,buyer:Customer,paiementMethod:PaiementMethodEntity):Promise<ActionResult>
+    check(financialTransaction:FinancialTransaction,buyer:Customer,paiementMethod:PaiementMethodEntity):Promise<ActionResult>
+    cancel(transaction:TransactionService,buyer:Customer,paiementMethod:PaiementMethodEntity):Promise<ActionResult>
 }

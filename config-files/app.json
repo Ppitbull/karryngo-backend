@@ -51,11 +51,21 @@
     },
     "paiement":
     {
+        "ozowPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/reqPayment",
+        "ozowCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/checkTransaction",
+        "ozowCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/reqPayment",
         "product":"Karryngo",
-        "errorUrl":"/error",
-        "successUrl":"/success",
-        "cancelUrl":"/cancel",
-        "moneyCode":"ZAR"
+        "dev_mode":
+         {
+            "errorUrl":"localhost/#/error-payment",
+            "successUrl":"localhost/#/success-payment ",
+            "cancelUrl":"localhost/#/cancel-payment"
+            
+         },
+         "prod_mode":{
+            "errorUrl":"kgo.sdkgames.com/#/error-payment",
+            "successUrl":"kgo.sdkgames.com//#/success-payment ",
+            "cancelUrl":"kgo.sdkgames.com/#/cancel-payment"
+         }
     }
-
 }

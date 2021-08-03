@@ -28,7 +28,7 @@ export class ControlBussTest
     {
         // console.log(req.body)
         // console.log(req);
-        let buf:Buffer = Buffer.from(req.body.file,'base64');
+        // let buf:Buffer = Buffer.from(req.body.file,'base64');
         console.log("Requeste", req)
         let kfile=new KFile(new EntityID());
         // req.body.options
