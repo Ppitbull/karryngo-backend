@@ -54,6 +54,12 @@
         "ozowPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/reqPayment",
         "ozowCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/checkTransaction",
         "ozowCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/reqPayment",
+        "mtnPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/reqPayment",
+        "mtnCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/checkTransaction",
+        "mtnCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/reqPayment",
+        "orangePaiementUrl":"https://api.toupesu.com/livepaygateway/orange/1.0.2/reqPayment",
+        "orangeCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/orange/1.0.2/checkTransaction",
+        "orangeCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/orange/1.0.2/checkTransaction",
         "product":"Karryngo",
         "dev_mode":
          {

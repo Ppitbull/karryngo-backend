@@ -25,6 +25,8 @@ export class ToupesuPaiement
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let history:UserHistory; 
+            let paiementMethodEntity:PaiementMethodEntity;
+            let transaction:TransactionService;
             this.historyService.checkExistHistory(buyer,service.id)
             .then((result:ActionResult)=>{
                 if(result.result.length>0) 
@@ -36,19 +38,23 @@ export class ToupesuPaiement
             })
             .then((result:ActionResult)=>{
                 history=result.result;
+                paiementMethodEntity=buyer.paimentMethodList.find((p:PaiementMethodEntity)=>p.type==paiementMethod)
+                transaction=service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction); 
                 return toupesuPaiementMethod.buy(
-                    service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction),
+                    transaction,
                     buyer,
-                    buyer.paimentMethodList.find((paiementMethodEntity:PaiementMethodEntity)=>paiementMethodEntity.type==paiementMethod))
+                    paiementMethodEntity
+                )
             })
             .then((result:ActionResult)=>{
                 history.financialTransaction.state=FinancialTransactionState.FINANCIAL_TRANSACTION_PENDING;
                 history.financialTransaction.startDate=new Date().toISOString();
-                history.financialTransaction.amount=result.result.amount;
+                history.financialTransaction.amount=parseInt(transaction.price.toString());
                 history.financialTransaction.ref=result.result.ref;
                 history.financialTransaction.urlToRedirect=result.result.urlToRedirect;
                 history.financialTransaction.token=result.result.token;
-                history.financialTransaction.paiementMode=result.result.paiementMode;
+                history.financialTransaction.error=result.result.error;
+                history.financialTransaction.paiementMode=paiementMethodEntity.type;
 
                 return this.historyService.updateTransaction(buyer,service.id,history.toString())
             })
