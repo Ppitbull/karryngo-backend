@@ -24,26 +24,28 @@ import { Request, Response } from "express";
 import { RealTimeRouterService } from "../../services/realtime/router-realtime.service";
 import { RealTimeChatManager } from "../chat/chat-realtimemanager";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
-import { DBPersistence } from "../../../karryngo_core/decorator";
+import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
 import { FinancialTransactionErrorType, FinancialTransactionState } from "../../services/toupesu/enums";
 import { UserHistory } from "../../services/historique/history";
 import { FinancialTransaction } from "../../services/toupesu/entities/financialtransaction";
 import { Customer } from "../authentification/entities/customer";
 import { HistoryService } from "../../services/historique/historyService";
 
+@Controller()
 export class ServiceManager
 {
     @DBPersistence()
     private db:PersistenceManager;
 
     constructor(
-        private crudService:CrudService,
         private transportServiceManager:TransportServiceManager,
         private chatService:ChatService,
         private userHistoryService:HistoryService
         // private chatRealTimeService:RealTimeChatManager,
         // private realTimeRouterService:RealTimeRouterService
-        ){}
+        ){
+            console.log("transportService ",this.transportServiceManager)
+        }
 
     notifyUser(discuss:Discussion,currentUserId:EntityID,transactionID:EntityID,messageContent:any,subType:boolean=false,subMessage:any={}):Message
     {
@@ -100,6 +102,7 @@ export class ServiceManager
         let currentUserId:EntityID = new EntityID();
         currentUserId.setId(request.decoded.id);
         
+        console.log(this.transportServiceManager)
         this.transportServiceManager.startTransaction(
             request.body.idService,
             request.body.idProvider,

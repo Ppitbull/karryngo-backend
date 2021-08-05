@@ -6,7 +6,7 @@ import { FinancialTransaction } from "../toupesu/entities/financialtransaction";
 export class UserHistory extends KarryngoPersistentEntity
 {
     financialTransaction:FinancialTransaction=new FinancialTransaction(new EntityID());
-    serviceTransportID:EntityID;
+    serviceTransportID:EntityID=new EntityID();
 
     hydrate(entity:EntityID):void
     {

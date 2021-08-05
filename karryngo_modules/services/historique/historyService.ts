@@ -26,9 +26,9 @@ export class HistoryService
                 reject(result);
             })
             .catch((result:ActionResult)=>{
-                if(result.resultCode!=ActionResult.SUCCESS) reject(result);
+                if(result.resultCode!=ActionResult.RESSOURCE_NOT_FOUND_ERROR) return reject(result);
                 this.db.updateInCollection(
-                    Configuration.collections.chat,
+                    Configuration.collections.user,
                     {"_id":user.id.toString()},
                     {
                         $push:{"histories":history.toString()}

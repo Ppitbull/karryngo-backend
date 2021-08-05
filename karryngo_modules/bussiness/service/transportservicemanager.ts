@@ -30,12 +30,15 @@ import { HistoryService } from "../../services/historique/historyService";
 export class TransportServiceManager
 {
     @DBPersistence()
-    private db:PersistenceManager=null;
+    private db:PersistenceManager;
 
 
-    constructor(private toupesuPaiement:ToupesuPaiement,
+    constructor(
+        private toupesuPaiement:ToupesuPaiement,
         private userService:UserManagerService,
-        private userHistoryService:HistoryService){}
+        private userHistoryService:HistoryService){
+            // console.log("hiezar")
+        }
 
 
     /**
@@ -364,7 +367,7 @@ export class TransportServiceManager
                 
                 let transaction:TransactionService = new TransactionService();
                 transaction.hydrate(data.result[0].transactions[0]);
-                console.log("Transaction ",transaction)
+                // console.log("Transaction ",transaction)
                 data.result=transaction;
                 resolve(data);
             })

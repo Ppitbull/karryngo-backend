@@ -15,7 +15,7 @@ export class ControlBussTest
     fs:KarryngoFileStorage;
     //,private kfile:KarryngoFileStorage
     constructor(private userMaganer:UserManagerService){
-        console.log("Constructor busstest ",this.userMaganer)
+        // console.log("Constructor busstest ",this.userMaganer)
     }
 
     getAllUser(req:any,response:any)
@@ -29,7 +29,7 @@ export class ControlBussTest
         // console.log(req.body)
         // console.log(req);
         // let buf:Buffer = Buffer.from(req.body.file,'base64');
-        console.log("Requeste", req)
+        // console.log("Requeste", req)
         let kfile=new KFile(new EntityID());
         // req.body.options
         // this.fs.put(buf,req.body.options)

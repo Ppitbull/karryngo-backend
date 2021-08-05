@@ -70,7 +70,7 @@ export class RequesterServiceManager
         }
         service.hydrate(request.body);
         service.idRequester=request.decoded.id
-
+        // console.log(request.body.options.images)
         this.fileUploadService.uploadAll(request.body.options.images)
         .then((result:ActionResult)=>{
             service.images=result.result;
@@ -90,6 +90,7 @@ export class RequesterServiceManager
 
             let user:Customer=new Customer();
             user.id.setId(service.idRequester);
+            // console.log("result ",user)
             return this.userHistoryService.addHistory(user,history)
         })
         .then((result:ActionResult)=>{

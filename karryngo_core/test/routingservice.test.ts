@@ -35,6 +35,5 @@ describe('Test du service de routage',()=>
     it("test de lancement d'instanciation et d'appel de fonction de la metode run",()=>
     {
         router.run();
-        console.log("Router Service ",router);
     })
 });;

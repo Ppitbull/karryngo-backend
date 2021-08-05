@@ -11,7 +11,7 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
     public _id:EntityID;
 
     
-    constructor(id:EntityID)
+    constructor(id:EntityID=new EntityID())
     {
         super();
         this._id=id;
