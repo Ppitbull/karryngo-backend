@@ -8,7 +8,11 @@
 import { KarryngoRoutingException } from "../exception/KarryngoRoutingException";
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";
+import { Constructor, Type } from "../lifecycle/type.interface";
 import { Action } from "./Action";
+
+
+
 
 export class Route extends KarryngoApplicationEntity
 {
@@ -24,7 +28,7 @@ export class Route extends KarryngoApplicationEntity
      *  ce module doit être spécifier en tenant compte du chemin d'acces depuis la racine du 
      *  projet jusqua la classe a executer
      */
-    protected _module:String="";
+    protected _module:Constructor;
 
     /**
      * @type String
@@ -34,7 +38,7 @@ export class Route extends KarryngoApplicationEntity
 
     protected _secure:Boolean=true;
 
-    constructor(url:String="",module:String="",action:Action[]=[])
+    constructor(url:String="",module:Constructor,action:Action[]=[])
     {
         super();
         this.url=url;
@@ -65,7 +69,7 @@ export class Route extends KarryngoApplicationEntity
      * @description setter du module
      * @param mod: module a appeler
      */
-    set module(mod:String)
+    set module(mod:Constructor)
     {
         this._module=mod;
     }
@@ -99,7 +103,7 @@ export class Route extends KarryngoApplicationEntity
      * @description getter du module
      * @returns module de la route
      */
-    get module():String
+    get module():Constructor
     {
         return this._module;
     }

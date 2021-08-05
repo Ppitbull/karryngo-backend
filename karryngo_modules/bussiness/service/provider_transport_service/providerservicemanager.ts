@@ -4,22 +4,19 @@
 @created 30/11/2020
 */
 
-import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
-import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { ProviderService } from "./entities/providerservice";
-import { TransportServiceManager } from "./transportservicemanager";
-import { Location } from "./../../services/geolocalisation/entities/location";
-import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
-import { Vehicle } from "./entities/vehicle";
-import Configuration from "../../../config-files/constants";
-import { KFile } from "../../../karryngo_core/fs/KFile";
-import { Address } from "../../services/usermanager/entities/Address";
-import { FileService } from "../../services/files/file.service";
-import { TransportServiceType } from "./entities/transportservicetype";
-import { ServiceManager } from "./servicemanager";
-import { UserManagerService } from "../../services/usermanager/usermanager.service";
-import { Customer } from "../authentification/entities/customer";
-import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
+import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
+import { EntityID } from "../../../../karryngo_core/utils/EntityID";
+import { ProviderService } from "../entities/providerservice";
+import { Location } from "../../../services/geolocalisation/entities/location";
+import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
+import { Vehicle } from "../entities/vehicle";
+import Configuration from "../../../../config-files/constants";
+import { Address } from "../../../services/usermanager/entities/Address";
+import { FileService } from "../../../services/files/file.service";
+import { TransportServiceType } from "../entities/transportservicetype";
+import { ServiceManager } from "../transport_transaction/servicemanager";
+import { UserManagerService } from "../../../services/usermanager/usermanager.service";
+import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
 
 @Controller()
 export class ProviderServiceManager
@@ -27,7 +24,6 @@ export class ProviderServiceManager
     @DBPersistence()
     private db:PersistenceManager;
     constructor(
-        private transportservicemanager:TransportServiceManager,
         private fileUploadService:FileService,
         private serviceManager:ServiceManager,
         private userManager:UserManagerService){}

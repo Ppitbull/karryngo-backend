@@ -23,6 +23,7 @@ InjectorContainer.getInstance().saveInstance<KarryngoApp>(KarryngoApp,karryngoAp
 app.use(((request:any,response:any,next:any)=>
 {
     karryngoApp.run();
+
     next();
 }));
 

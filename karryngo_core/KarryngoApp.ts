@@ -13,6 +13,7 @@ import { RouterService } from "./routing/RouterService";
 import { InjectorContainer } from "./lifecycle/injector_container";
 import { RouterChecker } from "./routing/routerchecker";
 import { ActionResult } from "./utils/ActionResult";
+import { ModulesRouting } from "../app-module";
 
 export class KarryngoApp extends KarryngoApplicationEntity
 {
@@ -34,16 +35,17 @@ export class KarryngoApp extends KarryngoApplicationEntity
 
         this.httpServer=httpServer;
 
-        InjectorContainer.getInstance().bootstrap();
+        InjectorContainer.getInstance().bootstrap(ModulesRouting);
         //obtention de l'instance du service de configuration
         let configurationInstance=InjectorContainer.getInstance().getInstanceOf<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory).getInstance();
 
         //obtention de l'instance du service de routage avec injection du service de routing
                 //offerte par le framework Express et du service de configuration
-        this.routerService=new RouterService(
-            configurationInstance,
-            InjectorContainer.getInstance().getInstanceOf<RouterChecker>(RouterChecker),
-            router);
+        
+        this.routerService=InjectorContainer.getInstance().getInstanceOf<RouterService>(RouterService);
+        this.routerService.configService=configurationInstance;
+        this.routerService.routerChecker=InjectorContainer.getInstance().getInstanceOf<RouterChecker>(RouterChecker);
+        this.routerService.frameworkRouter=router
 
         frameworkExpress.use((request:any,response:any,next:any)=>
         {

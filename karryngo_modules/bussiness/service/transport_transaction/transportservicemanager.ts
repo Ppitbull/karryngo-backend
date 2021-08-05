@@ -4,26 +4,22 @@
 @created 22/11/2020
 */
 
-import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
-import { TransportService } from "./entities/transportservice";
-import { Location } from "./../../services/geolocalisation/entities/location";
-import { InvalideServiceStateException, TransactionService, TransactionServiceState } from "./entities/transactionservice";
-import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
-import { ServiceTypeFactory } from "./servicetypefactory";
-import { TransportServiceType, TransportServiceTypeState } from "./entities/transportservicetype";
-import Configuration from "../../../config-files/constants";
-import { Message } from "../../services/chats/message";
-import { ToupesuPaiement } from "../../services/toupesu/toupesupayment.service";
-import {  ToupesuPaiementMethodFactory } from "../../services/toupesu/toupesupaiementmethodbuilder";
-import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
-import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "../../services/toupesu/enums";
-import { UserManagerService } from "../../services/usermanager/usermanager.service";
-import { Customer } from "../authentification/entities/customer";
-import { Collection } from "mongoose";
-import { FinancialTransaction } from "../../services/toupesu/entities/financialtransaction";
-import { UserHistory } from "../../services/historique/history";
-import { HistoryService } from "../../services/historique/historyService";
+import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
+import { TransactionService } from "../entities/transactionservice";
+import { EntityID } from "../../../../karryngo_core/utils/EntityID";
+import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
+import { ServiceTypeFactory } from "../utils/servicetypefactory";
+import { TransportServiceType, TransportServiceTypeState } from "../entities/transportservicetype";
+import Configuration from "../../../../config-files/constants";
+import { ToupesuPaiement } from "../../../services/toupesu/toupesupayment.service";
+import {  ToupesuPaiementMethodFactory } from "../../../services/toupesu/toupesupaiementmethodbuilder";
+import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "../../../services/toupesu/enums";
+import { UserManagerService } from "../../../services/usermanager/usermanager.service";
+import { Customer } from "../../authentification/entities/customer";
+import { FinancialTransaction } from "../../../services/toupesu/entities/financialtransaction";
+import { UserHistory } from "../../../services/historique/history";
+import { HistoryService } from "../../../services/historique/historyService";
 
 
 @Controller()

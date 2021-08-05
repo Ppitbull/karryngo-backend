@@ -23,8 +23,7 @@ export default class AuthRequester
     constructor (
         private auth:BasicAuthentificationService,
         private userManagerService:UserManagerService,
-        private jwtAuth:ApiAccess,
-        private realTimeChat:RealTimeChatManager) {}
+        private jwtAuth:ApiAccess) {}
     checkUserInformation(user:Customer):Boolean
     {
         let status:Boolean=false;

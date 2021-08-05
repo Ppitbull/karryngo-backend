@@ -5,10 +5,6 @@
         "url":"./config-files/persistence.json",        
         "parse":false
     },
-    "routes":{
-        "parse":false,
-        "url":"./config-files/routes.json"
-    },
     "jwt":{
         "parse":false,
         "secret_key":"karryngo security",

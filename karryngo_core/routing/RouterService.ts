@@ -32,20 +32,22 @@ export class RouterService extends KarryngoApplicationEntity
      * @type ConfigurableApp
      * @description sera injecté a partir du constructeur et contiendra l'objet de configuration
      */
-    protected configService:ConfigurableApp;
+    configService:ConfigurableApp;
 
-    protected frameworkRouter:any;
+    frameworkRouter:any;
 
-    protected routerChecker:RouterChecker;
+    routerChecker:RouterChecker;
     
     constructor(config:ConfigurableApp,routerChecker:RouterChecker,frouter:any)
     {
         super();
         this.configService=config;
         this.frameworkRouter=frouter;
-        this.readRouteFromConfiguration();
         this.routerChecker=routerChecker;
     }
+
+
+
     /***
      *@see SerializableEntity.toString()
      */
@@ -67,66 +69,7 @@ export class RouterService extends KarryngoApplicationEntity
      *  si dans le tableau des actions un parametre (action, method) n'est pas spécifier
      * 
      */
-    protected readRouteFromConfiguration()
-    {
-        //obtention du tableau des routes dans le fichier de configuraiton routes.json
-        let objRoute=this.configService.getValueOf('routes');
-
-        //si les routes ne sont pas dans un tableau alors on lance une erreur
-        if(!(objRoute instanceof Array)) throw new KarryngoRoutingException(KarryngoRoutingException.BAD_ROUTE_CONFIGURATION,"bad definition of file configuration of route");
-        
-        //pour chaque unité de routage contenu dans le tableau des routes
-        for(let route of objRoute)
-        {
-            //si une propriété de la route est manquante (url,module,actions) alors on génére
-            //une erreur avec un message approprié
-            if(!route.hasOwnProperty('url') || !route.hasOwnProperty('module') || !route.hasOwnProperty('actions'))
-            {
-                let notFoundKey=route.hasOwnProperty('url')?
-                    ( route.hasOwnProperty('module')?
-                        ( route.hasOwnProperty('actions')?
-                            '':
-                            'actions'
-                        ) :'module' 
-                    ): 'url';
-                throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_PARAM_NOT_FOUND,`key ${notFoundKey} not found in route ${route} `)
-            }
-
-            //pour chaque action trouvé dans l'ensemble des actions de chaque  url
-        
-        
-            let r=new Route();
-            r.module=route.module;
-            r.secure=route.hasOwnProperty('secure');
-            r.url=route.url;
-
-            //si une propriété de l'action est innéxistante, on lance une exception
-            let actions:Action[]=[]
-            route.actions.forEach((routeAction:any) => 
-            {
-                if(!routeAction.hasOwnProperty('method'))    
-                {
-                    throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_PARAM_NOT_FOUND,`key 'method' not found in action ${routeAction} `)
-                }
-                if(!routeAction.hasOwnProperty('action'))    
-                {
-                    throw new KarryngoRoutingException(KarryngoRoutingException.ROUTE_PARAM_NOT_FOUND,`key 'action' not found in action ${routeAction} `)
-                }
-                //on ajoute l'action au tableau des actions
-                actions.push(new Action(
-                    routeAction.method,
-                    routeAction.action,
-                    routeAction.hasOwnProperty('params')?routeAction.params:{},
-                    routeAction.hasOwnProperty("secure")?routeAction.secure:r.secure
-                    ));
-                    
-            });
-            r.actions=actions;
-            //console.log("routes ", r)
-            //on ajoute la route a la liste des routes disponible
-            this.addRoute(r);
-        }
-    }
+    
     /**
      * @description permet de spécifier au frameword (express) l'ensemble des routes
      *  existante dans l'application ainsi que les controlleurs et les actions a appéler pour
@@ -139,7 +82,7 @@ export class RouterService extends KarryngoApplicationEntity
         {
             //on charge dynamiquement du module/controlleur associer et par le biais du container de dépendance
             //on injecte toutes les dépendances néccessaire au module
-            let controller=InjectorContainer.getInstance().getInstanceOf(DynamicLoader.loadWithoutInstance(`${Configuration.path_for_bussiness_module}/${route.module}`));
+            let controller=InjectorContainer.getInstance().getInstanceOf(route.module);
             
             //pour chaque method on appelle l'action associer en lui passant l'object requete et reponse
             for(let action of route.actions)
@@ -168,7 +111,7 @@ export class RouterService extends KarryngoApplicationEntity
      * @param route 
      * @description permet d'ajouter une nouvelle route
      */
-    protected addRoute(route:Route):void
+    addRoute(route:Route):void
     {
         this.routes.push(route);
     }

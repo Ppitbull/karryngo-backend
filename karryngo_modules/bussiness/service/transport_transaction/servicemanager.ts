@@ -4,32 +4,23 @@
 @created 28/11/2020
 */
 
-import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
-import { CrudService } from "../../services/crud/crud.service";
-import { TransportServiceType } from "./entities/transportservicetype";
-import { Vehicle } from "./entities/vehicle";
+import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
 import { TransportServiceManager } from "./transportservicemanager";
-import { Location } from "./../../services/geolocalisation/entities/location";
-import { ServiceProvider } from "../authentification/entities/serviceprovider";
-import { DataBaseException } from "../../../karryngo_core/exception/DataBaseException";
-import { InvalideServiceStateException, TransactionService } from "./entities/transactionservice";
-import { ChatService } from "../../services/chats/chat.service";
-import { Message } from "../../services/chats/message";
-import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { Discussion } from "../../services/chats/discussion";
-import Configuration from "../../../config-files/constants";
-import { ProviderService } from "./entities/providerservice";
-import { ServiceTypeFactory } from "./servicetypefactory";
+import { Location } from "../../../services/geolocalisation/entities/location";
+import { DataBaseException } from "../../../../karryngo_core/exception/DataBaseException";
+import { TransactionService } from "../entities/transactionservice";
+import { ChatService } from "../../../services/chats/chat.service";
+import { Message } from "../../../services/chats/message";
+import { EntityID } from "../../../../karryngo_core/utils/EntityID";
+import { Discussion } from "../../../services/chats/discussion";
+import Configuration from "../../../../config-files/constants";
+import { ProviderService } from "../entities/providerservice";
 import { Request, Response } from "express";
-import { RealTimeRouterService } from "../../services/realtime/router-realtime.service";
-import { RealTimeChatManager } from "../chat/chat-realtimemanager";
-import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
-import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
-import { FinancialTransactionErrorType, FinancialTransactionState } from "../../services/toupesu/enums";
-import { UserHistory } from "../../services/historique/history";
-import { FinancialTransaction } from "../../services/toupesu/entities/financialtransaction";
-import { Customer } from "../authentification/entities/customer";
-import { HistoryService } from "../../services/historique/historyService";
+import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
+import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
+import { FinancialTransactionErrorType } from "../../../services/toupesu/enums";
+import { UserHistory } from "../../../services/historique/history";
+import { HistoryService } from "../../../services/historique/historyService";
 
 @Controller()
 export class ServiceManager
@@ -44,7 +35,7 @@ export class ServiceManager
         // private chatRealTimeService:RealTimeChatManager,
         // private realTimeRouterService:RealTimeRouterService
         ){
-            console.log("transportService ",this.transportServiceManager)
+            // console.log("transportService ",this.transportServiceManager)
         }
 
     notifyUser(discuss:Discussion,currentUserId:EntityID,transactionID:EntityID,messageContent:any,subType:boolean=false,subMessage:any={}):Message
@@ -102,7 +93,7 @@ export class ServiceManager
         let currentUserId:EntityID = new EntityID();
         currentUserId.setId(request.decoded.id);
         
-        console.log(this.transportServiceManager)
+        // console.log(this.transportServiceManager)
         this.transportServiceManager.startTransaction(
             request.body.idService,
             request.body.idProvider,
@@ -291,7 +282,7 @@ export class ServiceManager
 
         let currentUserId:EntityID = new EntityID();
         currentUserId.setId(request.decoded.id);
-        console.log(request.body)
+        // console.log(request.body)
         this.transportServiceManager.startRunningTransaction(idTransaction)
         .then((data:ActionResult)=> this.chatService.findDisccussByTransactionID(idTransaction))
         .then((data:ActionResult)=> {

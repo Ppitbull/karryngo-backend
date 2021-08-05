@@ -5,26 +5,23 @@
 */
 
 import { Request, Response } from "express";
-import Configuration from "../../../config-files/constants";
-import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
-import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
-import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { CrudService } from "../../services/crud/crud.service";
-import { TransportColisService } from "./entities/transportcolisservice";
-import { TransportPersonService } from "./entities/transportpersontservice";
-import { TransportServiceType } from "./entities/transportservicetype";
-import { ServiceManager } from "./servicemanager";
-import { ServiceTypeFactory } from "./servicetypefactory";
-import { TransportServiceManager } from "./transportservicemanager";
-import { FileService } from "../../services/files/file.service";
-import { ProviderServiceManager } from "./providerservicemanager";
-import { Controller, DBPersistence } from "../../../karryngo_core/decorator";
-import { UserHistory } from "../../services/historique/history";
-import { HistoryService } from "../../services/historique/historyService";
-import { User } from "../../services/usermanager/entities/User";
-import { FinancialTransaction } from "../../services/toupesu/entities/financialtransaction";
-import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType } from "../../services/toupesu/enums";
-import { Customer } from "../authentification/entities/customer";
+import Configuration from "../../../../config-files/constants";
+import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
+import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
+import { EntityID } from "../../../../karryngo_core/utils/EntityID";
+import { TransportColisService } from "../entities/transportcolisservice";
+import { TransportPersonService } from "../entities/transportpersontservice";
+import { TransportServiceType } from "../entities/transportservicetype";
+import { ServiceTypeFactory } from "../utils/servicetypefactory";
+import { TransportServiceManager } from "../transport_transaction/transportservicemanager";
+import { FileService } from "../../../services/files/file.service";
+import { ProviderServiceManager } from "../provider_transport_service/providerservicemanager";
+import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
+import { UserHistory } from "../../../services/historique/history";
+import { HistoryService } from "../../../services/historique/historyService";
+import { FinancialTransaction } from "../../../services/toupesu/entities/financialtransaction";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType } from "../../../services/toupesu/enums";
+import { Customer } from "../../authentification/entities/customer";
 
 
 export class ServiceTransportBy
@@ -42,8 +39,6 @@ export class RequesterServiceManager
 
     constructor(
         private transportservicemanager:TransportServiceManager,
-        private serviceManager:ServiceManager,
-        private crudService:CrudService,
         private fileUploadService:FileService,
         private providerService:ProviderServiceManager,
         private userHistoryService:HistoryService

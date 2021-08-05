@@ -8,7 +8,7 @@
 import "reflect-metadata";
 import { Type } from "../lifecycle/type.interface";
 import { KarryngoConfigurationServiceFactory } from "../config/KarryngoConfigurationServiceFactory";
-import { KarryngoPersistenceManagerFactory } from "../persistence/KarryngoPersistenceManagerFactory";
+
 
 export class InjectorContainer extends Map
 {
@@ -32,7 +32,7 @@ export class InjectorContainer extends Map
      */
     public static getInstance():InjectorContainer
     {
-        if(this.instance==undefined || this.instance==null) this.instance=new InjectorContainer();
+        if(!this.instance) this.instance=new InjectorContainer();
         return this.instance;
     }
     
@@ -110,10 +110,13 @@ export class InjectorContainer extends Map
     {
         this.set(classe,instance);
     }
-    public bootstrap():void
+    public bootstrap(moduleList):void
     {
         this.resolveAndSave<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory);
         //this.resolveAndSave<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory);
-        
+        moduleList.forEach((module)=>{
+            // console.log("module ",module)
+            this.resolve(module)
+        });
     }
 }

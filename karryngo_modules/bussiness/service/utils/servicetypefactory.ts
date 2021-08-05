@@ -1,6 +1,5 @@
-import { TransportColisService } from "./entities/transportcolisservice";
-import { TransportPersonService } from "./entities/transportpersontservice";
-import { TransportServiceType } from "./entities/transportservicetype";
+import { TransportColisService } from "../entities/transportcolisservice";
+import { TransportPersonService } from "../entities/transportpersontservice";
 
 export class ServiceTypeFactory
 {

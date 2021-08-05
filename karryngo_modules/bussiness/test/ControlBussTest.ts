@@ -1,12 +1,12 @@
 
-import { UserManagerService } from "../services/usermanager/usermanager.service";
+import { UserManagerService } from "../../services/usermanager/usermanager.service";
 import { Request, Response } from "express";
-import { KarryngoFileStorage } from "../../karryngo_core/fs/KarryngoFileStorage";
-import { ActionResult } from "../../karryngo_core/utils/ActionResult";
-import { Controller } from "../../karryngo_core/decorator/core.decorator";
-import { KFileStorage } from "../../karryngo_core/decorator/filestorage.decorator";
-import { KFile } from "../../karryngo_core/fs/KFile";
-import { EntityID } from "../../karryngo_core/utils/EntityID";
+import { KarryngoFileStorage } from "../../../karryngo_core/fs/KarryngoFileStorage";
+import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
+import { Controller } from "../../../karryngo_core/decorator/core.decorator";
+import { KFileStorage } from "../../../karryngo_core/decorator/filestorage.decorator";
+import { KFile } from "../../../karryngo_core/fs/KFile";
+import { EntityID } from "../../../karryngo_core/utils/EntityID";
 
 @Controller()
 export class ControlBussTest

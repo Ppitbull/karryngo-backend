@@ -100,7 +100,7 @@ export class RealTimeChatManager
 
         this.chatService.findMessageByDiscussionId(id,discId)
         .then((result)=>{
-            console.log("result ",result)
+            // console.log("result ",result)
             if(result.result && result.result.length==0)
             {
                 this.chatService.send(message,data.data.idDiscussion)
@@ -108,7 +108,7 @@ export class RealTimeChatManager
             }
         })
         .catch((error)=>{
-            console.log("error ",error)
+            // console.log("error ",error)
             this.chatService.send(message,data.data.idDiscussion)
             .then((result:ActionResult)=>this.routerRealTimeService.send(data))
         })

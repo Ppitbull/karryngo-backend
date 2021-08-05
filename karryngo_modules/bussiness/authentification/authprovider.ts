@@ -11,15 +11,13 @@ import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { BasicAuthentificationService } from "../../services/authentification/basicauthentification.service";
 import { UserManagerService } from "../../services/usermanager/usermanager.service";
-import { ProviderServiceManager } from "../service/providerservicemanager";
-import { Customer } from "./entities/customer";
-import { ServiceProvider } from "./entities/serviceprovider";
+import { ProviderServiceManager } from "../service/provider_transport_service/providerservicemanager";
+
 
 @Controller()
 export class AuthProvider
 {
     constructor (
-        private auth:BasicAuthentificationService,
         private userManagerService:UserManagerService,
         private providerServiceManager:ProviderServiceManager) {}
 
