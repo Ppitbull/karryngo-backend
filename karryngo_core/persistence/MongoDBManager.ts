@@ -50,7 +50,7 @@ export class MongoDBManager extends NoSqlPersistenceManager
             let result:ActionResult=new ActionResult();
             try{                
                 let arr:Record<string, any>[]=[];
-                let cursor=this.getCollection(collectionName).find(options,othersOption).limit(MongoDBManager.MAX_TO_FIND);
+                let cursor=this.getCollection(collectionName).find(options).project(othersOption).limit(MongoDBManager.MAX_TO_FIND);
                 
                 while(await cursor.hasNext())  arr.push(await cursor.next());
                 result.result=[...arr];

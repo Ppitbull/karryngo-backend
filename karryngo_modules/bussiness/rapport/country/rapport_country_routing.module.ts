@@ -3,14 +3,12 @@ import { RapportContry } from "./rapport_country";
 
 @RouterModule([
     {
-        "url":"/api/provider/service/vehicle/list",
+        "url":"/api/manager/country/list",
         "module" :RapportContry,
         "actions":[
             {
                 "method":"get",
-                "action": "getVehicleList",
-                "params":{
-                }
+                "action": "getPlatformCountyList"
             }
         ]
     },
