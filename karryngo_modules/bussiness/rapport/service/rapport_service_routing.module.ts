@@ -12,6 +12,16 @@ import { RapportService } from "./rapport_servicemodule";
             }
         ]
     },
+    {
+        "url":"/api/manager/service/financial/price/:state?/:period?/:time?",
+        "module" :RapportService,
+        "actions":[
+            {
+                "method":"get",
+                "action": "getServicePriceByTime"
+            }
+        ]
+    },
 ])
 export class RapportServiceRoutingModule
 {}
