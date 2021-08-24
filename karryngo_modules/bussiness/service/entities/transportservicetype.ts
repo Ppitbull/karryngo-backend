@@ -13,7 +13,7 @@ import { Vehicle } from "./vehicle";
 
 export enum TransportServiceTypeState
 {
-    SERVICE_INIT_STATE="service_init_STATE",
+    SERVICE_INIT_STATE="service_init_state",
     SERVICE_IN_DISCUSS_STATE="service_in_discuss_state",
     SERVICE_IN_TRANSACTION_STATE="service_in_transaction_state",
     SERICE_END="service_end"

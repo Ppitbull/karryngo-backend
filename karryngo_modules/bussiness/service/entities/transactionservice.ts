@@ -13,13 +13,13 @@ import { TransportServiceType } from "./transportservicetype";
 
 export enum TransactionServiceState
 {
-    INIT,
-    SERVICE_ACCEPTED_AND_WAITING_PAIEMENT,
-    SERVICE_PAIEMENT_DONE_AND_WAITING_START,
-    SERVICE_RUNNING,
-    SERVICE_DONE_AND_WAIT_PROVIDER_PAIEMENT,
-    SERVICE_PROVIDER_PAIEMENT_DONE,
-    SERVICE_END,
+    INIT="init",
+    SERVICE_ACCEPTED_AND_WAITING_PAIEMENT="service_accepted_and_waiting_paiement",
+    SERVICE_PAIEMENT_DONE_AND_WAITING_START="service_paiement_done_and_waiting_start",
+    SERVICE_RUNNING="service_running",
+    SERVICE_DONE_AND_WAIT_PROVIDER_PAIEMENT="service_done_and_wait_provider_paiement",
+    SERVICE_PROVIDER_PAIEMENT_DONE="service_provider_paiement_done",
+    SERVICE_END="service_end",
 }
 
 export class InvalideServiceStateException extends KarryngoException

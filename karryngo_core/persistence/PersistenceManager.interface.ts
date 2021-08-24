@@ -83,7 +83,7 @@ export interface PersistenceManager
      * @return Promise résolut dont le resultat est un ActionResult avec pour attribut result la reference
      *  vers la collection et rejecté dans le cas contraire
      */
-    getCollection(collectionName:String):Promise<ActionResult>
+    getCollection(collectionName:String):any
 
 
     addToCollection(collectionName:String,entity:SerializableEntity):Promise<ActionResult>
@@ -92,6 +92,8 @@ export interface PersistenceManager
 
     findInCollection(collectionName:String,options:Record<string,any>,othersOption?:Record<string, any>,limit?:Number):Promise<ActionResult>
 
+    findDepthInCollection(collectionName:String,options:Record<string,any>[]):Promise<ActionResult>
+    
     /**
      * @description Cette methode permet de mettre a jour un document. elle recherche en base de données
      *  le document correspond dans la collection indiqué en fonction des conditions et met a jour les champs

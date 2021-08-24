@@ -24,6 +24,7 @@ export default class AuthRequester
         private auth:BasicAuthentificationService,
         private userManagerService:UserManagerService,
         private jwtAuth:ApiAccess) {}
+        
     checkUserInformation(user:Customer):Boolean
     {
         let status:Boolean=false;
@@ -74,6 +75,7 @@ export default class AuthRequester
         let user:Customer=new Customer();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
+        console.log(request.body);
         this.auth.login(user)
         .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,data.result.id))
         .then((data:ActionResult)=>

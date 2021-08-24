@@ -16,6 +16,7 @@ import Configuration from "../../config-files/constants";
 
 export class MongoDBManager extends NoSqlPersistenceManager
 {
+    
     private client:any=null;
     static MAX_TO_FIND:Number=20;
 
@@ -43,7 +44,25 @@ export class MongoDBManager extends NoSqlPersistenceManager
         })
     }
     
-    
+    findDepthInCollection(collectionName: String, options: Record<string, any>[]): Promise<ActionResult> {
+        return new Promise<ActionResult>(async (resolve,reject)=>{
+            let result:ActionResult=new ActionResult();
+            try{                
+                let arr:Record<string, any>[]=[];
+                let cursor=this.getCollection(collectionName).aggregate(options);
+                while(await cursor.hasNext())  arr.push(await cursor.next());
+                result.result=[...arr];
+                resolve(result);    
+            }     
+            catch(e){
+                result.resultCode=DataBaseException.DATABASE_UNKNOW_ERROR;
+                result.message="Cannot find document";
+                result.result=e;
+                reject(result);
+            }  
+                         
+        })
+    }
     findInCollection(collectionName: String, options: Record<string, any>,othersOption:Record<string, any>={},limit:Number=MongoDBManager.MAX_TO_FIND): Promise<ActionResult>
     {
         return new Promise<ActionResult>(async (resolve,reject)=>{

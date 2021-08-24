@@ -8,7 +8,7 @@ import { RapportContry } from "./rapport_country";
         "actions":[
             {
                 "method":"get",
-                "action": "getPlatformCountyList"
+                "action": "getPlatformCountyList",
             }
         ]
     },

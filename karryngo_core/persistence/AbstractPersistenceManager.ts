@@ -13,7 +13,12 @@ import { PersistenceManager } from "./PersistenceManager.interface";
 
 export abstract class AbstractPersistenceManager extends KarryngoApplicationEntity implements PersistenceManager
 {
-     /**
+   /**
+     * @inheritdoc
+     */
+    abstract  findDepthInCollection(collectionName: String, options: Record<string, any>[]): Promise<ActionResult>;
+    
+    /**
      * @inheritdoc
      */
     abstract updateInCollection(collectionName: String, cond: Record<string, any>, toUpdate: Record<string, any>,options:Record<string, any>): Promise<ActionResult>;
