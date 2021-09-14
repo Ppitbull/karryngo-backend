@@ -256,7 +256,7 @@ export class RapportService
             {
                 $match:
                 {
-                    idRequester: userid
+                    "idRequester": userid
                 }
             }
         )
@@ -267,7 +267,7 @@ export class RapportService
                 {
                     $match:
                     {
-                        "$state": state
+                        "state": state
                     }
                 }
             )
@@ -355,7 +355,7 @@ export class RapportService
             {
                 $match:
                 {
-                    idSelectedProvider: userid
+                    "idSelectedProvider": userid
                 }
             }
         )
@@ -366,7 +366,7 @@ export class RapportService
                 {
                     $match:
                     {
-                        "$state": state
+                        "state": state
                     }
                 }
             )
