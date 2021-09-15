@@ -235,12 +235,13 @@ export class RapportService
         
     }
 
-    getRequestedServices(request: Request, response: Response) 
+    getServices(request: Request, response: Response) 
     {
         let state = request.params.state || "all"
         let period = request.params.period || "all"
         let time = request.params.time || "all"
         let userid = request.params.iduser || ""
+        let type = request.params.type || ""
         
         let findQuery = []
 
@@ -252,15 +253,38 @@ export class RapportService
             })
         }
 
-        findQuery.push(
-            {
-                $match:
+        if (type == "provider")
+        {
+            findQuery.push(
                 {
-                    "idRequester": userid
+                    $match:
+                    {
+                        "idSelectedProvider": userid
+                    }
                 }
-            }
-        )
-        
+            )
+        }
+
+        else if (type == "requester")
+        {
+            findQuery.push(
+                {
+                    $match:
+                    {
+                        "idRequester": userid
+                    }
+                }
+            )
+        }
+
+        else 
+        {
+            return response.status(400).json({
+                resultCode: ActionResult.INVALID_ARGUMENT,
+                message: "Invalid type parameter"
+            })
+        }
+
         if (state != "all")
         {
             findQuery.push(
@@ -272,7 +296,7 @@ export class RapportService
                 }
             )
         }
-
+    
         if (period != "all" && time != "all")
         {
             findQuery.push(
@@ -317,12 +341,12 @@ export class RapportService
                 }
             )
         }
-
+        
         this.db.findDepthInCollection(Configuration.collections.requestservice,findQuery)
         .then((result:ActionResult)=>{
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
-                message:"List of requested services",
+                message: type == "provider" ? "List of provided services" : "List of Requested services",
                 result: result
             })
         })
@@ -333,102 +357,4 @@ export class RapportService
             })
         })
     } 
-        
-    getProvidedServices(request: Request, response: Response)
-    {
-        let state = request.params.state || "all"
-        let period = request.params.period || "all"
-        let time = request.params.time || "all"
-        let userid = request.params.iduser || ""
-        
-        let findQuery = []
-
-        if (userid == "")
-        {
-            return response.status(400).json({
-                resultCode: ActionResult.INVALID_ARGUMENT,
-                message: "Invalid User Id parameter"
-            })
-        }
-
-        findQuery.push(
-            {
-                $match:
-                {
-                    "idSelectedProvider": userid
-                }
-            }
-        )
-        
-        if (state != "all")
-        {
-            findQuery.push(
-                {
-                    $match:
-                    {
-                        "state": state
-                    }
-                }
-            )
-        }
-
-        if (period != "all" && time != "all")
-        {
-            findQuery.push(
-                {
-                    $addFields:
-                    {
-                        pubConvertedDate:
-                        {
-                            $toDate: "$publicationDate"
-                        }
-                    }
-                }, 
-                {
-                    $addFields:
-                    {
-                        dateValue:
-                        [
-                            {
-                                value: {$year: "pubConvertedDate"},
-                                period: "year"
-                            }, 
-                            {
-                                value: {$month: "pubConvertedDate"},
-                                period: "month"
-                            }, 
-                            {
-                                value: {$dayOfMonth: "pubConvertedDate"},
-                                period: "day"
-                            }
-                        ]
-                    }
-                }, 
-                {
-                    $match:
-                    {
-                        "dateValue.period": period,
-                        "dateValue.value": parseInt(time) 
-                    }
-                }, 
-                {
-                    $unset: ["dateValue", "pubConvertedDate"]
-                }
-            )
-        }
-        this.db.findDepthInCollection(Configuration.collections.requestservice,findQuery)
-        .then((result:ActionResult)=>{
-            response.status(200).json({
-                resultCode:ActionResult.SUCCESS,
-                message:"List of provided services",
-                result: result
-            })
-        })
-        .catch((error:ActionResult)=>{
-            response.status(500).json({
-                resultCode:error.resultCode,
-                message:error.message
-            })
-        })
-    }
 }

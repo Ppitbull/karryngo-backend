@@ -22,6 +22,16 @@ import { RapportService } from "./rapport_servicemodule";
             }
         ]
     },
+    {
+        "url":"/api/manager/service/get/:type/:idUser/:state/:period/:time",
+        "module" :RapportService,
+        "actions":[
+            {
+                "method":"get",
+                "action": "getServices"
+            }
+        ]
+    },
 ])
 export class RapportServiceRoutingModule
 {}
