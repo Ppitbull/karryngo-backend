@@ -240,7 +240,7 @@ export class RapportService
         let state = request.params.state || "all"
         let period = request.params.period || "all"
         let time = request.params.time || "all"
-        let userid = request.params.iduser || ""
+        let userid = request.params.idUser || ""
         let type = request.params.type || ""
         
         let findQuery = []
@@ -249,7 +249,7 @@ export class RapportService
         {
             return response.status(400).json({
                 resultCode: ActionResult.INVALID_ARGUMENT,
-                message: "Invalid User Id parameter"
+                message: "Invalid User parameter"
             })
         }
 
@@ -303,7 +303,7 @@ export class RapportService
                 {
                     $addFields:
                     {
-                        pubConvertedDate:
+                        pubConvertDate:
                         {
                             $toDate: "$publicationDate"
                         }
@@ -314,18 +314,18 @@ export class RapportService
                     {
                         dateValue:
                         [
-                            {
-                                value: {$year: "pubConvertedDate"},
-                                period: "year"
-                            }, 
-                            {
-                                value: {$month: "pubConvertedDate"},
-                                period: "month"
-                            }, 
-                            {
-                                value: {$dayOfMonth: "pubConvertedDate"},
-                                period: "day"
-                            }
+                          {
+                              value:{$year:"$pubConvertDate"},
+                              period:"year"
+                          },
+                          {
+                              value:{$month:"$pubConvertDate"},
+                              period:"month"
+                          },
+                          {
+                              value:{$dayOfMonth:"$pubConvertDate"},
+                              period:"day"
+                          },
                         ]
                     }
                 }, 
@@ -337,7 +337,7 @@ export class RapportService
                     }
                 }, 
                 {
-                    $unset: ["dateValue", "pubConvertedDate"]
+                    $unset: ["dateValue", "pubConvertDate"]
                 }
             )
         }
@@ -356,5 +356,45 @@ export class RapportService
                 message:error.message
             })
         })
-    } 
+    }
+    
+    getOnUsers(request: Request, response: Response)
+    {
+        let user = request.params.iduser || undefined
+
+        if (user == undefined) {
+            response.status(400).json(
+                {
+                    code: -7337,
+                    message: "Aucun user trouve dans Users"
+                }
+            )
+        }
+
+        let findQuery = []
+
+        findQuery.push(
+            {
+                $match:
+                {
+                    idRequester: user
+                }
+            }
+        )
+
+        this.db.findDepthInCollection(Configuration.collections.requestservice,findQuery)
+        .then((result:ActionResult)=>{
+            response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message: "User trouves : ",
+                result: result
+            })
+        })
+        .catch((error:ActionResult)=>{
+            response.status(500).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        })
+    }
 }
