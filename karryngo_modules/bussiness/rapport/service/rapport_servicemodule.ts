@@ -356,45 +356,5 @@ export class RapportService
                 message:error.message
             })
         })
-    }
-    
-    getOnUsers(request: Request, response: Response)
-    {
-        let user = request.params.iduser || undefined
-
-        if (user == undefined) {
-            response.status(400).json(
-                {
-                    code: -7337,
-                    message: "Aucun user trouve dans Users"
-                }
-            )
-        }
-
-        let findQuery = []
-
-        findQuery.push(
-            {
-                $match:
-                {
-                    idRequester: user
-                }
-            }
-        )
-
-        this.db.findDepthInCollection(Configuration.collections.requestservice,findQuery)
-        .then((result:ActionResult)=>{
-            response.status(200).json({
-                resultCode:ActionResult.SUCCESS,
-                message: "User trouves : ",
-                result: result
-            })
-        })
-        .catch((error:ActionResult)=>{
-            response.status(500).json({
-                resultCode:error.resultCode,
-                message:error.message
-            })
-        })
-    }
+    }  
 }
