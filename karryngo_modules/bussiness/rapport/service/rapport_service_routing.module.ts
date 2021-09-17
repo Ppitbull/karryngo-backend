@@ -23,7 +23,7 @@ import { RapportService } from "./rapport_servicemodule";
         ]
     },
     {
-        "url":"/api/manager/service/get/:type/:idUser/:state/:period/:time",
+        "url":"/api/manager/service/get/:type/:iduser/:state/:year?/:month?/:day?",
         "module" :RapportService,
         "actions":[
             {

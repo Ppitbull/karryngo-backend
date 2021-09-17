@@ -237,11 +237,12 @@ export class RapportService
 
     getServices(request: Request, response: Response) 
     {
-        let state = request.params.state || "all"
-        let period = request.params.period || "all"
-        let time = request.params.time || "all"
-        let userid = request.params.idUser || ""
+        let userid = request.params.iduser || ""
         let type = request.params.type || ""
+        let state = request.params.state || "all"
+        let year = request.params.year || "all"
+        let month = request.params.month || "all"
+        let day = request.params.day || "all"
         
         let findQuery = []
 
@@ -249,7 +250,7 @@ export class RapportService
         {
             return response.status(400).json({
                 resultCode: ActionResult.INVALID_ARGUMENT,
-                message: "Invalid User parameter"
+                message: "User parameter is not optional"
             })
         }
 
@@ -296,52 +297,66 @@ export class RapportService
                 }
             )
         }
-    
-        if (period != "all" && time != "all")
+
+        findQuery.push(
+            {
+                $addFields:
+                {
+                    convertedDate:
+                    {
+                        $toDate: "$publicationDate"
+                    }
+                }
+            }, 
+            {
+                $addFields:
+                {
+                    dateValues:
+                    [
+                        {"year":{$year:"$convertedDate"}},
+                        {"month":{$month:"$convertedDate"}},
+                        {"day":{$dayOfMonth:"$convertedDate"}}
+                    ]
+                }
+            }
+        )
+
+        if (year != "all")
         {
             findQuery.push(
                 {
-                    $addFields:
-                    {
-                        pubConvertDate:
-                        {
-                            $toDate: "$publicationDate"
-                        }
-                    }
-                }, 
-                {
-                    $addFields:
-                    {
-                        dateValue:
-                        [
-                          {
-                              value:{$year:"$pubConvertDate"},
-                              period:"year"
-                          },
-                          {
-                              value:{$month:"$pubConvertDate"},
-                              period:"month"
-                          },
-                          {
-                              value:{$dayOfMonth:"$pubConvertDate"},
-                              period:"day"
-                          },
-                        ]
-                    }
-                }, 
-                {
-                    $match:
-                    {
-                        "dateValue.period": period,
-                        "dateValue.value": parseInt(time) 
-                    }
-                }, 
-                {
-                    $unset: ["dateValue", "pubConvertDate"]
+                    $match: {"dateValues.year": parseInt(year)}
                 }
             )
+
+            if (month != "all")
+            {
+                findQuery.push(
+                    {
+                        $match: {"dateValues.month": parseInt(month)}
+                    }
+                )
+                
+                if (day != "all")
+                {
+                    findQuery.push(
+                        {
+                            $match: {"dateValues.day": parseInt(day)}
+                        }
+                    )
+                }
+            }
+
         }
+
+        findQuery.push(
+            {
+                $unset: ["dateValues", "convertedDate"]
+            }
+        )
         
+        
+
         this.db.findDepthInCollection(Configuration.collections.requestservice,findQuery)
         .then((result:ActionResult)=>{
             response.status(200).json({
