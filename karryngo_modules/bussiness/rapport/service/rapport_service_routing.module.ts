@@ -3,7 +3,7 @@ import { RapportService } from "./rapport_servicemodule";
 
 @RouterModule([
     {
-        "url":"/api/manager/service/get_list/:state?/:period?/:time?",
+        "url":"/api/manager/service/get_list/:state?/:year?/:month?/:day?",
         "module" :RapportService,
         "actions":[
             {
@@ -13,7 +13,7 @@ import { RapportService } from "./rapport_servicemodule";
         ]
     },
     {
-        "url":"/api/manager/service/financial/price/:state?/:period?/:time?",
+        "url":"/api/manager/service/financial/price/:state?/:year?/:month?/:day?",
         "module" :RapportService,
         "actions":[
             {

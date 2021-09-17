@@ -14,8 +14,10 @@ export class RapportService
     getServiceListByTime(request:Request, response:Response)
     {
         let state = request.params.state || "all";
-        let period = request.params.period || "all";
-        let time = request.params.time || "all";
+        let year = request.params.year || "all";
+        let month = request.params.month || "all";
+        let day = request.params.day || "all";
+
 
         let findQuery=[];
         if(state!="all")
@@ -42,47 +44,47 @@ export class RapportService
                 }
             )
         }
-        if(period!="all" && time!="all")
+
+        if(year != "all")
         {
             findQuery.push(
                 {
                     $addFields:
                     {
-                        pubConvertDate:
-                        {
-                            $toDate:"$publicationDate"
-                        }
+                        dateValues:
+                        [
+                            {"year":{$year:"$convertedDate"}},
+                            {"month":{$month:"$convertedDate"}},
+                            {"day":{$dayOfMonth:"$convertedDate"}}
+                        ]
                     }
                 },
                 {
-                  $addFields:
-                  {
-                      dateValue:
-                      [
-                        {
-                            value:{$year:"$pubConvertDate"},
-                            period:"year"
-                        },
-                        {
-                            value:{$month:"$pubConvertDate"},
-                            period:"month"
-                        },
-                        {
-                            value:{$dayOfMonth:"$pubConvertDate"},
-                            period:"day"
-                        },
-                      ]
-                  }  
-                },
-                {
-                    $match:
+                    $match: {"dateValues.year": parseInt(year)}
+                }
+            )
+
+            if (month != "all")
+            {
+                findQuery.push(
                     {
-                        "dateValue.period":period,
-                        "dateValue.value":parseInt(time)
+                        $match: {"dateValues.month": parseInt(month)}
                     }
-                },
+                )
+                
+                if (day != "all")
                 {
-                    $unset:["dateValue","pubConvertDate"]
+                    findQuery.push(
+                        {
+                            $match: {"dateValues.day": parseInt(day)}
+                        }
+                    )
+                }
+            }
+
+            findQuery.push(
+                {
+                    $unset: ["dateValues", "convertedDate"]
                 }
             )
         }
@@ -110,8 +112,9 @@ export class RapportService
     getServicePriceByTime(request:Request, response:Response)
     {
         let state = request.params.state || "";
-        let period = request.params.period || "all";
-        let time = request.params.time || "all";
+        let year = request.params.year || "all";
+        let month = request.params.month || "all";
+        let day = request.params.day || "all";
 
         let findQuery=[];
         if(state=="" || state==TransportServiceTypeState.SERVICE_INIT_STATE || state==TransportServiceTypeState.SERVICE_IN_DISCUSS_STATE)
@@ -141,51 +144,50 @@ export class RapportService
                         }
                     ]
                 }
-            }
+            },
         );
 
-        if(period!="all" && time!="all")
+        if(year != "all")
         {
             findQuery.push(
                 {
                     $addFields:
                     {
-                        pubConvertDate:
-                        {
-                            $toDate:"$publicationDate"
-                        }
+                        dateValues:
+                        [
+                            {"year":{$year:"$convertedDate"}},
+                            {"month":{$month:"$convertedDate"}},
+                            {"day":{$dayOfMonth:"$convertedDate"}}
+                        ]
                     }
                 },
                 {
-                  $addFields:
-                  {
-                      dateValue:
-                      [
-                        {
-                            value:{$year:"$pubConvertDate"},
-                            period:"year"
-                        },
-                        {
-                            value:{$month:"$pubConvertDate"},
-                            period:"month"
-                        },
-                        {
-                            value:{$dayOfMonth:"$pubConvertDate"},
-                            period:"day"
-                        },
-                      ]
-                  }  
-                },
-                {
-                    $match:
+                    $match: {"dateValues.year": parseInt(year)}
+                }
+            )
+
+            if (month != "all")
+            {
+                findQuery.push(
                     {
-                        "dateValue.period":period,
-                        "dateValue.value":parseInt(time)
+                        $match: {"dateValues.month": parseInt(month)}
                     }
-                },
+                )
+                
+                if (day != "all")
                 {
-                    $unset:["dateValue","pubConvertDate"]
-                },                
+                    findQuery.push(
+                        {
+                            $match: {"dateValues.day": parseInt(day)}
+                        }
+                    )
+                }
+            }
+
+            findQuery.push(
+                {
+                    $unset: ["dateValues", "convertedDate"]
+                }
             )
         }
 
@@ -298,32 +300,20 @@ export class RapportService
             )
         }
 
-        findQuery.push(
-            {
-                $addFields:
-                {
-                    convertedDate:
-                    {
-                        $toDate: "$publicationDate"
-                    }
-                }
-            }, 
-            {
-                $addFields:
-                {
-                    dateValues:
-                    [
-                        {"year":{$year:"$convertedDate"}},
-                        {"month":{$month:"$convertedDate"}},
-                        {"day":{$dayOfMonth:"$convertedDate"}}
-                    ]
-                }
-            }
-        )
-
-        if (year != "all")
+        if(year != "all")
         {
             findQuery.push(
+                {
+                    $addFields:
+                    {
+                        dateValues:
+                        [
+                            {"year":{$year:"$convertedDate"}},
+                            {"month":{$month:"$convertedDate"}},
+                            {"day":{$dayOfMonth:"$convertedDate"}}
+                        ]
+                    }
+                },
                 {
                     $match: {"dateValues.year": parseInt(year)}
                 }
@@ -347,15 +337,12 @@ export class RapportService
                 }
             }
 
+            findQuery.push(
+                {
+                    $unset: ["dateValues", "convertedDate"]
+                }
+            )
         }
-
-        findQuery.push(
-            {
-                $unset: ["dateValues", "convertedDate"]
-            }
-        )
-        
-        
 
         this.db.findDepthInCollection(Configuration.collections.requestservice,findQuery)
         .then((result:ActionResult)=>{
