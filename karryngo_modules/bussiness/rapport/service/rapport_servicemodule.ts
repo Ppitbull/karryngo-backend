@@ -49,6 +49,9 @@ export class RapportService
         {
             findQuery.push(
                 {
+                    $addFields: {convertedDate: {$toDate: "$publicationDate"}}
+                },
+                {
                     $addFields:
                     {
                         dateValues:
@@ -150,6 +153,9 @@ export class RapportService
         if(year != "all")
         {
             findQuery.push(
+                {
+                    $addFields: {convertedDate: {$toDate: "$publicationDate"}}
+                },
                 {
                     $addFields:
                     {
@@ -303,6 +309,9 @@ export class RapportService
         if(year != "all")
         {
             findQuery.push(
+                {
+                    $addFields: {convertedDate: {$toDate: "$publicationDate"}}
+                },
                 {
                     $addFields:
                     {
