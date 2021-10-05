@@ -22,7 +22,7 @@
     },
     "mail": {
         "parse":false,
-        "host":"",
+        "host":"smtp.gmail.com",
         "port":2525,
         "service":"gmail",
         "auth" :{
