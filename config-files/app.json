@@ -22,13 +22,13 @@
     },
     "mail": {
         "parse":false,
-        "host":"",
-        "port":2525,
-        "service":"gmail",
-        "auth" :{
-            "user":"contact.karryngo@gmail.com",
-            "pass":"Entreprise123?"
-        }
+        "host": "smtp.gmail.com",
+        "port": 25,
+        "secure": false,
+        "auth": {
+                "user": "contact.karryngo@gmail.com",
+                "pass": "Entreprise123?"
+          }
     },
     "map":
     {
