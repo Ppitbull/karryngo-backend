@@ -234,4 +234,130 @@ export class RapportService
         })
         
     }
+
+    getServices(request: Request, response: Response) 
+    {
+        let userid = request.params.iduser || ""
+        let type = request.params.type || ""
+        let state = request.params.state || "all"
+        let year = request.params.year || "all"
+        let month = request.params.month || "all"
+        let day = request.params.day || "all"
+        
+        let findQuery = []
+
+        if (userid == "")
+        {
+            return response.status(400).json({
+                resultCode: ActionResult.INVALID_ARGUMENT,
+                message: "User parameter is not optional"
+            })
+        }
+
+        if (type == "provider")
+        {
+            findQuery.push(
+                {
+                    $match:
+                    {
+                        "idSelectedProvider": userid
+                    }
+                }
+            )
+        }
+
+        else if (type == "requester")
+        {
+            findQuery.push(
+                {
+                    $match:
+                    {
+                        "idRequester": userid
+                    }
+                }
+            )
+        }
+
+        else 
+        {
+            return response.status(400).json({
+                resultCode: ActionResult.INVALID_ARGUMENT,
+                message: "Invalid type parameter"
+            })
+        }
+
+        if (state != "all")
+        {
+            findQuery.push(
+                {
+                    $match:
+                    {
+                        "state": state
+                    }
+                }
+            )
+        }
+
+        if(year != "all")
+        {
+            findQuery.push(
+                {
+                    $addFields: {convertedDate: {$toDate: "$publicationDate"}}
+                },
+                {
+                    $addFields:
+                    {
+                        dateValues:
+                        [
+                            {"year":{$year:"$convertedDate"}},
+                            {"month":{$month:"$convertedDate"}},
+                            {"day":{$dayOfMonth:"$convertedDate"}}
+                        ]
+                    }
+                },
+                {
+                    $match: {"dateValues.year": parseInt(year)}
+                }
+            )
+
+            if (month != "all")
+            {
+                findQuery.push(
+                    {
+                        $match: {"dateValues.month": parseInt(month)}
+                    }
+                )
+                
+                if (day != "all")
+                {
+                    findQuery.push(
+                        {
+                            $match: {"dateValues.day": parseInt(day)}
+                        }
+                    )
+                }
+            }
+
+            findQuery.push(
+                {
+                    $unset: ["dateValues", "convertedDate"]
+                }
+            )
+        }
+
+        this.db.findDepthInCollection(Configuration.collections.requestservice,findQuery)
+        .then((result:ActionResult)=>{
+            response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message: type == "provider" ? "List of provided services" : "List of Requested services",
+                result: result
+            })
+        })
+        .catch((error:ActionResult)=>{
+            response.status(500).json({
+                resultCode:error.resultCode,
+                message:error.message
+            })
+        })
+    }  
 }
