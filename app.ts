@@ -14,12 +14,8 @@ const httpServer = require("http").createServer(app);
 app.use(cors())
 
 //instanciation du coeur de Karryngo
-
-let karryngoApp=new KarryngoApp(router,httpServer,app);
-
-InjectorContainer.getInstance().saveInstance<KarryngoApp>(KarryngoApp,karryngoApp);
-
-
+let karryngoApp = InjectorContainer.getInstance().getInstanceOf<KarryngoApp>(KarryngoApp)
+karryngoApp.init(router,httpServer,app);
 app.use(((request:any,response:any,next:any)=>
 {
     karryngoApp.run();

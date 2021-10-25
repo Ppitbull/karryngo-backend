@@ -6,6 +6,7 @@ import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 @Service()
 export class CrudService
 {
+    constructor(){}
     @DBPersistence()
     protected db:PersistenceManager;
 

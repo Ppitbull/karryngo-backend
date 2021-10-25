@@ -7,7 +7,7 @@
 
 import jsonwebtoken from "jsonwebtoken";
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
-import { ConfigService } from "../decorator";
+import { ConfigService, KarryngoCore } from "../decorator";
 import { ActionResult } from "../utils/ActionResult";
 
 export enum ApiAccessError
@@ -16,7 +16,7 @@ export enum ApiAccessError
     TokenExpiredError="TokenExpiredError"
 }
 
-
+@KarryngoCore()
 export class ApiAccess
 {
     @ConfigService()

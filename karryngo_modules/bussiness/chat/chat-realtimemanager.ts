@@ -14,7 +14,7 @@ import { Discussion } from "../../services/chats/discussion";
 import { Message } from "../../services/chats/message";
 import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent";
 import { EventEmitter } from "events";
-import { Controller, ConfigService } from "../../../karryngo_core/decorator";
+import { Controller, ConfigService, Service } from "../../../karryngo_core/decorator";
 
 export enum RealTimeChatMessageType
 {
@@ -39,12 +39,12 @@ export class RealTimeChatManager
     configService:ConfigurableApp;
     
     constructor(
-        private realtimeService:RealTimeService,
         private chatService:ChatService,
         private eventEmiter:EventEmitter,
         private routerRealTimeService:RealTimeRouterService
         ){
                 this.eventEmiter.on(RealTimeEvent.REALTIME_CONNEXION_STARTED,(socket:any)=>this.init(socket))
+                console.log("Realtime manager start")
     }
     init(socket:any)
     {

@@ -4,7 +4,6 @@
 @created: 23/09/2020
 @version 1.0.0
 */
-
 import { KarryngoApplicationEntity } from "./KarryngoApplicationEntity";
 import { KarryngoEntity } from "./KarryngoEntity";
 import { KarryngoConfigurationServiceFactory } from "./config/KarryngoConfigurationServiceFactory";
@@ -14,7 +13,10 @@ import { InjectorContainer } from "./lifecycle/injector_container";
 import { RouterChecker } from "./routing/routerchecker";
 import { ActionResult } from "./utils/ActionResult";
 import { ModulesRouting } from "../app-module";
+import { KarryngoCore } from "./decorator";
+import { RealTimeService } from "../karryngo_modules/services/realtime/realtime.service";
 
+@KarryngoCore()
 export class KarryngoApp extends KarryngoApplicationEntity
 {
     /**
@@ -29,11 +31,15 @@ export class KarryngoApp extends KarryngoApplicationEntity
      */
     protected httpServer:any;
 
-    constructor(router:any,httpServer:any,frameworkExpress:any)
-    {
-        super();       
+    protected frameworkExpress:any;
 
+    protected realtimeService:RealTimeService;
+
+    init(router:any,httpServer:any,frameworkExpress:any)
+    {  
         this.httpServer=httpServer;
+        this.realtimeService=InjectorContainer.getInstance().getInstanceOf<RealTimeService>(RealTimeService)
+        this.realtimeService.setKarryngoApp(this);
 
         InjectorContainer.getInstance().bootstrap(ModulesRouting);
         //obtention de l'instance du service de configuration
@@ -63,7 +69,8 @@ export class KarryngoApp extends KarryngoApplicationEntity
                 })
             })
             
-        });        
+        });  
+        this.realtimeService.init();      
     }
 
     /**
@@ -94,5 +101,17 @@ export class KarryngoApp extends KarryngoApplicationEntity
     getServer():any 
     {
         return this.httpServer
+    }
+    setServer(server:any)
+    {
+        this.httpServer=server;
+    }
+    setRouter(router)
+    {
+        this.routerService=router
+    }
+    setFramewordExpress(express)
+    {
+        this.frameworkExpress=express
     }
 }

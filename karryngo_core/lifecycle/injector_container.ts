@@ -18,7 +18,7 @@ export class InjectorContainer extends Map
      *  et est nécessaire a l'implémentation du design patern Singleton
      * @type InjectorContainer
      */
-    private static instance:InjectorContainer=new InjectorContainer();
+    private static instance:InjectorContainer=InjectorContainer.getInstance();
 
     private constructor()
     {
@@ -48,14 +48,20 @@ export class InjectorContainer extends Map
     {
         //obtention des métadonnées de la classe. ces méthodes concerne particulierement
         //les parametres du constructor de la classe
+        // console.log("Classe ",target)
+        // if (!target) return null;
 
         const tokens=Reflect.getMetadata('design:paramtypes',target) || [];
-        // console.log("class ",target,tokens,Reflect.getMetadata('design:paramtypes',target));
+        // console.log("class ",target,tokens);
 
 
         //pour chaque parametres du constructor appelle recuresivement la méthode resolveAndSave()
         //afin d'obtenir une instance du parametre. Le tout est retourné sous forme de tableau
-        const injections = tokens.map((token: Type<any>)=> this.resolveAndSave<any>(token));
+        const injections =[]
+        tokens.forEach((token: Type<any>) => {
+            // console.log("Token ",token)
+            if(token)injections.push(this.resolveAndSave<any>(token))
+        });
         
         //on essaie de voir si une instance de la classe courante existe déjà 
         //voir design partern Singleton
@@ -67,6 +73,7 @@ export class InjectorContainer extends Map
         const newClassInstance = new target(...injections);
         //console.log(`DI-Container created class ${newClassInstance.constructor.name}`);
         
+
         //si non on retourne l'instance associer
         return newClassInstance
     }
@@ -79,8 +86,9 @@ export class InjectorContainer extends Map
      */
     public resolveAndSave<T>(target:Type<any>):T
     {
-        this.set(target,this.resolve<T>(target));
-        return this.get(target);
+        let instance:T=this.resolve<T>(target);
+        if(instance) this.set(target,instance);
+        return instance;
     }
 
     /**
@@ -106,7 +114,7 @@ export class InjectorContainer extends Map
         return this.resolveAndSave(classe);
     }
 
-    public saveInstance<T>(classe:Type<any>,instance:T)
+    public saveInstance<T>(classe:Type<T>,instance:T)
     {
         this.set(classe,instance);
     }

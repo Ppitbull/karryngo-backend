@@ -4,11 +4,14 @@ import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { ChatService } from "../../services/chats/chat.service";
 import { Discussion } from "../../services/chats/discussion";
 import { Message } from "../../services/chats/message";
+import { RealTimeChatManager } from "./chat-realtimemanager";
 
 @Controller()
 export class ChatManager
 {
-    constructor(private chatService:ChatService){}
+    constructor(private chatService:ChatService,
+            chatRealTimeService:RealTimeChatManager
+        ){}
 
     addMessage(request:any,response:any):void
     {

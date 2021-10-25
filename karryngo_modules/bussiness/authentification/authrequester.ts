@@ -23,7 +23,8 @@ export default class AuthRequester
     constructor (
         private auth:BasicAuthentificationService,
         private userManagerService:UserManagerService,
-        private jwtAuth:ApiAccess) {}
+        private jwtAuth:ApiAccess
+        ) {}
         
     checkUserInformation(user:Customer):Boolean
     {
