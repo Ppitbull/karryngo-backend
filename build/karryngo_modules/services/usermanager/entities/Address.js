@@ -1,62 +1,41 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Address = void 0;
-var KarryngoPersistentEntity_1 = require("../../../../karryngo_core/persistence/KarryngoPersistentEntity");
-var EntityID_1 = require("../../../../karryngo_core/utils/EntityID");
-var Address = /** @class */ (function (_super) {
-    __extends(Address, _super);
+/**
+@author: Cedric nguendap
+@description: Cette classe permet de stocké toutes les addesses de l'utilisateur (Whatsapp,Tel,Email...)
+@created: 09/10/2020
+*/
+const KarryngoPersistentEntity_1 = require("../../../../karryngo_core/persistence/KarryngoPersistentEntity");
+const EntityID_1 = require("../../../../karryngo_core/utils/EntityID");
+class Address extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
     /**
      * @constructor
      * @param id identifiant  de l'adresse
      */
-    function Address(id) {
-        if (id === void 0) { id = new EntityID_1.EntityID(); }
-        var _this = _super.call(this, id) || this;
-        _this.email = "";
-        _this.mobilePhone = "";
-        _this.phone = "";
-        _this.websiteLink = "";
-        _this.whatsAppNumber = "";
-        _this.skypeNumber = "";
-        _this.zip = "";
-        _this.country = "";
-        return _this;
+    constructor(id = new EntityID_1.EntityID()) {
+        super(id);
+        this.email = "";
+        this.mobilePhone = "";
+        this.phone = "";
+        this.websiteLink = "";
+        this.whatsAppNumber = "";
+        this.skypeNumber = "";
+        this.zip = "";
+        this.country = "";
+        this.city = "";
     }
     /**
      * @inheritdoc
      */
-    Address.prototype.toString = function () {
-        return __assign(__assign({}, _super.prototype.toString.call(this)), { email: this.email, mobilePhone: this.mobilePhone, phone: this.phone, websiteLink: this.websiteLink, whatsAppNumber: this.whatsAppNumber, skypeNumber: this.skypeNumber, zip: this.zip, country: this.country });
-    };
+    toString() {
+        return Object.assign(Object.assign({}, super.toString()), { email: this.email, mobilePhone: this.mobilePhone, phone: this.phone, websiteLink: this.websiteLink, whatsAppNumber: this.whatsAppNumber, skypeNumber: this.skypeNumber, zip: this.zip, country: this.country, city: this.city });
+    }
     /**
      * @inheritdoc
      */
-    Address.prototype.hydrate = function (entity) {
-        _super.prototype.hydrate.call(this, entity);
+    hydrate(entity) {
+        super.hydrate(entity);
         this.email = this.purgeAttribute(entity, "email");
         this.mobilePhone = this.purgeAttribute(entity, "mobilePhone");
         this.phone = this.purgeAttribute(entity, "phone");
@@ -65,7 +44,7 @@ var Address = /** @class */ (function (_super) {
         this.skypeNumber = this.purgeAttribute(entity, "skypeNumber");
         this.zip = this.purgeAttribute(entity, "zip");
         this.country = this.purgeAttribute(entity, "country");
-    };
-    return Address;
-}(KarryngoPersistentEntity_1.KarryngoPersistentEntity));
+        this.city = this.purgeAttribute(entity, "city");
+    }
+}
 exports.Address = Address;

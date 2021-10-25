@@ -118,7 +118,7 @@ export class InjectorContainer extends Map
     {
         this.set(classe,instance);
     }
-    public bootstrap(moduleList):void
+    public bootstrap(moduleList=[]):void
     {
         this.resolveAndSave<KarryngoConfigurationServiceFactory>(KarryngoConfigurationServiceFactory);
         //this.resolveAndSave<KarryngoPersistenceManagerFactory>(KarryngoPersistenceManagerFactory);

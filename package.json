@@ -2,7 +2,7 @@
   "name": "karryngo-backend",
   "version": "2.1.0",
   "description": "Backend de l'application karryngo",
-  "main": "app.js",
+  "main": "./build/app.js",
   "scripts": {
     "test": "mocha --reporter spec  --require ts-node/register **/decorator.test.ts",
     "start": "nodemon app.ts",

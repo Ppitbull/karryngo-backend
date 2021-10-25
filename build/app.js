@@ -1,25 +1,35 @@
 "use strict";
-var express = require('express');
+Object.defineProperty(exports, "__esModule", { value: true });
+const KarryngoApp_1 = require("./karryngo_core/KarryngoApp");
+const injector_container_1 = require("./karryngo_core/lifecycle/injector_container");
+const express = require('express');
 var cors = require('cors');
-var app = express();
-var bodyParser = require('body-parser'); //librairie qui permet de parser une chaîne en JSON
+const app = express();
+let bodyParser = require('body-parser'); //librairie qui permet de parser une chaîne en JSON
+let router = express.Router();
+const httpServer = require("http").createServer(app);
 app.use(cors());
-// Import routes
-//let apiRoutes = require("./api-routes")
-//var mongoose = require('mongoose');
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true })); //ceci permet de gérer les tailles des json en entrée très grand
-app.use(bodyParser.json({ limit: '50mb' })); //ceci permet de gérer les tailles des json en entrée très grand
-//mongoose.connect('mongodb://localhost/help123');
-//var db = mongoose.connection;
-// console.log(db);
+//instanciation du coeur de Karryngo
+let karryngoApp = injector_container_1.InjectorContainer.getInstance().getInstanceOf(KarryngoApp_1.KarryngoApp);
+karryngoApp.init(router, httpServer, app);
+app.use(((request, response, next) => {
+    karryngoApp.run();
+    next();
+}));
+//ceci permet de gérer les tailles des json en entrée très grand
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+//ceci permet de gérer les tailles des json en entrée très grand
+app.use(bodyParser.json({ limit: '50mb' }));
+//utilisation du router
+app.use(router);
 // Setup server port
 var port = process.env.PORT || 8090;
 // Send message for default URL
 app.use(express.json());
-app.get('/', function (req, res) { return res.send('Hello World with Express'); });
+app.get('/', (req, res) => res.send('Hello World with Express'));
 // Use Api routes in the App
 //app.use('/api', apiRoutes)
 // Launch app to listen to specified port
-app.listen(port, function () {
+httpServer.listen(port, function () {
     console.log("Running Karryngo on port " + port);
 });

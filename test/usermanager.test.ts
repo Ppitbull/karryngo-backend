@@ -1,6 +1,5 @@
 import * as assert from 'assert';
 import { info } from 'console';
-import { Controller, Service } from '../karryngo_core/decorator/dependecy_injector.decorator';
 import { InjectorContainer } from '../karryngo_core/lifecycle/injector_container';
 import { KarryngoPersistenceManagerFactory } from '../karryngo_core/persistence/KarryngoPersistenceManagerFactory';
 import { ActionResult } from '../karryngo_core/utils/ActionResult';
