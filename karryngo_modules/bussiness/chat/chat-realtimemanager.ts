@@ -12,7 +12,6 @@ import { RealTimeRouterService } from "../../services/realtime/router-realtime.s
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { Discussion } from "../../services/chats/discussion";
 import { Message } from "../../services/chats/message";
-import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent";
 import { EventEmitter } from "events";
 import { Controller, ConfigService, Service } from "../../../karryngo_core/decorator";
 
