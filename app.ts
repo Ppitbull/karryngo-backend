@@ -10,6 +10,9 @@ const app = express();
 let bodyParser = require('body-parser');  //librairie qui permet de parser une chaîne en JSON
 let router=express.Router();
 const httpServer = require("http").createServer(app);
+const timeout=require("connect-timeout")
+
+app.use(timeout('120s'))
 
 app.use(cors())
 
@@ -33,9 +36,9 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(router);
 
 // Setup server port
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 8090;
 
-// Send message for default URL
+// Send message for default URL 
 app.use(express.json())
 app.get('/', (req:any, res:any) => res.send('Hello World with Express'));
 
