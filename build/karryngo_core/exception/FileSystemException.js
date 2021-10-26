@@ -17,3 +17,4 @@ exports.FileSystemException = FileSystemException;
 FileSystemException.FILE_NOT_FOUND = -50;
 FileSystemException.UNKNOW_ERROR = -49;
 FileSystemException.UNABLE_TO_IMPORT_ERROR = -48;
+//# sourceMappingURL=FileSystemException.js.map

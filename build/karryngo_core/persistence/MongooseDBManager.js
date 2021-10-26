@@ -143,3 +143,4 @@ class MongooseDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManage
     }
 }
 exports.MongooseDBManager = MongooseDBManager;
+//# sourceMappingURL=MongooseDBManager.js.map

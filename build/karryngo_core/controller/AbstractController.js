@@ -21,3 +21,4 @@ class AbstractController extends KarryngoApplicationEntity_1.KarryngoApplication
     }
 }
 exports.AbstractController = AbstractController;
+//# sourceMappingURL=AbstractController.js.map

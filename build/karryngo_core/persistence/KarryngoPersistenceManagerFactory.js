@@ -52,3 +52,4 @@ KarryngoPersistenceManagerFactory = __decorate([
     __metadata("design:paramtypes", [KarryngoConfigurationServiceFactory_1.KarryngoConfigurationServiceFactory])
 ], KarryngoPersistenceManagerFactory);
 exports.KarryngoPersistenceManagerFactory = KarryngoPersistenceManagerFactory;
+//# sourceMappingURL=KarryngoPersistenceManagerFactory.js.map

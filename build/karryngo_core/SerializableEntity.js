@@ -7,3 +7,4 @@
  @see Serializable Entity
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+//# sourceMappingURL=SerializableEntity.js.map

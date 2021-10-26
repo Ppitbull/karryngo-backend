@@ -16,3 +16,4 @@ class KarryngoLoaderException extends KarryngoException_1.KarryngoException {
 exports.KarryngoLoaderException = KarryngoLoaderException;
 KarryngoLoaderException.CLASS_NOT_FOUND = -30;
 KarryngoLoaderException.METHOD_NOT_FOUND = -29;
+//# sourceMappingURL=KarryngoLoaderException.js.map

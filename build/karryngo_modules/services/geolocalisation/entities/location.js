@@ -38,7 +38,14 @@ class Location extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
      * @inheritdoc
      */
     toString() {
-        return Object.assign(Object.assign({}, super.toString()), { "long": this.longitude, "lat": this.latitude, "name": this.name, "country": this.country, "city": this.city });
+        return {
+            ...super.toString(),
+            "long": this.longitude,
+            "lat": this.latitude,
+            "name": this.name,
+            "country": this.country,
+            "city": this.city
+        };
     }
     hydrate(entity) {
         super.hydrate(entity);
@@ -50,3 +57,4 @@ class Location extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
     }
 }
 exports.Location = Location;
+//# sourceMappingURL=location.js.map

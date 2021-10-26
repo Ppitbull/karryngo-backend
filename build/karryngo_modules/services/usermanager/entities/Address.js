@@ -29,7 +29,18 @@ class Address extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
      * @inheritdoc
      */
     toString() {
-        return Object.assign(Object.assign({}, super.toString()), { email: this.email, mobilePhone: this.mobilePhone, phone: this.phone, websiteLink: this.websiteLink, whatsAppNumber: this.whatsAppNumber, skypeNumber: this.skypeNumber, zip: this.zip, country: this.country, city: this.city });
+        return {
+            ...super.toString(),
+            email: this.email,
+            mobilePhone: this.mobilePhone,
+            phone: this.phone,
+            websiteLink: this.websiteLink,
+            whatsAppNumber: this.whatsAppNumber,
+            skypeNumber: this.skypeNumber,
+            zip: this.zip,
+            country: this.country,
+            city: this.city,
+        };
     }
     /**
      * @inheritdoc
@@ -48,3 +59,4 @@ class Address extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
     }
 }
 exports.Address = Address;
+//# sourceMappingURL=Address.js.map

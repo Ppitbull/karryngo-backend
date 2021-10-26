@@ -196,7 +196,7 @@ class KarryngoConfigurationService extends KarryngoApplicationEntity_1.KarryngoA
                 if ((obj[elmt].constructor == ({}).constructor) && ((obj[elmt].hasOwnProperty('parse') && !obj[elmt].parse))) {
                     let notParseObj = {};
                     notParseObj[elmt] = obj[elmt];
-                    let notParseObjCopy = Object.assign({}, notParseObj);
+                    let notParseObjCopy = { ...notParseObj };
                     if (obj[elmt].hasOwnProperty("url")) {
                         file = obj[elmt]['url'];
                         delete notParseObjCopy[elmt]['url'];
@@ -205,7 +205,7 @@ class KarryngoConfigurationService extends KarryngoApplicationEntity_1.KarryngoA
                         if (tab instanceof Array)
                             notParseObjCopy[elmt] = [...tab];
                         else
-                            notParseObjCopy[elmt] = Object.assign(Object.assign({}, notParseObjCopy[elmt]), tab);
+                            notParseObjCopy[elmt] = { ...notParseObjCopy[elmt], ...tab };
                     }
                     this.configObject.push({
                         url: file,
@@ -299,3 +299,4 @@ class KarryngoConfigurationService extends KarryngoApplicationEntity_1.KarryngoA
     }
 }
 exports.KarryngoConfigurationService = KarryngoConfigurationService;
+//# sourceMappingURL=KarryngoConfigurationService.js.map

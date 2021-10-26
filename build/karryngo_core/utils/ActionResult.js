@@ -27,3 +27,4 @@ ActionResult.INVALID_ARGUMENT = -3;
 ActionResult.UNKNOW_ERROR = -10;
 ActionResult.SUCCESS = 0;
 ActionResult.RESSOURCE_ALREADY_EXIST_ERROR = -4;
+//# sourceMappingURL=ActionResult.js.map

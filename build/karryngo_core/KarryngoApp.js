@@ -92,3 +92,4 @@ KarryngoApp = __decorate([
     decorator_1.KarryngoCore()
 ], KarryngoApp);
 exports.KarryngoApp = KarryngoApp;
+//# sourceMappingURL=KarryngoApp.js.map

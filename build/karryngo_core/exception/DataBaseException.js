@@ -16,3 +16,4 @@ class DataBaseException extends KarryngoException_1.KarryngoException {
 exports.DataBaseException = DataBaseException;
 DataBaseException.DATABAE_DISCONNECTED = -60;
 DataBaseException.DATABASE_UNKNOW_ERROR = -59;
+//# sourceMappingURL=DataBaseException.js.map

@@ -18,3 +18,4 @@ ConfigurationException.PARSE_FILE = -100;
 ConfigurationException.ARGUMENT_IS_NOT_CONFIGURABLE_OBJECT = -99;
 ConfigurationException.CONFIGURABLE_KEY_NOT_FOUND = -98;
 ConfigurationException.CLASS_CONFIGURATION_NOT_FOUND = 97;
+//# sourceMappingURL=ConfigurationException.js.map

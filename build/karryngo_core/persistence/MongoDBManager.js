@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -50,13 +41,13 @@ class MongoDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManager {
         });
     }
     findDepthInCollection(collectionName, options) {
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        return new Promise(async (resolve, reject) => {
             let result = new ActionResult_1.ActionResult();
             try {
                 let arr = [];
                 let cursor = this.getCollection(collectionName).aggregate(options);
-                while (yield cursor.hasNext())
-                    arr.push(yield cursor.next());
+                while (await cursor.hasNext())
+                    arr.push(await cursor.next());
                 result.result = [...arr];
                 resolve(result);
             }
@@ -66,16 +57,16 @@ class MongoDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManager {
                 result.result = e;
                 reject(result);
             }
-        }));
+        });
     }
     findInCollection(collectionName, options, othersOption = {}, limit = MongoDBManager.MAX_TO_FIND) {
-        return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        return new Promise(async (resolve, reject) => {
             let result = new ActionResult_1.ActionResult();
             try {
                 let arr = [];
                 let cursor = this.getCollection(collectionName).find(options).project(othersOption).limit(MongoDBManager.MAX_TO_FIND);
-                while (yield cursor.hasNext())
-                    arr.push(yield cursor.next());
+                while (await cursor.hasNext())
+                    arr.push(await cursor.next());
                 result.result = [...arr];
                 resolve(result);
             }
@@ -85,7 +76,7 @@ class MongoDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManager {
                 result.result = e;
                 reject(result);
             }
-        }));
+        });
     }
     addToCollection(collectionName, entity) {
         return new Promise((resolve, reject) => {
@@ -239,3 +230,4 @@ class MongoDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManager {
 }
 exports.MongoDBManager = MongoDBManager;
 MongoDBManager.MAX_TO_FIND = 20;
+//# sourceMappingURL=MongoDBManager.js.map

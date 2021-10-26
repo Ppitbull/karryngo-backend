@@ -11,3 +11,4 @@ const KarryngoApplicationEntity_1 = require("../KarryngoApplicationEntity");
 class AbstractPersistenceManager extends KarryngoApplicationEntity_1.KarryngoApplicationEntity {
 }
 exports.AbstractPersistenceManager = AbstractPersistenceManager;
+//# sourceMappingURL=AbstractPersistenceManager.js.map

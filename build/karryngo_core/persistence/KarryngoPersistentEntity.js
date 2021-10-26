@@ -49,3 +49,4 @@ class KarryngoPersistentEntity extends KarryngoEntity_1.KarryngoEntity {
     }
 }
 exports.KarryngoPersistentEntity = KarryngoPersistentEntity;
+//# sourceMappingURL=KarryngoPersistentEntity.js.map

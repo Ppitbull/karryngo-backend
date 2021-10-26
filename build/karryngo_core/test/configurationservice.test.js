@@ -28,3 +28,4 @@ describe('Test du service de configuration', () => {
         chai.expect(jsonConfig.getValueOf('persistence').hostname).to.equal("localhost");
     });
 });
+//# sourceMappingURL=configurationservice.test.js.map

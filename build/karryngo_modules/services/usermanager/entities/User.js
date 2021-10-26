@@ -39,7 +39,14 @@ class User extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
      */
     toString() {
         // console.log("Adress",this.adresse.toString())
-        return Object.assign(Object.assign({}, super.toString()), { "firstname": this.firstname, "lastname": this.lastname, "password": this.password, "username": this.username, "address": this.adresse.toString() });
+        return {
+            ...super.toString(),
+            "firstname": this.firstname,
+            "lastname": this.lastname,
+            "password": this.password,
+            "username": this.username,
+            "address": this.adresse.toString(),
+        };
     }
     /**
      * @inheritdoc
@@ -56,3 +63,4 @@ class User extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
     }
 }
 exports.User = User;
+//# sourceMappingURL=User.js.map

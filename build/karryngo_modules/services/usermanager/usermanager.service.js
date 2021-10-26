@@ -136,3 +136,4 @@ UserManagerService = __decorate([
     __metadata("design:paramtypes", [crud_service_1.CrudService])
 ], UserManagerService);
 exports.UserManagerService = UserManagerService;
+//# sourceMappingURL=usermanager.service.js.map

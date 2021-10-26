@@ -107,3 +107,4 @@ class Route extends KarryngoApplicationEntity_1.KarryngoApplicationEntity {
     }
 }
 exports.Route = Route;
+//# sourceMappingURL=Route.js.map

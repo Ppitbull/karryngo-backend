@@ -24,3 +24,4 @@ class XmlFileConfigurationService extends KarryngoConfigurationService_1.Karryng
     }
 }
 exports.XmlFileConfigurationService = XmlFileConfigurationService;
+//# sourceMappingURL=XmlFileConfigurationService.js.map

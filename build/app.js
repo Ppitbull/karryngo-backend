@@ -33,3 +33,4 @@ app.get('/', (req, res) => res.send('Hello World with Express'));
 httpServer.listen(port, function () {
     console.log("Running Karryngo on port " + port);
 });
+//# sourceMappingURL=app.js.map

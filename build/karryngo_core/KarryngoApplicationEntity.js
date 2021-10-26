@@ -12,3 +12,4 @@ const KarryngoEntity_1 = require("./KarryngoEntity");
 class KarryngoApplicationEntity extends KarryngoEntity_1.KarryngoEntity {
 }
 exports.KarryngoApplicationEntity = KarryngoApplicationEntity;
+//# sourceMappingURL=KarryngoApplicationEntity.js.map
