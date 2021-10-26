@@ -23,7 +23,7 @@ class DynamicLoader {
         let keyClass = '';
         let moduleRequire = {};
         try {
-            moduleRequire = require(`${process.cwd()}/${module}`);
+            moduleRequire = require(`./../../${module}`);
             for (let key in moduleRequire)
                 keyClass = key;
         }
@@ -46,7 +46,7 @@ class DynamicLoader {
         let moduleRequire = {};
         try {
             // console.log(module)
-            moduleRequire = require(`${process.cwd()}/${module}`);
+            moduleRequire = require(`./../../${module.toString()}`);
             for (let key in moduleRequire)
                 keyClass = key;
         }
@@ -77,3 +77,4 @@ class DynamicLoader {
     }
 }
 exports.DynamicLoader = DynamicLoader;
+//# sourceMappingURL=DynamicLoader.js.map
