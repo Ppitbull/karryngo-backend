@@ -33,7 +33,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(router);
 
 // Setup server port
-var port = process.env.PORT;
+var port = process.env.PORT || 8090;
 
 // Send message for default URL
 app.use(express.json())
