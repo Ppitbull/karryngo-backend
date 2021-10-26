@@ -23,7 +23,7 @@ app.use(bodyParser.json({ limit: '50mb' }));
 //utilisation du router
 app.use(router);
 // Setup server port
-var port = process.env.PORT || 8090;
+var port = process.env.PORT;
 // Send message for default URL
 app.use(express.json());
 app.get('/', (req, res) => res.send('Hello World with Express'));
