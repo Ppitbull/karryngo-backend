@@ -5,7 +5,7 @@
   "main": "./build/app.js",
   "scripts": {
     "test": "mocha --reporter spec  --require ts-node/register **/decorator.test.ts",
-    "start": "node ./build/app.js",
+    "start": "nodemon app.ts",
     "doc": "typedoc --out docs . --exclude ./node_modules",
     "build": "tsc --project ./"
   },
