@@ -162,6 +162,7 @@ export default class AuthRequester
             });
         })
         .catch((result:ActionResult)=>{
+            console.log(result)
             if(result.resultCode===ActionResult.RESSOURCE_NOT_FOUND_ERROR)
              {
                 return response.status(404).json({
