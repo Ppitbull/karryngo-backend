@@ -76,7 +76,7 @@ export default class AuthRequester
         let user:Customer=new Customer();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
-        console.log(request.body);
+        //console.log(request.body);
         this.auth.login(user)
         .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,data.result.id))
         .then((data:ActionResult)=>
@@ -162,7 +162,7 @@ export default class AuthRequester
             });
         })
         .catch((result:ActionResult)=>{
-            console.log(result)
+            //console.log(result)
             if(result.resultCode===ActionResult.RESSOURCE_NOT_FOUND_ERROR)
              {
                 return response.status(404).json({

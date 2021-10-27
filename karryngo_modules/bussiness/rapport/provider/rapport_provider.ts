@@ -38,7 +38,7 @@ export class RapportProvider
             case "waiting":
                 findQuery["isAcceptedProvider"]=false;
         }
-        console.log(findQuery)
+        //console.log(findQuery)
         this.db.findInCollection(
             Configuration.collections.user,
             findQuery)
