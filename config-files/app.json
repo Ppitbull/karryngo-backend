@@ -22,9 +22,11 @@
     },
     "mail": {
         "parse":false,
-        "host":"",
-        "port":2525,
+        "host":"smtp.gmail.com",
+        "port":465,
         "service":"gmail",
+        "secure":true,
+        "baseurl":"https://kgo.sdkgames.com",
         "auth" :{
             "user":"contact.karryngo@gmail.com",
             "pass":"Entreprise123?"
