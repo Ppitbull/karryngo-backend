@@ -20,14 +20,17 @@ export class OrangeMobileMoneyPaiementMethod implements PaiementMethodStrategy
     buy(transaction: TransactionService, buyer: User,paiementMethod:PaiementMethodEntity): Promise<ActionResult> {
         let transactionRef=FinancialTransaction.generateRef();
 
+        console.log(this.configService.getKeysList())
+
         return this.paiementMethodeStrategyService.buy(
-            this.configService.getValueOf("paiement").orangePaiementUrl,
+            this.configService.getValueOf("orangePaiementUrl"),
             {
                 refID:transactionRef,
                 amount:transaction.price,         
                 moneyCode:paiementMethod.moneyCode,
-                product:this.configService.getValueOf("paiement").product,
-                msidn:buyer.adresse.phone
+                product:this.configService.getValueOf("product"),
+                msidn:buyer.adresse.phone,
+                PaymentMethod: paiementMethod.type
                 // cancelUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].cancelUrl,
                 // successUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].successUrl,
                 // errorUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].errorUrl,

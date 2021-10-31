@@ -44,8 +44,8 @@ export class FinancialTransaction extends KarryngoPersistentEntity
         this.paiementMode=this.purgeAttribute(entity,"paiementMode");
     }
 
-    static generateRef():number
+    static generateRef():string
     {
-        return 0;
+        return "1454551515151515";
     }
 }

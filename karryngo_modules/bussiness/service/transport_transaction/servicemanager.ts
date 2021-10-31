@@ -226,7 +226,7 @@ export class ServiceManager
 
         this.transportServiceManager.makePaiement(serviceID,request.body.paiement_mode,currentUserId)
         .then((data:ActionResult)=> 
-        {            
+        { 
             history=data.result.history;
             idTransaction.setId(data.result.service.idSelectedTransaction)
             return this.chatService.findDisccussByTransactionID(idTransaction)

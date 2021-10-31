@@ -10,10 +10,10 @@ var Configuration=
         'notification':'Notifications',
         'user':'Users',
         'provider':'ProviderService',
-        'requestservice':'RequestService',
+        'requestservice':"RequestService",
         'chat':'Chats'
     },
-    //'env_mode':"dev_mode"
-    'env_mode':"prod_mode"
+    'env_mode':"dev_mode"
+    // 'env_mode':"prod_mode"
 };
 export default Configuration;

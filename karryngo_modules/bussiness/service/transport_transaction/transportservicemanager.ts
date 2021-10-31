@@ -5,7 +5,7 @@
 */
 
 import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
-import { TransactionService } from "../entities/transactionservice";
+import { TransactionService, TransactionServiceState } from "../entities/transactionservice";
 import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ServiceTypeFactory } from "../utils/servicetypefactory";
@@ -249,7 +249,7 @@ export class TransportServiceManager
                 catch(error:any)
                 {
                     data.resultCode=ActionResult.INVALID_ARGUMENT;
-                    data.message=error.getMessage();
+                    data.message=error.message;
                     data.result=null;
                     return Promise.reject(data);
                 } 
@@ -373,7 +373,7 @@ export class TransportServiceManager
     getServiceById(serviceID:EntityID):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
-            this.db.findInCollection(Configuration.collections.requestservice,{"_id":serviceID})
+            this.db.findInCollection(Configuration.collections.requestservice,{"_id":serviceID.toString()})
             .then((result:ActionResult)=>{
                 if(result.result.length==0)
                 {
@@ -382,7 +382,7 @@ export class TransportServiceManager
                     return reject(result);
                 }
                 let service:TransportServiceType=ServiceTypeFactory.getInstance(result.result.type);
-                service.hydrate(result.result);
+                service.hydrate(result.result[0]);
                 result.result=service;
                 resolve(result)
             })

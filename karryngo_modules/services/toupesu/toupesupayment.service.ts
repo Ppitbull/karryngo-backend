@@ -1,4 +1,5 @@
 import { DBPersistence, Service } from "../../../karryngo_core/decorator";
+import { KarryngoPersistentEntity } from "../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
@@ -8,9 +9,11 @@ import { TransportServiceType } from "../../bussiness/service/entities/transport
 import { UserHistory } from "../historique/history";
 import { HistoryService } from "../historique/historyService";
 import { FinancialTransaction } from "./entities/financialtransaction";
+import { OrangePaiementMethodEntity } from "./entities/orangepaiementmethodentity";
 import { PaiementMethodEntity } from "./entities/paiementmethodentity";
 import { FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "./enums";
 import { PaiementMethodStrategy } from "./paiementmethod.interface";
+import { OrangeMobileMoneyPaiementMethod } from "./paiementstrategi/orangemobilemoneypaiementmethod";
 import { WalletService } from "./wallet.service";
 
 @Service()
@@ -38,7 +41,8 @@ export class ToupesuPaiement
             })
             .then((result:ActionResult)=>{
                 history=result.result;
-                paiementMethodEntity=buyer.paimentMethodList.find((p:PaiementMethodEntity)=>p.type==paiementMethod)
+                // paiementMethodEntity=buyer.paimentMethodList.find((p:PaiementMethodEntity)=>p.type==paiementMethod)
+                paiementMethodEntity = new OrangePaiementMethodEntity;
                 transaction=service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction); 
                 return toupesuPaiementMethod.buy(
                     transaction,

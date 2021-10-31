@@ -3,7 +3,7 @@ import { ServiceManager } from "./servicemanager";
 
 @RouterModule([
     {
-        "url":"/api/requester/service/make_paiement/:ref",
+        "url":"/api/requester/service/check_paiement/:ref",
         "module" :ServiceManager,
         "actions":[
             {
@@ -15,7 +15,7 @@ import { ServiceManager } from "./servicemanager";
         ]
     },
     {
-        "url":"/api/requester/service/check_paiement",
+        "url":"/api/requester/service/make_paiement",
         "module" :ServiceManager,
         "actions":[
             {

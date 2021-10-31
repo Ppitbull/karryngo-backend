@@ -25,7 +25,7 @@ export enum FinancialTransactionErrorType
 export enum PaiementStrategyType
 {
     BANK="bank",
-    ORANGE_MONEY="orange_money",
+    ORANGE_MONEY="ORANGE",
     MTN_MONEY="mtn_money",
     CREDIT_CARD="credit_card"
 }
