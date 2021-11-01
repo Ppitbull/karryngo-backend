@@ -11,7 +11,8 @@ var Configuration=
         'user':'Users',
         'provider':'ProviderService',
         'requestservice':'RequestService',
-        'chat':'Chats'
+        'chat':'Chats',
+        'tokens':"Tokens"
     },
     //'env_mode':"dev_mode"
     'env_mode':"prod_mode"

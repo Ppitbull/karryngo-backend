@@ -29,7 +29,6 @@ export class RealTimeService
     init()
     {
         this.serverSocket=new Server(this.kcore.getServer(),{});
-        console.log("Start Here ",this.serverSocket)
         // this.serverSocket=new WebSocket.Server({server:this.kcore.getServer()})
 
        this.serverSocket.on(RealTimeInitMessageType.NEW_CONNECTION,(socket:Socket)=>{

@@ -10,7 +10,7 @@
         "secret_key":"karryngo security",
         "algorithm":"HS256",
         "timeout":86400,
-        "refresh_timeout":120
+        "refresh_timeout":24
     },
     "googleapis":{
         "cliendId":"",

@@ -4,7 +4,7 @@
     demandeurs de service
 @created 13/10/2020
 */
-
+import jwt_decode from "jwt-decode";
 import { Request, Response } from "express";
 import { ApiAccess } from "../../../karryngo_core/security/apiaccess";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
@@ -16,6 +16,8 @@ import { UserManagerService } from "../../services/usermanager/usermanager.servi
 import { Customer } from "./entities/customer";
 import { ServiceRequester } from "./entities/servicerequester";
 import { Controller } from "../../../karryngo_core/decorator";
+import { TokenAuthentification } from "../../../karryngo_core/security/tokentauthentification.service";
+
 
 @Controller()
 export default class AuthRequester
@@ -23,7 +25,10 @@ export default class AuthRequester
     constructor (
         private auth:BasicAuthentificationService,
         private userManagerService:UserManagerService,
-        private jwtAuth:ApiAccess
+        private jwtAuth:ApiAccess,
+        private tokenAutentification:TokenAuthentification,
+        private apiAccess:ApiAccess,
+        
         ) {}
         
     checkUserInformation(user:Customer):Boolean
@@ -76,15 +81,20 @@ export default class AuthRequester
         let user:Customer=new Customer();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;
+        let tokens:{token?:String,refresh_token?:String}={}
+
         //console.log(request.body);
         this.auth.login(user)
         .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,data.result.id))
+        .then((data:ActionResult)=>{
+            tokens=data.result;
+            return this.tokenAutentification.setTokens({access:tokens.token,refresh:tokens.refresh_token})
+        })
         .then((data:ActionResult)=>
         {
             data.description="Authentification successful";
-            data.result={
-                token:data.result
-            }
+            
+            data.result=tokens;
             response.status(200).json(data);
         })
         .catch((data:ActionResult)=>
@@ -178,5 +188,59 @@ export default class AuthRequester
                 });
              }
         })
+    }
+    refreshToken(request:Request,response:Response):void
+    {
+        let tokens:{access?:String,refresh?:String,date?:string}={}
+        let token=(request.headers['x-access-token'] || request.headers['Authorization'] || request.headers['authorization']).toString();
+        if(token)
+        {
+            if(token.startsWith('Bearer ')) token=token.slice(7,token.length);
+            this.tokenAutentification.getAccessTokenByRefresToken(token.toString())
+            .then((data:ActionResult)=>{
+                tokens={...data.result}
+                
+                let textToken=jwt_decode(tokens.access.toString())
+                // console.log("Text token ", textToken)
+                if(!this.tokenAutentification.isValidRefreshToken(tokens.access,textToken,tokens.date))
+                {
+                    token=tokens.access.toString();
+                    data.result=token; 
+                    response.status(401).json({
+                        resultCode: -3,
+                        message: 'Refresh token expired'
+                    })
+                }
+                else
+                {
+                    this.apiAccess.JWTRegister(textToken['data']['email'],textToken['data']['id'])
+                    .then((result:ActionResult)=> {
+                        let lastRefresh=tokens.refresh;
+                        tokens={access:result.result.token,refresh:result.result.refresh_token}
+                        return this.tokenAutentification.setTokens({access:tokens.access,refresh:tokens.refresh},lastRefresh)
+                    })
+                    .then((result:ActionResult)=>{
+                        data.description="Token refreshed with success";
+            
+                        data.result={
+                            token:tokens.access,
+                            refresh_token:tokens.refresh
+                        };
+                        response.status(200).json(data);
+                    })
+                }
+            })
+            .catch((error:ActionResult)=>{
+                console.log("Error ",error)
+                response.status(403).json({
+                    resultCode: -2,
+                    message: 'Bad refresh token'
+                    }); 
+            })
+        }
+        else response.status(403).json({
+            resultCode: -1,
+            message: 'Refresh token is not supplied'
+            }); 
     }
 }
