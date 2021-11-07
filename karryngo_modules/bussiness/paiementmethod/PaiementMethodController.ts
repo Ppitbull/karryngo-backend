@@ -17,5 +17,15 @@ export class PaiementMethodController
 {
     constructor () {}
 
+
+    addPaiementMethod(request:any,response:Response):void
+    {
+        
+    }
+
+    getPaiementList(request:any,response:Response):void
+    {
+
+    }
     
 }

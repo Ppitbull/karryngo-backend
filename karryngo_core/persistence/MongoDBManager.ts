@@ -105,8 +105,12 @@ export class MongoDBManager extends NoSqlPersistenceManager
         });
     }
 
-    removeToCollection(collectionName: String, entity: SerializableEntity): Promise<ActionResult> {
-        throw new Error("Method not implemented.");
+    removeToCollection(collectionName: String, cond: Record<string, any>,toRemove:Record<string, any>): Promise<ActionResult> {
+        return this.updateInCollection(
+            collectionName,
+            {"$pull": cond},
+            {multi:true}
+        )
     }
     
     /**

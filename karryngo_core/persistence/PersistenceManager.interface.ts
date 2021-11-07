@@ -88,7 +88,17 @@ export interface PersistenceManager
 
     addToCollection(collectionName:String,entity:SerializableEntity):Promise<ActionResult>
 
-    removeToCollection(collectionName:String,entity:SerializableEntity): Promise<ActionResult>;
+     /**
+     * @description Cette methode permet de supprimer un champ dans une collection ou tout le document en lui même. elle recherche en base de données
+     *  le document correspond dans la collection indiqué en fonction des conditions et supprimer les champs spécifier
+     *  spécifier
+     * @param collectionName Nom de la collection contenant l'entité a mettre a jour
+     * @param cond Condition de validation de document
+     * @param toRemove Les champs a supprimer
+     * @see Mongodb.MongoClient.Collection.findOneAndUpdate()
+     * @see $pull
+     */
+    removeToCollection(collectionName:String,cond: Record<string, any>,toRemove:Record<string, any>): Promise<ActionResult>;
 
     findInCollection(collectionName:String,options:Record<string,any>,othersOption?:Record<string, any>,limit?:Number):Promise<ActionResult>
 
