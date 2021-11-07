@@ -10,19 +10,16 @@ import { PaiementMethodEntity } from "./entities/paiementmethodentity";
 import { PaiementStrategyType } from "./enums";
 
 @Service()
-export class PaiementMethodStrategyService 
+export class PaiementMethodService 
 {
     @DBPersistence()
     private db:PersistenceManager
-
-    @ConfigService()
-    private config:ConfigurableApp
 
     constructor(
         private userServiceManager:UserManagerService
     ){}
 
-    addMethodPaiement(paiementMethod:PaiementMethodEntity):Promise<ActionResult>
+    addMethodPaiement(userID:EntityID,paiementMethod:PaiementMethodEntity):Promise<ActionResult>
     {
         return this.db.updateInCollection(
             Configuration.collections.user,

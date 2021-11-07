@@ -23,6 +23,9 @@ import { PaiementMethodController } from "./PaiementMethodController";
                 "method":"post",
                 "action": "addPaiementMethod",
                 "params":{
+                    "number":"String",
+                    "moneyCode":"String",
+                    "type":"String"
                 }
             }
         ]
