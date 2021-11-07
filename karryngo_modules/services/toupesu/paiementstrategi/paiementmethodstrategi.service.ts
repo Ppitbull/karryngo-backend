@@ -24,12 +24,13 @@ export class PaiementMethodStrategyService
                 .data(data)              
             ).then((result:ActionResult)=>{
                 let response:KResponse=result.result
-                if(response.getData().success==true || response.getData().errorMessage==null)
+                console.log("result paiement ",response)
+                if(response.getData().success==true)
                 {
                     result.result={                      
                         ref:transactionRef,
                         urlToRedirect:response.getData().url || "",
-                        token:response.getData().paymentRequestId || response.getData().pay_token || response.getData().payToken
+                        token:response.getData().pay_token
                     };
                     resolve(result);
                 }

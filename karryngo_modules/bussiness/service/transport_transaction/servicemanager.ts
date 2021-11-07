@@ -269,6 +269,12 @@ export class ServiceManager
                 resultCode=-204;
                 message="Insufficient account amount";
             }
+            else if(error.resultCode==FinancialTransactionErrorType.PAIMENT_METHOD_NOT_FOUND)
+            {
+                code=400;
+                resultCode=-205;
+                message="payment method not found";
+            }
             response.status(code).json({
                 resultCode,
                 message

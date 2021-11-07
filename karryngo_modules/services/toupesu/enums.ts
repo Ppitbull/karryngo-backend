@@ -19,13 +19,14 @@ export enum FinancialTransactionErrorType
     RECEIVER_NOT_FOUND_ERROR=-202,
     NO_ERROR=0,
     UNKNOW_ERROR=-200,
-    INSUFFICIENT_AMOUNT_ERROR=-204
+    INSUFFICIENT_AMOUNT_ERROR=-204,
+    PAIMENT_METHOD_NOT_FOUND=-205
 }
 
 export enum PaiementStrategyType
 {
     BANK="bank",
     ORANGE_MONEY="ORANGE",
-    MTN_MONEY="mtn_money",
+    MTN_MONEY="MTN",
     CREDIT_CARD="credit_card"
 }

@@ -49,10 +49,13 @@
     },
     "paiement":
     {
+
+
+        "paiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/reqPayment",
+
         "ozowPaiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/reqPayment",
         "ozowCheckPaiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/checkTransation",
         "ozowCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/reqPayment",
-        "mtnPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/reqPayment",
         "mtnCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/checkTransaction",
         "mtnCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/reqPayment",
         "orangePaiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/reqPayment",

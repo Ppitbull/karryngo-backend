@@ -9,9 +9,9 @@ import { TransportServiceType } from "../../bussiness/service/entities/transport
 import { UserHistory } from "../historique/history";
 import { HistoryService } from "../historique/historyService";
 import { FinancialTransaction } from "./entities/financialtransaction";
-import { OrangePaiementMethodEntity } from "./entities/orangepaiementmethodentity";
+import { MobilePaiementMethodEntity } from "./entities/mobilepaiementmethodentity";
 import { PaiementMethodEntity } from "./entities/paiementmethodentity";
-import { FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "./enums";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "./enums";
 import { PaiementMethodStrategy } from "./paiementmethod.interface";
 import { OrangeMobileMoneyPaiementMethod } from "./paiementstrategi/orangemobilemoneypaiementmethod";
 import { WalletService } from "./wallet.service";
@@ -41,14 +41,20 @@ export class ToupesuPaiement
             })
             .then((result:ActionResult)=>{
                 history=result.result;
-                // paiementMethodEntity=buyer.paimentMethodList.find((p:PaiementMethodEntity)=>p.type==paiementMethod)
-                paiementMethodEntity = new OrangePaiementMethodEntity;
-                transaction=service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction); 
-                return toupesuPaiementMethod.buy(
-                    transaction,
-                    buyer,
-                    paiementMethodEntity
-                )
+                paiementMethodEntity=buyer.paimentMethodList.find((p:PaiementMethodEntity)=>p.type==paiementMethod)
+                if(paiementMethodEntity)
+                {
+                    transaction=service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction); 
+                    return toupesuPaiementMethod.buy(
+                        transaction,
+                        buyer,
+                        paiementMethodEntity
+                    )
+                }
+                
+                result.result=null;
+                    result.resultCode=FinancialTransactionErrorType.PAIMENT_METHOD_NOT_FOUND;
+                    return Promise.reject(result);
             })
             .then((result:ActionResult)=>{
                 history.financialTransaction.state=FinancialTransactionState.FINANCIAL_TRANSACTION_PENDING;

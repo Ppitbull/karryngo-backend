@@ -245,6 +245,7 @@ export class TransportServiceManager
                         };
                         resolve(value)
                     })
+                    .catch((error:ActionResult)=>reject(error))
                 }
                 catch(error:any)
                 {

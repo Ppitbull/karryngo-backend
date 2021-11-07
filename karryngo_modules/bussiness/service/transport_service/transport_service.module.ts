@@ -1,6 +1,6 @@
 import { RouterModule } from "../../../../karryngo_core/routing/router_module.decorator";
 import { RequesterServiceManager } from "./requesterservicemanager";
-import { ServiceManager } from "../transport_transaction/servicemanager"; // cet import est juste pour les tests en attendant de savoir pourquoi il ne prnd pas dans son emplacement initial
+
 
 @RouterModule([
     {
@@ -11,20 +11,6 @@ import { ServiceManager } from "../transport_transaction/servicemanager"; // cet
                 "method":"post",
                 "action": "addService",
                 "params":{
-                }
-            }
-        ]
-    },
-    {
-        "url":"/api/requester/service/make_paiement",
-        "module" :ServiceManager,
-        "actions":[
-            {
-                "method":"post",
-                "action": "makePaiement",
-                "params":{
-                    "idService":"string",
-                    "paiement_mode":"string"
                 }
             }
         ]
