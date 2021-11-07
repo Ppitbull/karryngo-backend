@@ -82,12 +82,14 @@ export class RealTimeService
                 {
                     this.routerRealTime.addUser(data.senderID,socket);
                     this.routerRealTime.addSocketUSer(socket.id,data.senderID);
-                    this.routerRealTime.send({
+                    this.routerRealTime.send(
+                        {
                         senderID:UNKNOW_SENDER,
                         receiverID:data.senderID,
                         error:RealTimeInitErrorType.SUCCESS,
                         type:RealTimeInitMessageType.LOGGIN
-                    });
+                    }
+                    );
                 }
                 this.eventEmiter.emit(RealTimeEvent.REALTIME_CONNEXION_STARTED,socket);
             })
