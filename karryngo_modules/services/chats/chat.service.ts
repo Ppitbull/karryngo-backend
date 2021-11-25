@@ -118,20 +118,34 @@ export class ChatService
                 }
             });
     }
-    getDiscussionList(idUser:EntityID):Promise<ActionResult>
+    getDiscussionList(idUser:EntityID,numpage=0,limit=10):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
-            this.db.findInCollection(
-                Configuration.collections.chat, 
-                {
-                    "$or": [
-                        { "inter1": idUser.toString() },
-                        { "inter2": idUser.toString() }
-                    ]
-                },
-                {"chats":false},
+            let page:Number=limit*numpage;
+            this.db.findDepthInCollection(
+                Configuration.collections.chat,
+                [
+                    {
+                        "$match":{
+                            "$or":[
+                                {"inter1":idUser.toString()},
+                                {"inter2":idUser.toString()}
+                            ]
+                        }
+                    },
+                    {
+                        "$unset":"chats"
+                    },
+                    {
+                        "$skip":page
+                    },
+                    {
+                        "$limit":limit
+                    }
+                ]
             )
             .then((result:ActionResult)=>{
+                console.log(result.result)
                 result.result = result.result.map((data:Record<string | number, any>)=>{
                     let id:EntityID=new EntityID();
                     id.setId(data._id);
@@ -139,6 +153,49 @@ export class ChatService
                     dispo.hydrate(data);
                     return dispo
                 });
+                resolve(result);
+            })  
+        })
+    }
+
+    getDiscussionChatList(idDiscuss:EntityID,numpage=1,limit=10):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>{
+            let page:Number=limit*numpage;
+            this.db.findDepthInCollection(
+                Configuration.collections.chat,
+                [
+                    {
+                        "$match":{
+                            "_id": idDiscuss.toString()
+                        }
+                    },
+                    {
+                        "$unwind":{
+                            path:"$chats"
+                        }
+                    },
+                    {
+                        "$replaceRoot":{
+                            "newRoot": {
+                                "chats":"$chats"
+                            }
+                        }
+                    },
+                    {
+                        "$skip":page
+                    },
+                    {
+                        "$limit":limit
+                    }
+                ]
+            ).then((result:ActionResult)=>{
+                console.log("Result ",result.result)
+                result.result =result.result.map((c)=>{
+                    let message:Message=new Message();
+                    message.hydrate(c.chats);
+                    return message;
+                })
                 resolve(result);
             })  
         })
