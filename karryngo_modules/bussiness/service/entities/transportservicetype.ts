@@ -113,7 +113,8 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
                 return transaction;
             })
         }
-
+        // console.log('entity ',entity)
+        
     }
 
     /**

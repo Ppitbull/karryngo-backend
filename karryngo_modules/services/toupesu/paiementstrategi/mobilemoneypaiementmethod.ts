@@ -7,6 +7,7 @@ import { Customer } from "../../../bussiness/authentification/entities/customer"
 import { TransactionService } from "../../../bussiness/service/entities/transactionservice";
 import { User } from "../../usermanager/entities/User";
 import { FinancialTransaction } from "../entities/financialtransaction";
+import { MobilePaiementMethodEntity } from "../entities/mobilepaiementmethodentity";
 import { PaiementMethodEntity } from "../entities/paiementmethodentity";
 import { PaiementMethodStrategy } from "../paiementmethod.interface";
 import { PaiementMethodStrategyService } from "./paiementmethodstrategi.service";
@@ -20,9 +21,8 @@ export class MobileMoneyPaiementMethod  implements PaiementMethodStrategy
     constructor (
         private paiementMethodeStrategyService:PaiementMethodStrategyService){}
 
-    buy(transaction: TransactionService, buyer: User,paiementMethod:PaiementMethodEntity): Promise<ActionResult> {
+    buy(transaction: TransactionService, buyer: User,paiementMethod:MobilePaiementMethodEntity): Promise<ActionResult> {
         let transactionRef=FinancialTransaction.generateRef();
-
         return this.paiementMethodeStrategyService.buy(
             this.configService.getValueOf("paiement").paiementUrl,
             {
@@ -30,7 +30,7 @@ export class MobileMoneyPaiementMethod  implements PaiementMethodStrategy
                 amount:transaction.price,         
                 moneyCode:paiementMethod.moneyCode,
                 product:this.configService.getValueOf("paiement").product,
-                msidn:buyer.adresse.phone,
+                msidn:paiementMethod.number,
                 paymentMethod:paiementMethod.type
                 // cancelUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].cancelUrl,
                 // successUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].successUrl,
@@ -40,11 +40,13 @@ export class MobileMoneyPaiementMethod  implements PaiementMethodStrategy
     }
     
     check(financialTransaction: FinancialTransaction, buyer: User,paiementMethod:PaiementMethodEntity): Promise<ActionResult> {
+        
         return this.paiementMethodeStrategyService.check(
-            this.configService.getValueOf("paiement").mtnCheckPaiementUrl,
+            this.configService.getValueOf("paiement").checkPaiementUrl,
             {
-                refid:financialTransaction.ref,
-                product:this.configService.getValueOf("paiement").product
+                refID:financialTransaction.ref,
+                product:this.configService.getValueOf("paiement").product,
+                paymentMethod:financialTransaction.paiementMode
             }
         )
     }

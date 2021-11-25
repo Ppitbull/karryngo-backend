@@ -28,7 +28,7 @@ import { RequesterServiceManager } from "./requesterservicemanager";
         ]
     },
     {
-        "url":"/api/requester/service/:idService",
+        "url":"/api/requester/service/one/:idService",
         "module" :RequesterServiceManager,
         "actions":[
             {

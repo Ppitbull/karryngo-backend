@@ -1,4 +1,5 @@
 import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/KarryngoPersistentEntity";
+import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "../enums";
 
 export class FinancialTransaction extends KarryngoPersistentEntity
@@ -37,7 +38,7 @@ export class FinancialTransaction extends KarryngoPersistentEntity
         this.endDate=this.purgeAttribute(entity,"endDate");
         this.amount=this.purgeAttribute(entity,"amount");
         this.type=this.purgeAttribute(entity,"type");
-        this.ref=this.purgeAttribute(entity,"ref");
+        this.ref=parseInt(this.purgeAttribute(entity,"ref") || "0");
         this.urlToRedirect=this.purgeAttribute(entity,"urlToRedirect");
         this.token=this.purgeAttribute(entity,"token");
         this.error=this.purgeAttribute(entity,"error");
@@ -46,6 +47,6 @@ export class FinancialTransaction extends KarryngoPersistentEntity
 
     static generateRef():string
     {
-        return "1454551515151515";
+        return `${Math.floor(Math.random()*100000)}`;
     }
 }

@@ -194,6 +194,7 @@ export class ServiceManager
                 })
             })
             .catch((error:ActionResult)=>{
+                console.log("Error ",error)
                 let code=500;
                 let resultCode=error.resultCode;
                 let message=error.message;
@@ -217,13 +218,13 @@ export class ServiceManager
 
     makePaiement(request:any,response:any):void
     {
+
         let serviceID=new EntityID();
         serviceID.setId(request.body.idService);
         let currentUserId:EntityID = new EntityID();
         currentUserId.setId(request.decoded.id);
         let idTransaction:EntityID=new EntityID();
         let history:UserHistory;
-
         this.transportServiceManager.makePaiement(serviceID,request.body.paiement_mode,currentUserId)
         .then((data:ActionResult)=> 
         { 
@@ -243,6 +244,7 @@ export class ServiceManager
             })
         })
         .catch((error:ActionResult)=>{{
+            console.log("Error ",error)
             let code=500;
             let resultCode=error.resultCode;
             let message=error.message;

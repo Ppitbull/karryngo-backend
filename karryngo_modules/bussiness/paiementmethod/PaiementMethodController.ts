@@ -28,7 +28,7 @@ export class PaiementMethodController
         let number:String=request.body.number;
         let moneyCode:String=request.body.moneyCode;
         let userID:EntityID=new EntityID();
-        userID.setId(request.decode.id)
+        userID.setId(request.decoded.id)
 
         if(!type || !number || !moneyCode)
         {

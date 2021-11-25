@@ -14,6 +14,7 @@ export class PaiementMethodStrategyService
     
     buy(url:string,data:Record<string,any>):Promise<ActionResult>
     {
+        console.log("Data ",data)
         return new Promise<ActionResult>((resolve,reject)=>{
             let transactionRef=FinancialTransaction.generateRef();
             this.restapi.sendRequest(
@@ -30,7 +31,8 @@ export class PaiementMethodStrategyService
                     result.result={                      
                         ref:transactionRef,
                         urlToRedirect:response.getData().url || "",
-                        token:response.getData().pay_token
+                        token:response.getData().pay_token,
+                        error:FinancialTransactionErrorType.NO_ERROR
                     };
                     resolve(result);
                 }
@@ -42,46 +44,54 @@ export class PaiementMethodStrategyService
                     reject(result);
                 }
             })
-            .catch((error:ActionResult)=>reject(error))
+            .catch((error:ActionResult)=>
+            {
+                console.log("Error 2",error)
+                reject(error)
+            })
         }) 
     }
 
     check(url:string,data:Record<string,any>): Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
+            console.log("URL ",url)
             this.restapi.sendRequest(
                 new KRequest()
                 .post()
                 .url(url)
-                .form()
+                .json()
                 .data(data)
             )
             .then((result:ActionResult)=>{                
                 let response:KResponse=result.result;
-                let data={
+                console.log("Data ",data)
+                let datas={
                     endDate:response.getData().paymentDate,
                     error:FinancialTransactionErrorType.NO_ERROR,
-                    reason:""
+                    reason:"",
+                    status:FinancialTransactionState.FINANCIAL_TRANSACTION_ERROR
                 };
-                if(response.getData().success==true || response.getData().errorMessage==null)
+                console.log("response ",response.getData())
+                if(response.getData().success==true )
                 {
-                    if(response.getData().pay_status==null || response.getData().pay_status.toLowerCase()=="pending")
+                    if(response.getData().status.toLowerCase()=="pending")
                     {
-                        data[status]=FinancialTransactionState.FINANCIAL_TRANSACTION_PENDING;
+                        datas["status"]=FinancialTransactionState.FINANCIAL_TRANSACTION_PENDING;
                     }
-                    else if(response.getData().pay_status.toLowerCase()=="canceled")
+                    else if(response.getData().status.toLowerCase()=="canceled")
                     {
-                        data[status]=FinancialTransactionState.FINANCIAL_TRANSACTION_PAUSE;
+                        datas["status"]=FinancialTransactionState.FINANCIAL_TRANSACTION_PAUSE;
                     }
-                    else if(response.getData().pay_status.toLowerCase()=="complete")
+                    else if(response.getData().status.toLowerCase()=="successful")
                     {
-                        data[status]=FinancialTransactionState.FINANCIAL_TRANSACTION_SUCCESS;
+                        datas["status"]=FinancialTransactionState.FINANCIAL_TRANSACTION_SUCCESS;
                     }
-                    else if(response.getData().pay_status.toUpperCase()=="FAILED")
+                    else if(response.getData().status.toLowerCase()=="failed")
                     {
-                        data[status]=FinancialTransactionState.FINANCIAL_TRANSACTION_ERROR;
+                        datas["status"]=FinancialTransactionState.FINANCIAL_TRANSACTION_ERROR;
                     }
-                    result.result=data;
+                    result.result=datas;
                     resolve(result);
                 }
                 reject(result);

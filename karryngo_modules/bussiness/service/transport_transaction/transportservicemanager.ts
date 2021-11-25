@@ -227,16 +227,9 @@ export class TransportServiceManager
                         service,result.result[0]
                         ,paiementMethodStrategi))
                     .then((value:ActionResult)=> {
+                        // console.log("idService ",idService,transaction.state)
                         history=value.result;
-                        return this.db.updateInCollection(Configuration.collections.requestservice,
-                            {
-                                "id":idService.toString()
-                            },
-                            {
-                                $set:{ 
-                                    "transactions.$.state":transaction.state,
-                                }
-                            })
+                        return this.updateServiceTransactionStatus(idService,transaction)
                     })
                     .then((value:ActionResult)=> {
                         value.result={
@@ -264,13 +257,15 @@ export class TransportServiceManager
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let userHistory:UserHistory;
-            this.userHistoryService.findHistoryByRefTransaction(refID)
+            let financialTransaction:FinancialTransaction;
+            let service:TransportServiceType;
+            this.userHistoryService.findHistoryByRefTransaction(buyerID,refID)
             .then((result:ActionResult)=>{
                 userHistory=result.result;
                 return this.getServiceById(userHistory.serviceTransportID)
             })
             .then((result:ActionResult)=>{
-                let service:TransportServiceType=result.result;
+                service=result.result;
                 let buyer:Customer=new Customer(buyerID);
                 return this.toupesuPaiement.checkPaiement(
                     ToupesuPaiementMethodFactory.getMethodPaiment(userHistory.financialTransaction.paiementMode),
@@ -282,14 +277,33 @@ export class TransportServiceManager
             })
             .then((result:ActionResult)=>
             {
-                let financialTransaction:FinancialTransaction=userHistory.financialTransaction;
+                console.log("ResultAction ",result)
+
+                financialTransaction=userHistory.financialTransaction;
                 financialTransaction.state=result.result.state;
                 financialTransaction.endDate=result.result.endDate;
-                result.result=financialTransaction;
+                return this.updateServiceTransactionStatus(service.id,service.transactions.find((transaction)=>transaction._id.toString()==service.idSelectedTransaction))
+            })
+            .then((result:ActionResult)=> {
+                result.result=financialTransaction
                 resolve(result)
             })
             .catch((error:ActionResult)=>reject(error))
         })
+    }
+    updateServiceTransactionStatus(idService:EntityID,transaction:TransactionService):Promise<ActionResult>
+    {
+        return this.db.updateInCollection(Configuration.collections.requestservice,
+            {
+                "_id":idService.toString(),
+                "transactions._id":transaction.id.toString()
+            },
+            {
+                $set:{ 
+                    "transactions.$.state":transaction.state,
+                    "state":transaction.state
+                }
+            });
     }
 
     startRunningTransaction(idTransaction:EntityID):Promise<ActionResult>
@@ -298,6 +312,7 @@ export class TransportServiceManager
             .then((result:ActionResult)=>{
 
                  let transaction:TransactionService=result.result;
+                
                  try {
                     transaction.startService();
                     return this.db.updateInCollection(Configuration.collections.requestservice,
@@ -384,6 +399,7 @@ export class TransportServiceManager
                 }
                 let service:TransportServiceType=ServiceTypeFactory.getInstance(result.result.type);
                 service.hydrate(result.result[0]);
+
                 result.result=service;
                 resolve(result)
             })
@@ -391,10 +407,5 @@ export class TransportServiceManager
         })
     }
 
-    updatePaiementStatus():Promise<ActionResult>
-    {
-        return new Promise<ActionResult>((resove,reject)=>{
-            
-        }) 
-    }
+    
 }

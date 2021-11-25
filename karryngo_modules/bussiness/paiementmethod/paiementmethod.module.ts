@@ -31,5 +31,5 @@ import { PaiementMethodController } from "./PaiementMethodController";
         ]
     },
 ])
-export class ProfilRoutingModule
+export class PaiementMethodRoutingModule
 {}

@@ -23,9 +23,9 @@ export class PaiementMethodService
     {
         return this.db.updateInCollection(
             Configuration.collections.user,
-            {"_id":paiementMethod.id.toString()},
+            {"_id":userID.toString()},
             {
-                $push:{"paiementMethodList":paiementMethod.toString()}
+                $push:{"paimentMethodList":paiementMethod.toString()}
             },
         )
     }
@@ -38,7 +38,7 @@ export class PaiementMethodService
                     "_id":userID.toString(),
                 },
                 {
-                    "paiementMethodList._id":paiementMethod.id.toString()
+                    "paimentMethodList._id":paiementMethod.id.toString()
                 }
             );
     }
@@ -82,7 +82,7 @@ export class PaiementMethodService
         return new Promise<ActionResult>((resolve,reject)=>{
             this.userServiceManager.findUserById(userID)
             .then((result:ActionResult)=>{
-                let user:Customer=result.result;
+                let user:Customer=result.result[0];
                 result.result=user.paimentMethodList
                 return resolve(result)
             })

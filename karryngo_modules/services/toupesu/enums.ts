@@ -2,7 +2,7 @@ export enum FinancialTransactionState
 {
     FINANCIAL_TRANSACTION_PENDING="financial_transaction_pending",
     FINANCIAL_TRANSACTION_ERROR="financial_transaction_error",
-    FINANCIAL_TRANSACTION_SUCCESS="financial_transaction_error",
+    FINANCIAL_TRANSACTION_SUCCESS="financial_transaction_success",
     FINANCIAL_TRANSACTION_START="financial_transaction_start",
     FINANCIAL_TRANSACTION_PAUSE="financial_transaction_pause"
 }
