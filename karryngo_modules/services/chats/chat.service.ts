@@ -145,7 +145,6 @@ export class ChatService
                 ]
             )
             .then((result:ActionResult)=>{
-                console.log(result.result)
                 result.result = result.result.map((data:Record<string | number, any>)=>{
                     let id:EntityID=new EntityID();
                     id.setId(data._id);
@@ -183,6 +182,18 @@ export class ChatService
                         }
                     },
                     {
+                        "$addFields":{
+                            "chats.dateISO": {
+                                "$toDate":"$chats.date"
+                            }
+                        }
+                    },
+                    {
+                        "$sort":{
+                            "chats.dateISO": -1
+                        }
+                    },
+                    {
                         "$skip":page
                     },
                     {
@@ -190,7 +201,6 @@ export class ChatService
                     }
                 ]
             ).then((result:ActionResult)=>{
-                console.log("Result ",result.result)
                 result.result =result.result.map((c)=>{
                     let message:Message=new Message();
                     message.hydrate(c.chats);

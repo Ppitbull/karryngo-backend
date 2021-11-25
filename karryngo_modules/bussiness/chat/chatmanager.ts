@@ -68,10 +68,16 @@ export class ChatManager
     getDiscutionChatList(request:any,response:any):void
     {
         let idDiscuss:EntityID=new EntityID();
-        let numpage=parseInt(request.query.numpage || 0);
+        let numpage=parseInt(request.query.page || 0);
         let limit = parseInt(request.query.limit || 10);
 
-        console.log(request.query)
+        if(!request.query.id_discuss)
+        {
+            return response.status(400).json({
+                resultCode:ActionResult.INVALID_ARGUMENT,
+                message:"ID Discuss not supplied"
+            })
+        }
         idDiscuss.setId(request.query.id_discuss);
 
         this.chatService
@@ -98,7 +104,7 @@ export class ChatManager
         let limit = parseInt(request.query.limit || 10);
         console.log(request.query)
 
-        
+
 
         this.chatService
         .getDiscussionList(id,numpage,limit)
