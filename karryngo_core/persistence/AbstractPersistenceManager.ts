@@ -77,7 +77,7 @@ export abstract class AbstractPersistenceManager extends KarryngoApplicationEnti
     /**
      * @inheritdoc
      */
-    abstract removeToCollection(collectionName:String,entity:SerializableEntity): Promise<ActionResult>;
+    abstract removeToCollection(collectionName:String,cond: Record<string, any>,toRemove:Record<string, any>): Promise<ActionResult>;
 
     /**
      * @inheritdoc

@@ -194,6 +194,7 @@ export class ServiceManager
                 })
             })
             .catch((error:ActionResult)=>{
+                console.log("Error ",error)
                 let code=500;
                 let resultCode=error.resultCode;
                 let message=error.message;
@@ -217,16 +218,16 @@ export class ServiceManager
 
     makePaiement(request:any,response:any):void
     {
+
         let serviceID=new EntityID();
         serviceID.setId(request.body.idService);
         let currentUserId:EntityID = new EntityID();
         currentUserId.setId(request.decoded.id);
         let idTransaction:EntityID=new EntityID();
         let history:UserHistory;
-
         this.transportServiceManager.makePaiement(serviceID,request.body.paiement_mode,currentUserId)
         .then((data:ActionResult)=> 
-        {            
+        { 
             history=data.result.history;
             idTransaction.setId(data.result.service.idSelectedTransaction)
             return this.chatService.findDisccussByTransactionID(idTransaction)
@@ -243,6 +244,7 @@ export class ServiceManager
             })
         })
         .catch((error:ActionResult)=>{{
+            console.log("Error ",error)
             let code=500;
             let resultCode=error.resultCode;
             let message=error.message;
@@ -268,6 +270,12 @@ export class ServiceManager
                 code=400;
                 resultCode=-204;
                 message="Insufficient account amount";
+            }
+            else if(error.resultCode==FinancialTransactionErrorType.PAIMENT_METHOD_NOT_FOUND)
+            {
+                code=400;
+                resultCode=-205;
+                message="payment method not found";
             }
             response.status(code).json({
                 resultCode,

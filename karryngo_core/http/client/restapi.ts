@@ -19,7 +19,6 @@ export class RestApi extends Http
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let actionResult=new ActionResult();
-
             axios(request.toString())
             .then((response:AxiosResponse)=>{
                 actionResult.result=new KResponse()
@@ -30,12 +29,13 @@ export class RestApi extends Http
                 resolve(actionResult)
             })
             .catch((error)=>{
+                console.log("Error 3",error)
                 let kerror=new KError();
                 kerror.response=new KResponse()
-                .status(error.response.status)
-                .data(error.response.data)
-                .statusText(error.response.statusText)
-                .headers(error.response.headers);
+                .status(error.status)
+                .data(error.data)
+                .statusText(error.statusText)
+                .headers(error.headers);
                 actionResult.resultCode=ActionResult.UNKNOW_ERROR;
                 
                 reject(actionResult)

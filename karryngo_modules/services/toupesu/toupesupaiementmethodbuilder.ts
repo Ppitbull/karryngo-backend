@@ -3,6 +3,7 @@ import { InjectorContainer } from "../../../karryngo_core/lifecycle/injector_con
 import { PaiementStrategyType } from "./enums";
 import { PaiementMethodStrategy } from "./paiementmethod.interface";
 import { BankPaiementStrategy } from "./paiementstrategi/bankpaiementmethod";
+import { MobileMoneyPaiementMethod } from "./paiementstrategi/mobilemoneypaiementmethod";
 import { MTNMobileMoneyPaiementMethod } from "./paiementstrategi/mtnmobilemoneypaiementmethod";
 import { OrangeMobileMoneyPaiementMethod } from "./paiementstrategi/orangemobilemoneypaiementmethod";
 import { PaiementMethodStrategyService } from "./paiementstrategi/paiementmethodstrategi.service";
@@ -20,10 +21,8 @@ export class ToupesuPaiementMethodFactory
             case PaiementStrategyType.BANK:
                 break;
             case PaiementStrategyType.MTN_MONEY:
-                paiementMethodStrategi=new MTNMobileMoneyPaiementMethod(paiementStrategiService)
-                break
             case PaiementStrategyType.ORANGE_MONEY:
-                paiementMethodStrategi=new OrangeMobileMoneyPaiementMethod(paiementStrategiService)
+                paiementMethodStrategi=new MobileMoneyPaiementMethod(paiementStrategiService);
                 break
             
         }

@@ -1,0 +1,19 @@
+Je n'ai pas reussi a tester l'api de paiment a cause de quelque blocages. Tu vas retrouver ci-dessous 
+la liste des elements qui selon moi doivent etre resolus pour que tout puisse marcher comme prevu:
+
+- Dans le fichier app-module.ts le module "TransactionRoutingModule" est bien importe mais 
+    je n'arrive pas a savoir pourquoi j'ai une erreur par rapport a cela.
+    Pour faire mes tests j'ai du deplacer la route pour le make_paiement dans un autre fichier
+
+- Dans la fonction makePaiement du service "toupesupayement", lorsque je dois recuperer la liste des methodes de paiement
+    de celui qui paie, le tableau qui m;est retourne contient un undifined a l'interieur ([undifined]). Peut-etre c'est un
+    probleme sur ma version de la base de donnees. Pour faire donc les tests j'ai remplace cette ligne la en appelant directement un paiementMethodEntity
+
+- Dans "orangemobilemoneypaiementmethod.ts" pour faire appel a la method buy du service de paiement on a besoin de paiment
+    on doit recuperer l'url de toupesu pour le reqpayement mais une erreur sur la recuperation de cette cle ("paiement") est retournee.
+
+    J'ai mis un console.log pour que tu puisse voir les cles auquelles on a acces et que tu puisse regler 
+
+- Il y a un probleme avec axios pour envoyer les requetes et je pense que c'est du a un probleme de certificat, ci on fonctionne avec un self-certificate 
+    il faudra laisser "rejectUnauthorized: false" dans les options de axios pour que ca marche 
+

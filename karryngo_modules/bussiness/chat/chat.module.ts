@@ -75,6 +75,21 @@ import { ChatManager } from "./chatmanager";
                 }
             }
         ]
+    },
+    {
+        "url":"/api/chat/message/list",
+        "module" :ChatManager,
+        "actions":[
+            {
+                "method":"get",
+                "action": "getDiscutionChatList",
+                "params":{
+                    "id_discuss":"string",
+                    "numpage":"number",
+                    "limit":"number"
+                }
+            }
+        ]
     }
 ])
 export class ChatRoutingModule

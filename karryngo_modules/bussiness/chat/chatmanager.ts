@@ -18,10 +18,10 @@ export class ChatManager
         let message:Message=new Message(new EntityID());
         message.hydrate(request.body);
         message.id=new EntityID();
-        if(({}).constructor==message.content.constructor)
-        {
+        // if(({}).constructor==message.content.constructor)
+        // {
             
-        }
+        // }
         this.chatService.send(message,request.body.idDiscussion)
         .then((data:ActionResult)=>{
             response.status(200).json({
@@ -65,12 +65,49 @@ export class ChatManager
         }));
     }
 
+    getDiscutionChatList(request:any,response:any):void
+    {
+        let idDiscuss:EntityID=new EntityID();
+        let numpage=parseInt(request.query.page || 0);
+        let limit = parseInt(request.query.limit || 10);
+
+        if(!request.query.id_discuss)
+        {
+            return response.status(400).json({
+                resultCode:ActionResult.INVALID_ARGUMENT,
+                message:"ID Discuss not supplied"
+            })
+        }
+        idDiscuss.setId(request.query.id_discuss);
+
+        this.chatService
+        .getDiscussionChatList(idDiscuss,numpage,limit)
+        .then((result)=>{
+            response.status(200).json({
+                resultCode:result.resultCode,
+                result:result.result.map((disc:Discussion)=>disc.toString())
+            })
+        })
+        .catch((error:ActionResult)=> response.status(500).json({
+            resultCode:error.resultCode,
+            message:error.message
+        }));
+    }
+
     getDiscutionList(request:any,response:any):void
     {
         let id:EntityID=new EntityID();
+
         id.setId(request.decoded.id);
+
+        let numpage=parseInt(request.query.page || 0);
+        let limit = parseInt(request.query.limit || 10);
+        console.log(request.query)
+
+
+
         this.chatService
-        .getDiscussionList(id)
+        .getDiscussionList(id,numpage,limit)
         .then((result)=>{
             response.status(200).json({
                 resultCode:result.resultCode,
