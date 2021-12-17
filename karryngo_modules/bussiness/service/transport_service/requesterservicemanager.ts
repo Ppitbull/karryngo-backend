@@ -146,10 +146,11 @@ export class RequesterServiceManager
         this.transportservicemanager.getServiceById(idServiceDescription)
         .then((data:ActionResult)=>
         {
+            // console.log("Data ",data.result)
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Description service found",
-                result:data.result[0],
+                result:data.result,
             });
         })
         .catch((error:ActionResult)=>
