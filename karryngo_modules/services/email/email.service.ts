@@ -16,11 +16,8 @@ export class EmailService
         {
             let sender=nodemailer.createTransport({
                 host:this.configService.getValueOf('mail').host,
-<<<<<<< HEAD
-=======
                 port:this.configService.getValueOf('mail').port,
                 secure:this.configService.getValueOf('mail').secure,
->>>>>>> 1a9e1f8a29c21848b22e5b089aca77b5ad841ee6
                 auth:this.configService.getValueOf('mail').auth
             });
             sender.sendMail(email.toString(),(error,infos)=>{

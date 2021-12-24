@@ -23,11 +23,7 @@
     "mail": {
         "parse":false,
         "host":"smtp.gmail.com",
-<<<<<<< HEAD
-        "port":2525,
-=======
         "port":465,
->>>>>>> 1a9e1f8a29c21848b22e5b089aca77b5ad841ee6
         "service":"gmail",
         "secure":true,
         "baseurl":"https://kgo.sdkgames.com",

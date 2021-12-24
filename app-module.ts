@@ -1,3 +1,4 @@
+import { AdminActionRoutingModule } from './karryngo_modules/bussiness/service/utils/admin/admin_action.module';
 import { AuthModule } from "./karryngo_modules/bussiness/authentification/auth.module";
 import { ProfilRoutingModule } from "./karryngo_modules/bussiness/authentification/profil.module";
 import { ChatRoutingModule } from "./karryngo_modules/bussiness/chat/chat.module";
@@ -21,5 +22,6 @@ export const ModulesRouting=[
     RapportProviderRoutingModule,
     RapportCountyRoutingModule,
     RapportServiceRoutingModule,
-    TestRoutingModule
+    TestRoutingModule,
+    AdminActionRoutingModule
 ]
