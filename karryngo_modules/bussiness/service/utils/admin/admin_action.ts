@@ -43,4 +43,32 @@ export class AdminAction
             })
         });
     }
+
+    removeAsProvider(request : any, response : Response)
+    {
+        // verifier que l'utilisateur actuel est bien admin
+
+        let email = request.body.email;
+
+        this.userManagerService.findUserByEmail(email)
+        .then(() => {
+            return this.db.updateInCollection(Configuration.collections.user,
+                {"address.email":email},
+                {
+                    $set:{"isProvider":false}
+                })
+        })
+        .then((result:ActionResult) => {
+            response.status(200).json({
+                resultCode:result.resultCode,
+                message:"The user was updated successfully"
+            });
+        })
+        .catch((error:ActionResult)=>{
+            response.status(500).json({
+                resultCode:error.resultCode,
+                message:"Une erreur est survenue"
+            })
+        });
+    }
 }

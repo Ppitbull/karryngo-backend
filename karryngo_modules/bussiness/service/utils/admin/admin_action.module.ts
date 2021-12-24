@@ -15,6 +15,19 @@ import { AdminAction } from "./admin_action";
             }
         ]
     },
+    {
+        url:'/api/admin/account/remove_as_provider',
+        module:AdminAction,
+        actions:[
+            {
+                method:"post",
+                action:"removeAsProvider",
+                "params":{
+                    "email":"string"
+                }
+            }
+        ]
+    },
     // {
     //     "url":"/api/chat/list",
     //     "module" :ChatManager,
