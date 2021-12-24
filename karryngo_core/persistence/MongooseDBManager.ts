@@ -16,6 +16,9 @@ import { SerializableEntity } from "../SerializableEntity";
 
 export class MongooseDBManager extends NoSqlPersistenceManager
 {
+    findDepthInCollection(collectionName: String, options: Record<string, any>[]): Promise<ActionResult> {
+        throw new Error("Method not implemented.");
+    }
     updateInCollection(collectionName: String, cond: Record<string, any>, toUpdate: Record<string, any>, options: Record<string, any>): Promise<ActionResult> {
         throw new Error("Method not implemented.");
     }

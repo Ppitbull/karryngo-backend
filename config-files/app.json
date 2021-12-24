@@ -10,7 +10,7 @@
         "secret_key":"karryngo security",
         "algorithm":"HS256",
         "timeout":86400,
-        "refresh_timeout":120
+        "refresh_timeout":24
     },
     "googleapis":{
         "cliendId":"",
@@ -23,8 +23,14 @@
     "mail": {
         "parse":false,
         "host":"smtp.gmail.com",
+<<<<<<< HEAD
         "port":2525,
+=======
+        "port":465,
+>>>>>>> 1a9e1f8a29c21848b22e5b089aca77b5ad841ee6
         "service":"gmail",
+        "secure":true,
+        "baseurl":"https://kgo.sdkgames.com",
         "auth" :{
             "user":"contact.karryngo@gmail.com",
             "pass":"Entreprise123?"
@@ -47,15 +53,14 @@
     },
     "paiement":
     {
-        "ozowPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/reqPayment",
-        "ozowCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/checkTransaction",
+        "parse":false,
+        "paiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/reqPayment",
+        "checkPaiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/checkTransation",
+
+        "ozowPaiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/reqPayment",
+        "ozowCheckPaiementUrl":"https://api.toupesu.com/livepaygateway2/api/main/checkTransation",
         "ozowCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/ozow/reqPayment",
-        "mtnPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/reqPayment",
-        "mtnCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/checkTransaction",
-        "mtnCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/mtn/reqPayment",
-        "orangePaiementUrl":"https://api.toupesu.com/livepaygateway/orange/1.0.2/reqPayment",
-        "orangeCheckPaiementUrl":"https://api.toupesu.com/livepaygateway/orange/1.0.2/checkTransaction",
-        "orangeCancelPaiementUrl":"https://api.toupesu.com/livepaygateway/orange/1.0.2/checkTransaction",
+
         "product":"Karryngo",
         "dev_mode":
          {

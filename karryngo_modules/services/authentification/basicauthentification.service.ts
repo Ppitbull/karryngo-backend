@@ -76,8 +76,7 @@ export class BasicAuthentificationService
                 .title("Recuperation de compte")
                 .to(user.adresse.email)
                 .htmlContent(`
-                    <p>Ciquez  sur ce <a hrer="localhost?token=${result.result}">lien</a> pour modifier votre mot de passe<p> 
-                    <p>${result.result}</p>
+                    <p>Ciquez  sur ce <a href="${this.configService.getValueOf("mail").baseurl}/#/reset-password?token=${result.result}">lien</a> pour modifier votre mot de passe<p> 
                 `))
             )
             .then((result:ActionResult)=>resolve(result))

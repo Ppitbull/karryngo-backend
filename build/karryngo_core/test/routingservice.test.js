@@ -19,27 +19,34 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var KarryngoConfigurationServiceFactory_1 = require("../config/KarryngoConfigurationServiceFactory");
-var RouterService_1 = require("../routing/RouterService");
-var express = __importStar(require("express"));
+const KarryngoConfigurationServiceFactory_1 = require("../config/KarryngoConfigurationServiceFactory");
+const RouterService_1 = require("../routing/RouterService");
+const express = __importStar(require("express"));
+const routerchecker_1 = require("../routing/routerchecker");
+const apiaccess_1 = require("../security/apiaccess");
 var chai = require('chai');
-describe('Test du service de routage', function () {
-    var jsonConfigFactory = new KarryngoConfigurationServiceFactory_1.KarryngoConfigurationServiceFactory();
-    var router = new RouterService_1.RouterService(jsonConfigFactory.getInstance(), express.Router);
-    it("test de la liste des routes", function () {
+describe('Test du service de routage', () => {
+    let jsonConfigFactory = new KarryngoConfigurationServiceFactory_1.KarryngoConfigurationServiceFactory();
+    let router = new RouterService_1.RouterService(jsonConfigFactory.getInstance(), new routerchecker_1.RouterChecker(new apiaccess_1.ApiAccess()), express.Router());
+    it("test de la liste des routes", () => {
         chai.expect(router.getRouteList()).to.be.a("array");
     });
-    it("test de la contenance de l'url de test", function () {
+    it("test de la contenance de l'url de test", () => {
         chai.expect(router.getRouteList()[0].url).to.equal("/api/truc");
     });
-    it("test de la non existance d'un url: dois lancer une exception", function () {
-        chai.expect(function () { return router.getRouteByUrl('/api/non_exist'); }).to.throw();
+    it("test de la non existance d'un url: dois lancer une exception", () => {
+        chai.expect(() => router.getRouteByUrl('/api/non_exist')).to.throw();
     });
-    it("test de la contenance de la methode get dans l'url de test", function () {
-        chai.expect(function () { return router.getRouteByUrl("/api/truc"); }).to.not.throw();
+    it("test de la contenance de la methode get dans l'url de test", () => {
+        chai.expect(() => router.getRouteByUrl("/api/truc")).to.not.throw();
         chai.expect(router.getRouteByUrl("/api/truc").getMethodList()).to.contain("get");
     });
-    it("test de la contenance de l'action associer a la methode get", function () {
-        chai.expect(function () { return router.getRouteByUrl("/api/truc").getActionForMethod("get"); }).to.not.throw();
+    it("test de la contenance de l'action associer a la methode get", () => {
+        chai.expect(() => router.getRouteByUrl("/api/truc").getActionForMethod("get")).to.not.throw();
+    });
+    it("test de lancement d'instanciation et d'appel de fonction de la metode run", () => {
+        router.run();
     });
 });
+;
+//# sourceMappingURL=routingservice.test.js.map

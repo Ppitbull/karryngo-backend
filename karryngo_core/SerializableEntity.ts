@@ -5,7 +5,6 @@
 @created: 21/09/2020
  @see Serializable Entity
 */
-import {KarryngoEntity} from './KarryngoEntity';
 
 export interface SerializableEntity
 {
@@ -19,5 +18,5 @@ export interface SerializableEntity
      * @description permet de peupler les attributs de l'objet
      * @param entity 
      */
-    hydrate(entity:KarryngoEntity):void;
+    hydrate(entity:any):void;
 }

@@ -64,7 +64,7 @@ export class WalletService
                     result.result=null;
                     return reject(result);
                 }  
-                let user:Customer=result.result;
+                let user:Customer=result.result[0];
                 result.result=user.wallet;
                 resolve(result);
             })

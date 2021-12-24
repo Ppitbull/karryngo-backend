@@ -1,4 +1,5 @@
 import { DBPersistence, Service } from "../../../karryngo_core/decorator";
+import { KarryngoPersistentEntity } from "../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
@@ -8,9 +9,11 @@ import { TransportServiceType } from "../../bussiness/service/entities/transport
 import { UserHistory } from "../historique/history";
 import { HistoryService } from "../historique/historyService";
 import { FinancialTransaction } from "./entities/financialtransaction";
+import { MobilePaiementMethodEntity } from "./entities/mobilepaiementmethodentity";
 import { PaiementMethodEntity } from "./entities/paiementmethodentity";
-import { FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "./enums";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "./enums";
 import { PaiementMethodStrategy } from "./paiementmethod.interface";
+import { OrangeMobileMoneyPaiementMethod } from "./paiementstrategi/orangemobilemoneypaiementmethod";
 import { WalletService } from "./wallet.service";
 
 @Service()
@@ -27,24 +30,31 @@ export class ToupesuPaiement
             let history:UserHistory; 
             let paiementMethodEntity:PaiementMethodEntity;
             let transaction:TransactionService;
-            this.historyService.checkExistHistory(buyer,service.id)
+            this.historyService.findHistory(buyer,service.id)
             .then((result:ActionResult)=>{
-                if(result.result.length>0) 
+                // console.log("REsult ",result,service.id)
+                if(result.result.length==0) 
                 {
-                    result.resultCode=ActionResult.RESSOURCE_ALREADY_EXIST_ERROR;
-                    return Promise.reject(result);
+                    result.result=[];
+                    result.resultCode=ActionResult.RESSOURCE_NOT_FOUND_ERROR;
+                    return Promise.reject(result)
                 }
-                return this.historyService.findHistory(buyer,service.id)
-            })
-            .then((result:ActionResult)=>{
-                history=result.result;
+                history=result.result[0];
+                console.log(buyer.paimentMethodList,paiementMethod)
                 paiementMethodEntity=buyer.paimentMethodList.find((p:PaiementMethodEntity)=>p.type==paiementMethod)
-                transaction=service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction); 
-                return toupesuPaiementMethod.buy(
-                    transaction,
-                    buyer,
-                    paiementMethodEntity
-                )
+                if(paiementMethodEntity)
+                {
+                    transaction=service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction); 
+                    return toupesuPaiementMethod.buy(
+                        transaction,
+                        buyer,
+                        paiementMethodEntity
+                    )
+                }
+                
+                result.result=null;
+                    result.resultCode=FinancialTransactionErrorType.PAIMENT_METHOD_NOT_FOUND;
+                    return Promise.reject(result);
             })
             .then((result:ActionResult)=>{
                 history.financialTransaction.state=FinancialTransactionState.FINANCIAL_TRANSACTION_PENDING;
@@ -55,19 +65,45 @@ export class ToupesuPaiement
                 history.financialTransaction.token=result.result.token;
                 history.financialTransaction.error=result.result.error;
                 history.financialTransaction.paiementMode=paiementMethodEntity.type;
-
+                history.financialTransaction.type=FinancialTransactionType.DEPOSIT
+                history.financialTransaction.endDate=""
                 return this.historyService.updateTransaction(buyer,service.id,history.toString())
             })
             .then((result:ActionResult)=>{
                 result.result=history;
                 resolve(result)
             })
-            .catch((error:ActionResult)=> reject(error));
+            .catch((error:ActionResult)=> {
+                reject(error)
+            });
+        })
+    }
+    updatePaiement(buyer:Customer,service:TransportServiceType,stateData:{state:FinancialTransactionState,endDate:String},financialTransaction:FinancialTransaction):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>{
+            this.historyService.updateTransactionState(buyer,service.id,stateData)
+            .then((result:ActionResult)=>{
+                if(stateData["state"]==FinancialTransactionState.FINANCIAL_TRANSACTION_SUCCESS)
+                {
+                    if(financialTransaction.type==FinancialTransactionType.DEPOSIT)
+                    {
+                        return this.walletService.increaseWallet(buyer.id,financialTransaction.amount);
+                    }
+                    else 
+                    {
+                        return this.walletService.decreaseWallet(buyer.id,financialTransaction.amount)
+                    }
+                } 
+                console.log("StateDatate",stateData)
+                resolve(result)        
+            })
+            .then((result:ActionResult)=>resolve(result))
+            .catch((error)=>reject(error))
         })
     }
     checkPaiement(toupesuPaiementMethod:PaiementMethodStrategy,service:TransportServiceType,financialTransaction:FinancialTransaction,buyer:Customer,paiementMethod:PaiementStrategyType):Promise<ActionResult>
     {
-        let r={};
+        let r:{state:FinancialTransactionState,endDate:String}={endDate:"",state:FinancialTransactionState.FINANCIAL_TRANSACTION_START};
         return new Promise<ActionResult>((resolve,reject)=>{
             toupesuPaiementMethod.check(
                 financialTransaction,
@@ -79,21 +115,7 @@ export class ToupesuPaiement
                     state:result.result.status,
                     endDate:result.result.endDate
                 };
-                return this.historyService.updateTransaction(buyer,service.id,r)
-            })
-            .then((result:ActionResult)=>{
-                if(r["state"]==FinancialTransactionState.FINANCIAL_TRANSACTION_SUCCESS)
-                {
-                    if(financialTransaction.type==FinancialTransactionType.DEPOSIT)
-                    {
-                        return this.walletService.increaseWallet(buyer.id,financialTransaction.amount);
-                    }
-                    else 
-                    {
-                        return this.walletService.decreaseWallet(buyer.id,financialTransaction.amount)
-                    }
-                }
-                return Promise.resolve(new ActionResult())
+                return this.updatePaiement(buyer,service,r,financialTransaction)
             })
             .then((result:ActionResult)=>{
                 result.result=r;

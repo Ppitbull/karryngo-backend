@@ -4,7 +4,7 @@ import { PaiementMethodStrategy } from "../paiementmethod.interface";
 
 export abstract class PaiementMethodEntity extends KarryngoPersistentEntity
 {
-    moneyCode:string="ZAR";//doit être changé a l'avenir
+    moneyCode:string="XAF";//doit être changé a l'avenir
     type:PaiementStrategyType;
 
     toString():Record<string,any>

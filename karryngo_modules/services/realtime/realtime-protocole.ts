@@ -9,7 +9,6 @@ export const UNKNOW_RECEIVER="unknow";
 
 export enum RealTimeInitMessageType
 {
- SEND_MESSAGE,   
  NEW_CONNECTION="connect",
  LOGGIN="loggin",
  LOGOUT="logout",
@@ -84,3 +83,13 @@ export type RealTimeSubMessageType = RealTimeUpdateData;
  * 1.1:(Serveur) si le token est invalid alors retourner un message de type RealTimeMessageType.DISCONNECT et la connexion est coupé
  * 
  */
+
+
+
+// r=
+// {
+//     senderID:UNKNOW_SENDER,
+//     receiverID:"", //identifiant du client connecté
+//     error:RealTimeInitErrorType.USER_ALREADY_EXIST,
+//     type:RealTimeInitMessageType.LOGGIN
+// }

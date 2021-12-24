@@ -1,30 +1,55 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Email = void 0;
-var Email = /** @class */ (function () {
-    function Email() {
+class Email {
+    constructor() {
+        this.sender = "";
+        this.receiver = "";
+        this.otherReceiver = [];
+        this.text = "";
+        this.file = "";
+        this.html = "";
+        this.subject = "";
     }
-    Email.prototype.from = function (userFrom) {
+    from(userFrom) {
+        this.sender = userFrom;
         return this;
-    };
-    Email.prototype.to = function (userTo) {
+    }
+    to(userTo) {
+        this.receiver = userTo;
         return this;
-    };
-    Email.prototype.cc = function (ccUser) {
+    }
+    cc(ccUser) {
+        this.otherReceiver.push(ccUser);
         return this;
-    };
-    Email.prototype.title = function (titleMail) {
+    }
+    title(titleMail) {
+        this.subject = titleMail;
         return this;
-    };
-    Email.prototype.htmlContent = function (content) {
+    }
+    htmlContent(content) {
+        this.html = content;
         return this;
-    };
-    Email.prototype.textContent = function (content) {
+    }
+    textContent(content) {
+        this.text = content;
         return this;
-    };
-    Email.prototype.fileContent = function (file) {
+    }
+    fileContent(file) {
+        this.file = file;
         return this;
-    };
-    return Email;
-}());
+    }
+    toString() {
+        return {
+            from: this.sender.toString(),
+            to: this.receiver.toString(),
+            subject: this.subject.toString(),
+            text: this.text.toString(),
+            file: this.file.toString(),
+            html: this.html.toString(),
+            cc: this.otherReceiver.join(";").toString()
+        };
+    }
+}
 exports.Email = Email;
+//# sourceMappingURL=email.js.map

@@ -19,13 +19,13 @@ export class DynamicLoader
      * @see require()
      * @see import()
      */
-    static load(module:String,param:any[]=[]):KarryngoEntity|any
+    static load(module:string,param:any[]=[]):KarryngoEntity|any
     {
         let keyClass:String='';
         let moduleRequire:any={};
         try
         {
-            moduleRequire=require(`${process.cwd()}/${module}`);
+            moduleRequire=require(`./../../${module}`);
             for (let key in moduleRequire) keyClass=key;
         }
         catch(e:any)
@@ -51,7 +51,7 @@ export class DynamicLoader
         try
         {
             // console.log(module)
-            moduleRequire=require(`${process.cwd()}/${module}`);
+            moduleRequire=require(`./../../${module.toString()}`);
             for (let key in moduleRequire) keyClass=key;
         }
         catch(e:any)

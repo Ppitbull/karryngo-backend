@@ -16,5 +16,5 @@ export abstract class KarryngoEntity implements SerializableEntity
     /**
      * @inheritdoc
      */
-    abstract hydrate(entity:KarryngoEntity):void;
+    abstract hydrate(entity:any):void;
 }
