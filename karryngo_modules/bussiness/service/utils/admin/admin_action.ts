@@ -71,7 +71,6 @@ export class AdminAction {
                 accountType = data.result[0].accountType
 
                 if (accountType == "Admin") {
-                    console.log("Je suis un admin")
                     let email = request.body.email;
 
                     this.userManagerService.findUserByEmail(email)
@@ -85,7 +84,7 @@ export class AdminAction {
                         .then((result: ActionResult) => {
                             response.status(200).json({
                                 resultCode: result.resultCode,
-                                message: "The user was updated successfully"
+                                message: "The user was successfully updated"
                             });
                         })
                         .catch((error: ActionResult) => {
