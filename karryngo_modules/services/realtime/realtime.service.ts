@@ -1,8 +1,7 @@
 import { EventEmitter } from "events";
-import Server, {Socket} from "socket.io"
+import Server, {Socket} from "socket.io";
 import { Service } from "../../../karryngo_core/decorator";
-// import { KarryngoEventEmitter } from "../../../karryngo_core/event/kevent"
-import { KarryngoApp } from "../../../karryngo_core/KarryngoApp";
+import { InjectorContainer } from "../../../karryngo_core/lifecycle/injector_container";
 import { RouterChecker } from "../../../karryngo_core/routing/routerchecker";
 import { ChatService } from "../chats/chat.service";
 import { RealTimeMessageType, RealTimeMessage, RealTimeErrorType, UNKNOW_SENDER, RealTimeEvent, RealTimeInitMessageType, RealTimeInitErrorType } from "./realtime-protocole";
@@ -14,16 +13,22 @@ const io = require('socket.io')
 export class RealTimeService
 {
     private serverSocket:any;
-    
+    private kcore:any
     constructor(
-        private kcore:KarryngoApp, 
         private routerchecker:RouterChecker,
         private eventEmiter:EventEmitter,
-        private routerRealTime:RealTimeRouterService)
+        private routerRealTime:RealTimeRouterService,
+        )
+    {}
+
+    setKarryngoApp(kngApp)
     {
-        this.serverSocket=new Server(this.kcore.getServer(),{           
-           }
-       );
+        this.kcore=kngApp
+    }
+
+    init()
+    {
+        this.serverSocket=new Server(this.kcore.getServer(),{});
         // this.serverSocket=new WebSocket.Server({server:this.kcore.getServer()})
 
        this.serverSocket.on(RealTimeInitMessageType.NEW_CONNECTION,(socket:Socket)=>{
@@ -32,7 +37,6 @@ export class RealTimeService
         this.handDisconnect(socket);
         this.handleConnexionError(socket);
         })
-        
     }
     handleConnexionError(socket:Socket)
     {
@@ -78,12 +82,14 @@ export class RealTimeService
                 {
                     this.routerRealTime.addUser(data.senderID,socket);
                     this.routerRealTime.addSocketUSer(socket.id,data.senderID);
-                    this.routerRealTime.send({
+                    this.routerRealTime.send(
+                        {
                         senderID:UNKNOW_SENDER,
                         receiverID:data.senderID,
                         error:RealTimeInitErrorType.SUCCESS,
                         type:RealTimeInitMessageType.LOGGIN
-                    });
+                    }
+                    );
                 }
                 this.eventEmiter.emit(RealTimeEvent.REALTIME_CONNEXION_STARTED,socket);
             })

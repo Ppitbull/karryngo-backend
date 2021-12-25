@@ -6,8 +6,9 @@
 
 
 import jsonwebtoken from "jsonwebtoken";
+import { uid } from "rand-token";
 import { ConfigurableApp } from "../config/ConfigurableApp.interface";
-import { ConfigService } from "../decorator";
+import { ConfigService, KarryngoCore } from "../decorator";
 import { ActionResult } from "../utils/ActionResult";
 
 export enum ApiAccessError
@@ -16,7 +17,7 @@ export enum ApiAccessError
     TokenExpiredError="TokenExpiredError"
 }
 
-
+@KarryngoCore()
 export class ApiAccess
 {
     @ConfigService()
@@ -76,7 +77,7 @@ export class ApiAccess
                 }
                 else
                 {
-                    result.result=token
+                    result.result={token,refresh_token:uid(256)}
                     resolve(result);
                 }
             });

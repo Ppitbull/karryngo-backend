@@ -10,16 +10,15 @@ const app = express();
 let bodyParser = require('body-parser');  //librairie qui permet de parser une chaîne en JSON
 let router=express.Router();
 const httpServer = require("http").createServer(app);
+const timeout=require("connect-timeout")
+
+app.use(timeout('120s'))
 
 app.use(cors())
 
 //instanciation du coeur de Karryngo
-
-let karryngoApp=new KarryngoApp(router,httpServer,app);
-
-InjectorContainer.getInstance().saveInstance<KarryngoApp>(KarryngoApp,karryngoApp);
-
-
+let karryngoApp = InjectorContainer.getInstance().getInstanceOf<KarryngoApp>(KarryngoApp)
+karryngoApp.init(router,httpServer,app);
 app.use(((request:any,response:any,next:any)=>
 {
     karryngoApp.run();
@@ -39,7 +38,7 @@ app.use(router);
 // Setup server port
 var port = process.env.PORT || 8090;
 
-// Send message for default URL
+// Send message for default URL 
 app.use(express.json())
 app.get('/', (req:any, res:any) => res.send('Hello World with Express'));
 

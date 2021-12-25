@@ -229,7 +229,7 @@ export class ProviderServiceManager
     {
         this.db.findInCollection(Configuration.collections.provider,{"providerId":request.decoded.id},
         {
-            projection:{"vehicles":true,_id:false}
+            "vehicles":true
         })
         .then((data:ActionResult)=>{
             response.status(200).json({
@@ -239,9 +239,9 @@ export class ProviderServiceManager
             });
         })
         .catch((error:ActionResult)=> response.status(500).json({
-            resultCode:error.resultCode,
-            message:error.message
-        }))
+                resultCode:error.resultCode,
+                message:error.message
+            }))
     }
     getZoneList(request:any,response:any):any
     {

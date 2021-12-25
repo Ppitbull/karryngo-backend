@@ -6,3 +6,4 @@
 @created: 21/09/2020
 */
 Object.defineProperty(exports, "__esModule", { value: true });
+//# sourceMappingURL=ConfigurableApp.interface.js.map

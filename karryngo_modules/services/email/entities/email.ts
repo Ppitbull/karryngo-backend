@@ -3,7 +3,7 @@ export class Email
     private sender:String="";
     private receiver:String="";
     private otherReceiver:String[]=[];
-    private text:String="";
+    private text:String=" ";
     private file:String="";
     private html:String="";
     private subject:String="";

@@ -15,7 +15,15 @@ export class EmailService
         return new Promise<ActionResult>((resolve,reject)=>
         {
             let sender=nodemailer.createTransport({
+<<<<<<< HEAD
                 host:this.configService.getValueOf('mail').host,
+||||||| 7cbe059
+                service:this.configService.getValueOf('mail').service,
+=======
+                host:this.configService.getValueOf('mail').host,
+                port:this.configService.getValueOf('mail').port,
+                secure:this.configService.getValueOf('mail').secure,
+>>>>>>> origin/deploy
                 auth:this.configService.getValueOf('mail').auth
             });
             sender.sendMail(email.toString(),(error,infos)=>{

@@ -2,6 +2,7 @@ import { KarryngoCore } from "../decorator/core.decorator";
 import { KarryngoApplicationEntity } from "../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../KarryngoEntity";
 import { ApiAccess, ApiAccessError } from "../security/apiaccess";
+import { TokenAuthentification } from "../security/tokentauthentification.service";
 import { ActionResult } from "../utils/ActionResult";
 import { Action } from "./Action";
 import { Route } from "./Route";
@@ -9,7 +10,9 @@ import { Route } from "./Route";
 @KarryngoCore()
 export class RouterChecker extends KarryngoApplicationEntity
 {
-    constructor (private apiAccess:ApiAccess)
+    constructor (
+        private apiAccess:ApiAccess,
+        )
     {
         super();
     }
@@ -75,7 +78,7 @@ export class RouterChecker extends KarryngoApplicationEntity
                     return res.status(401).json({
                         resultCode: data.resultCode,
                         message
-                        });
+                    });
                 });
             }
             else return res.status(403).json({

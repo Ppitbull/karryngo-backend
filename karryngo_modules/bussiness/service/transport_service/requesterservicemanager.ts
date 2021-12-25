@@ -63,15 +63,19 @@ export class RequesterServiceManager
         {
             service=new TransportPersonService(new EntityID());            
         }
+
         service.hydrate(request.body);
+
         service.idRequester=request.decoded.id
-        // console.log(request.body.options.images)
-        this.fileUploadService.uploadAll(request.body.options.images)
+
+        this.fileUploadService.uploadAll(request.body.options.images )
         .then((result:ActionResult)=>{
             service.images=result.result;
+
             return this.db.addToCollection(Configuration.collections.requestservice,service);
         })
         .then((result:ActionResult)=>{
+
             let history:UserHistory=new UserHistory(new EntityID());
             history.serviceTransportID.setId(service.id.toString());
 
@@ -142,10 +146,11 @@ export class RequesterServiceManager
         this.transportservicemanager.getServiceById(idServiceDescription)
         .then((data:ActionResult)=>
         {
+            // console.log("Data ",data.result)
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Description service found",
-                result:data.result[0],
+                result:data.result,
             });
         })
         .catch((error:ActionResult)=>

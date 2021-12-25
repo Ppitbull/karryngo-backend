@@ -1,54 +1,55 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
+/**
+@author Cedric nguendap
+@description Cette classe est une classe abstraite et classe de base representant l'unite
+    de persistance de type NoSQL (MongoDB, Firebase...)
+@created 23/09/2020
+*/
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.KarryngoPersistenceManagerFactory = void 0;
-/**
-@author: Cedric nguendap
-@description: Cette classe est une classe abstraite et classe de base representant l'unite
-    de persistance de type NoSQL (MongoDB, Firebase...)
-@created: 23/09/2020
-*/
-var KarryngoApplicationEntity_1 = require("../KarryngoApplicationEntity");
-var DynamicLoader_1 = require("../utils/DynamicLoader");
-var KarryngoPersistenceManagerFactory = /** @class */ (function (_super) {
-    __extends(KarryngoPersistenceManagerFactory, _super);
-    function KarryngoPersistenceManagerFactory(config) {
-        var _this = _super.call(this) || this;
-        _this.configService = config;
-        return _this;
+const KarryngoConfigurationServiceFactory_1 = require("../config/KarryngoConfigurationServiceFactory");
+const core_decorator_1 = require("../decorator/core.decorator");
+const KarryngoApplicationEntity_1 = require("../KarryngoApplicationEntity");
+const DynamicLoader_1 = require("../utils/DynamicLoader");
+let KarryngoPersistenceManagerFactory = class KarryngoPersistenceManagerFactory extends KarryngoApplicationEntity_1.KarryngoApplicationEntity {
+    constructor(configServiceFactory) {
+        super();
+        this.configServiceFactory = configServiceFactory;
+        this.persistance = DynamicLoader_1.DynamicLoader.load(this.configServiceFactory.getInstance().getValueOf('persistence').classe, [this.configServiceFactory.getInstance()]);
     }
     /**
      * @inheritdoc
      */
-    KarryngoPersistenceManagerFactory.prototype.toString = function () {
+    toString() {
         throw new Error("Method toString() not implemented.");
-    };
+    }
     /**
      * @inheritdoc
      */
-    KarryngoPersistenceManagerFactory.prototype.hydrate = function (entity) {
+    hydrate(entity) {
         throw new Error("Method hydrate() not implemented.");
-    };
+    }
     /**
-     * @description permet de creer une instance de l'unité de persistace. cette unité de persistance
+     * @description permet d'obtenir l'instance de l'unité de persistace creer dans le constructeur. cette unité de persistance
      *  est configurer dans le fichier de configuration persistance.json
      * @return une implémentation de l'interface PersistenceManager
      */
-    KarryngoPersistenceManagerFactory.prototype.getInstance = function () {
-        return DynamicLoader_1.DynamicLoader.load(this.configService.getValueOf('persistence').classe, [this.configService]);
-    };
-    return KarryngoPersistenceManagerFactory;
-}(KarryngoApplicationEntity_1.KarryngoApplicationEntity));
+    getInstance() {
+        return this.persistance;
+    }
+};
+KarryngoPersistenceManagerFactory = __decorate([
+    core_decorator_1.KarryngoCore(),
+    __metadata("design:paramtypes", [KarryngoConfigurationServiceFactory_1.KarryngoConfigurationServiceFactory])
+], KarryngoPersistenceManagerFactory);
 exports.KarryngoPersistenceManagerFactory = KarryngoPersistenceManagerFactory;
+//# sourceMappingURL=KarryngoPersistenceManagerFactory.js.map

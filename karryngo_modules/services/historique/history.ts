@@ -8,10 +8,10 @@ export class UserHistory extends KarryngoPersistentEntity
     financialTransaction:FinancialTransaction=new FinancialTransaction(new EntityID());
     serviceTransportID:EntityID=new EntityID();
 
-    hydrate(entity:EntityID):void
+    hydrate(entity:any):void
     {
         super.hydrate(entity);
-        this.financialTransaction.hydrate(this.purgeAttribute(entity,"financialTransaction"));
+        this.financialTransaction.hydrate(this.purgeAttribute(entity,"financialTransaction")["financialTransaction"]);
         this.serviceTransportID.setId(this.purgeAttribute(entity,"serviceTransportID"));
     }
 

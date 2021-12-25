@@ -18,6 +18,18 @@ import AuthRequester from "./authrequester";
                 "action": "login"
             }
         ]
+    },{
+        "url":"/api/auth/refresh-token",
+        "module" :AuthRequester,
+        "actions":[
+            {
+                "method":"get",
+                "action": "refreshToken",
+                "params":{
+                },
+                isSecure:false
+            }
+        ]
     },
     {
         "url":"/api/auth/requester",

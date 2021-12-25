@@ -1,31 +1,17 @@
 "use strict";
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongooseDBManager = void 0;
-var ActionResult_1 = require("../utils/ActionResult");
-var mongoose_1 = __importDefault(require("mongoose"));
-var NoSqlPersistenceManager_1 = require("./NoSqlPersistenceManager");
-var DataBaseException_1 = require("../exception/DataBaseException");
-var MongooseDBManager = /** @class */ (function (_super) {
-    __extends(MongooseDBManager, _super);
-    function MongooseDBManager() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.options = {
+const ActionResult_1 = require("../utils/ActionResult");
+const mongoose_1 = __importDefault(require("mongoose"));
+const NoSqlPersistenceManager_1 = require("./NoSqlPersistenceManager");
+const DataBaseException_1 = require("../exception/DataBaseException");
+class MongooseDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManager {
+    constructor() {
+        super(...arguments);
+        this.options = {
             database: {
                 useNewUrlParser: true
             },
@@ -33,29 +19,55 @@ var MongooseDBManager = /** @class */ (function (_super) {
                 strict: false
             }
         };
-        return _this;
+        this.shemas = new Map();
+    }
+    findDepthInCollection(collectionName, options) {
+        throw new Error("Method not implemented.");
+    }
+    updateInCollection(collectionName, cond, toUpdate, options) {
+        throw new Error("Method not implemented.");
+    }
+    createCollection(collectionName) {
+        throw new Error("Method not implemented.");
+    }
+    deleteCollection(collectionName) {
+        throw new Error("Method not implemented.");
+    }
+    getCollection(collectionName) {
+        throw new Error("Method not implemented.");
+    }
+    addToCollection(collectionName, entity) {
+        throw new Error("Method not implemented.");
+    }
+    removeToCollection(collectionName, entity) {
+        throw new Error("Method not implemented.");
+    }
+    findInCollection(collectionName, options) {
+        throw new Error("Method not implemented.");
+    }
+    disconnect() {
+        throw new Error("Method not implemented.");
     }
     /**
      *
      * @inheritdoc
      *
      */
-    MongooseDBManager.prototype.getQueryBuilder = function (entity) {
+    getQueryBuilder(entity) {
         return this.createShema(entity);
-    };
+    }
     /**
      * @inheritdoc
      */
-    MongooseDBManager.prototype.connect = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
+    connect() {
+        return new Promise((resolve, reject) => {
             //creation de l'url de connexion a la bd a partir des informations du service de configuration
-            var connexionString = "mongodb://" + _this.configService.getValueOf("persistence").hostname + ":" + _this.configService.getValueOf("persistence").port + "/" + _this.configService.getValueOf("persistence").database;
-            var result = new ActionResult_1.ActionResult();
+            let connexionString = `mongodb://${this.configService.getValueOf("persistence").hostname}:${this.configService.getValueOf("persistence").port}/${this.configService.getValueOf("persistence").database}`;
+            let result = new ActionResult_1.ActionResult();
             //connexion a la bd
-            mongoose_1.default.connect(connexionString.toString(), _this.options.database);
-            _this.db = mongoose_1.default.connection;
-            _this.db.on('error', function (e) {
+            mongoose_1.default.connect(connexionString.toString(), this.options.database);
+            this.db = mongoose_1.default.connection;
+            this.db.on('error', (e) => {
                 //si une erreur est rencontré on rejete la promise
                 result.resultCode = DataBaseException_1.DataBaseException.DATABAE_DISCONNECTED;
                 result.message = "Erreur lors de la connexion a la bd";
@@ -63,52 +75,51 @@ var MongooseDBManager = /** @class */ (function (_super) {
                 reject(result);
             });
             //si la connexion s'ouvre alors on resoud la promise
-            _this.db.on('open', function () { return resolve(result); });
+            this.db.on('open', () => resolve(result));
         });
-    };
+    }
     /**
      *
      * @inheritdoc
      */
-    MongooseDBManager.prototype.create = function (entity) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            var result = new ActionResult_1.ActionResult();
-            _this.createShema(entity).create(entity).then(function (data) {
+    create(entity) {
+        return new Promise((resolve, reject) => {
+            let result = new ActionResult_1.ActionResult();
+            this.createShema(entity).create(entity).then((data) => {
                 result.result = data;
                 resolve(result);
             })
-                .catch(function (e) {
+                .catch((e) => {
                 result.result = e;
                 result.resultCode = ActionResult_1.ActionResult.UNKNOW_ERROR;
                 reject(e);
             });
         });
-    };
+    }
     /**
      * @inheritdoc
      */
-    MongooseDBManager.prototype.update = function (entity) {
+    update(entity) {
         throw new Error("Method not implemented.");
-    };
+    }
     /**
      * @inheritdoc
      */
-    MongooseDBManager.prototype.delete = function (entity) {
+    delete(entity) {
         throw new Error("Method not implemented.");
-    };
+    }
     /**
      * @inheritdoc
      */
-    MongooseDBManager.prototype.toString = function () {
+    toString() {
         throw new Error("Method not implemented.");
-    };
+    }
     /**
      * @inheritdoc
      */
-    MongooseDBManager.prototype.hydrate = function (entity) {
+    hydrate(entity) {
         throw new Error("Method not implemented.");
-    };
+    }
     /**
      * @description Cette methode permet de creer le model d'une entité persistante
      *  cette méthode évite d'écrire manuellement les schémas et model néccéssaires a mongoose pour l'interaction
@@ -117,15 +128,19 @@ var MongooseDBManager = /** @class */ (function (_super) {
      * @return retourne le schéam creer a partir de la classe obtenu en se servant de l'api de reflextion
      *  offerte par TypeScript
      */
-    MongooseDBManager.prototype.createShema = function (entity) {
-        var schema = mongoose_1.default.Schema;
+    createShema(entity) {
+        let schema = mongoose_1.default.Schema;
         //création d'un schema vide
-        var entitySchema = new mongoose_1.default.Schema({}, this.options.schema);
+        let entitySchema = new mongoose_1.default.Schema({}, this.options.schema);
         //construction du schéma a partir de la classe
         entitySchema.loadClass(entity.constructor);
+        if (this.shemas.get(entity.constructor.name))
+            return this.shemas.get(entity.constructor.name);
         //création du model a partir du schema générer
-        return mongoose_1.default.model(entity.constructor.name, entitySchema);
-    };
-    return MongooseDBManager;
-}(NoSqlPersistenceManager_1.NoSqlPersistenceManager));
+        let model = mongoose_1.default.model(entity.constructor.name, entitySchema);
+        this.shemas.set(entity.constructor.name, model);
+        return model;
+    }
+}
 exports.MongooseDBManager = MongooseDBManager;
+//# sourceMappingURL=MongooseDBManager.js.map

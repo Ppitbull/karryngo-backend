@@ -5,27 +5,10 @@
 @created: 23/09/2020
 @modified by Cedric Nguendap : 09/10/2020
 */
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractPersistenceManager = void 0;
-var KarryngoApplicationEntity_1 = require("../KarryngoApplicationEntity");
-var AbstractPersistenceManager = /** @class */ (function (_super) {
-    __extends(AbstractPersistenceManager, _super);
-    function AbstractPersistenceManager() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    return AbstractPersistenceManager;
-}(KarryngoApplicationEntity_1.KarryngoApplicationEntity));
+const KarryngoApplicationEntity_1 = require("../KarryngoApplicationEntity");
+class AbstractPersistenceManager extends KarryngoApplicationEntity_1.KarryngoApplicationEntity {
+}
 exports.AbstractPersistenceManager = AbstractPersistenceManager;
+//# sourceMappingURL=AbstractPersistenceManager.js.map

@@ -15,6 +15,7 @@ export class FileService {
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let links:KFileLink[]=[];
+            console.log("Docs ",docs)
             docs.forEach((file:Record<string| number,any>)=>{
                 let f:KFile=new KFile(new EntityID());
                 f.hydrate(file);

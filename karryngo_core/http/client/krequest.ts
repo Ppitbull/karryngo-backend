@@ -2,6 +2,8 @@ import { KarryngoCore } from "../../decorator/core.decorator";
 import { KarryngoApplicationEntity } from "../../KarryngoApplicationEntity";
 import { KarryngoEntity } from "../../KarryngoEntity";
 
+const https = require("https")
+
 export type Method =
   | 'get' | 'GET'
   | 'delete' | 'DELETE'
@@ -70,7 +72,7 @@ export class KRequest extends KarryngoApplicationEntity
     }
     json():KRequest
     {
-        this.headerData['Content-Type']="Content-Type': 'application/json";
+        this.headerData['Content-Type']="application/json";
         this.requestType="json";
         return this;
     }
@@ -141,6 +143,7 @@ export class KRequest extends KarryngoApplicationEntity
             url:this.link.toString(),
             method:this.method,
             headers:this.headerData,
+            httpsAgent: new https.Agent({ rejectUnauthorized: false }),// Il faut voir dans quelle mesure enlever ceci
             data,
         }
     }    
