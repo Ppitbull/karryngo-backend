@@ -71,6 +71,7 @@ export class AdminAction {
                 accountType = data.result[0].accountType
 
                 if (accountType == "Admin") {
+                    console.log("Je suis un admin")
                     let email = request.body.email;
 
                     this.userManagerService.findUserByEmail(email)
