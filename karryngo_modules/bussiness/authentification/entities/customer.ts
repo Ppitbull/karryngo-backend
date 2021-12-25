@@ -18,6 +18,7 @@ export class Customer extends User
     paimentMethodList:PaiementMethodEntity[]=[]
     wallet:Wallet=new Wallet(new EntityID());
     histories:History[]=[];
+    accountType:String = "";
 
     hydrate(entity:any):void
     {
@@ -27,6 +28,7 @@ export class Customer extends User
         this.isCompany=this.purgeAttribute(entity,"isCompany");
         this.wallet.hydrate(this.purgeAttribute(entity,"wallet"));
         this.paimentMethodList=this.purgeAttribute(entity,"paimentMethodList")?this.purgeAttribute(entity,"paimentMethodList").map((paiementMethod:Record<string,any>)=> paiementMethodBuilder(paiementMethod)):[];
+        this.accountType = this.purgeAttribute(entity, "accountType") ? this.purgeAttribute(entity, "accountType") : ""
     }
     toString():any
     {
@@ -36,7 +38,8 @@ export class Customer extends User
             passportNumber:this.passportNumber,
             isCompany:this.isCompany,
             wallet:this.wallet.toString(),
-            paimentMethodList:this.paimentMethodList.map((method:PaiementMethodEntity)=>method.toString())
+            paimentMethodList:this.paimentMethodList.map((method:PaiementMethodEntity)=>method.toString()),
+            accountType:this.accountType
         }
     }
 }

@@ -22,16 +22,8 @@
     },
     "mail": {
         "parse":false,
-<<<<<<< HEAD
-        "host":"smtp.gmail.com",
-        "port":2525,
-||||||| 7cbe059
-        "host":"",
-        "port":2525,
-=======
         "host":"smtp.gmail.com",
         "port":465,
->>>>>>> origin/deploy
         "service":"gmail",
         "secure":true,
         "baseurl":"https://kgo.sdkgames.com",
