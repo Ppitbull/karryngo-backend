@@ -15,9 +15,6 @@
   ],
   "author": "SDK",
   "license": "ISC",
-  "engines": {
-    "node": "14.x"
-  },
   "dependencies": {
     "@googlemaps/google-maps-services-js": "^3.1.15",
     "@types/express": "^4.17.8",
