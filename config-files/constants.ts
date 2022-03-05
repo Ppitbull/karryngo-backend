@@ -6,6 +6,7 @@ var Configuration=
     'path_for_module':"./karryngo_module",
     'path_for_bussiness_module':"./karryngo_modules/bussiness",
     'path_for_bussiness_service': "./karryngo_modules/services",
+    'api_for_payement':'toupesu',
     'collections':{
         'notification':'Notifications',
         'user':'Users',

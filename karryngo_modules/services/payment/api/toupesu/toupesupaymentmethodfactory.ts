@@ -1,7 +1,8 @@
-import { RestApi } from "../../../../karryngo_core/http/client/restapi";
-import { InjectorContainer } from "../../../../karryngo_core/lifecycle/injector_container";
-import { PaiementStrategyType } from "../enums";
-import { PaiementMethodStrategy } from "../interfaces/paiementmethod.interface";
+import { RestApi } from "../../../../../karryngo_core/http/client/restapi";
+import { InjectorContainer } from "../../../../../karryngo_core/lifecycle/injector_container";
+import { PaiementStrategyType } from "../../enums";
+import { PaymentException } from "../../exceptions/PaymentException";
+import { PaiementMethodStrategy } from "../../interfaces/paiementmethod.interface";
 
 import { BankPaiementStrategy } from "./paiementstrategi/bankpaiementmethod";
 import { MobileMoneyPaiementMethod } from "./paiementstrategi/mobilemoneypaiementmethod";
@@ -12,7 +13,7 @@ import { PaiementMethodStrategyService } from "./paiementstrategi/paiementmethod
 
 export class ToupesuPaiementMethodFactory
 {
-    static getMethodPaiment(method:PaiementStrategyType):PaiementMethodStrategy
+    getMethodPaiment(method:PaiementStrategyType):PaiementMethodStrategy
     {
         let paiementStrategiService=InjectorContainer.getInstance().getInstanceOf<PaiementMethodStrategyService>(PaiementMethodStrategyService);
 
@@ -20,7 +21,7 @@ export class ToupesuPaiementMethodFactory
         switch(method)
         {
             case PaiementStrategyType.BANK:
-                break;
+                throw new PaymentException(PaymentException.UNSUPPORTED_BANK_PAYMENT_METHOD, "Bank payment method not supported")
             case PaiementStrategyType.MTN_MONEY:
             case PaiementStrategyType.ORANGE_MONEY:
                 paiementMethodStrategi=new MobileMoneyPaiementMethod(paiementStrategiService);

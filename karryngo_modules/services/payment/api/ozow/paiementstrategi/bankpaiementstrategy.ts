@@ -1,12 +1,12 @@
-import Configuration from "../../../../../config-files/constants";
-import { ConfigurableApp } from "../../../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService } from "../../../../../karryngo_core/decorator";
-import { ActionResult } from "../../../../../karryngo_core/utils/ActionResult";
-import { TransactionService } from "../../../../bussiness/service/entities/transactionservice";
-import { User } from "../../../usermanager/entities/User";
-import { FinancialTransaction } from "../../entities/financialtransaction";
-import { PaiementMethodEntity } from "../../entities/paiementmethodentity";
-import { PaiementMethodStrategy } from "../../interfaces/paiementmethod.interface";
+import Configuration from "../../../../../../config-files/constants";
+import { ConfigurableApp } from "../../../../../../karryngo_core/config/ConfigurableApp.interface";
+import { ConfigService } from "../../../../../../karryngo_core/decorator";
+import { ActionResult } from "../../../../../../karryngo_core/utils/ActionResult";
+import { TransactionService } from "../../../../../bussiness/service/entities/transactionservice";
+import { User } from "../../../../usermanager/entities/User";
+import { FinancialTransaction } from "../../../entities/financialtransaction";
+import { PaiementMethodEntity } from "../../../entities/paiementmethodentity";
+import { PaiementMethodStrategy } from "../../../interfaces/paiementmethod.interface";
 import { PaiementMethodStrategyService } from "./paiementmethodstrategi.service";
 
 

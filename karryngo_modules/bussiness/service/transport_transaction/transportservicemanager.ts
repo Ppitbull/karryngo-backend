@@ -11,7 +11,7 @@ import { PersistenceManager } from "../../../../karryngo_core/persistence/Persis
 import { ServiceTypeFactory } from "../utils/servicetypefactory";
 import { TransportServiceType, TransportServiceTypeState } from "../entities/transportservicetype";
 import Configuration from "../../../../config-files/constants";
-import {  ToupesuPaiementMethodFactory } from "../../../services/payment/toupesu/toupesupaiementmethodbuilder";
+import {  ToupesuPaiementMethodFactory } from "../../../services/payment/api/toupesu/toupesupaymentmethodfactory";
 import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
 import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "../../../services/payment/enums";
 import { UserManagerService } from "../../../services/usermanager/usermanager.service";
@@ -20,6 +20,7 @@ import { FinancialTransaction } from "../../../services/payment/entities/financi
 import { UserHistory } from "../../../services/historique/history";
 import { HistoryService } from "../../../services/historique/historyService";
 import { PaymentService } from "../../../services/payment/services/payment.service";
+import { PaymentBuilderService } from "../../../services/payment/builder/payment.builder";
 
 
 @Controller()
@@ -223,7 +224,7 @@ export class TransportServiceManager
                     transaction.makePaiement();
                     this.userService.findUserById(buyerID)
                     .then((result:ActionResult)=>this.paymentService.makePaiement(
-                        ToupesuPaiementMethodFactory.getMethodPaiment(paiementMethodStrategi),
+                        PaymentBuilderService.getPaiementType().getMethodPaiment(paiementMethodStrategi),
                         service,result.result[0]
                         ,paiementMethodStrategi))
                     .then((value:ActionResult)=> {
@@ -242,7 +243,8 @@ export class TransportServiceManager
                 }
                 catch(error:any)
                 {
-                    data.resultCode=ActionResult.INVALID_ARGUMENT;
+                    // data.resultCode=ActionResult.INVALID_ARGUMENT;
+                    data.resultCode=error.code
                     data.message=error.message;
                     data.result=null;
                     return Promise.reject(data);
@@ -267,8 +269,18 @@ export class TransportServiceManager
             .then((result:ActionResult)=>{
                 service=result.result;
                 let buyer:Customer=new Customer(buyerID);
+                let paymentMethod=null;
+                try {
+                    paymentMethod=PaymentBuilderService.getPaiementType().getMethodPaiment(userHistory.financialTransaction.paiementMode)
+                } catch (error) {
+                    let r=new ActionResult();
+                    r.resultCode=error.code;
+                    r.message=error.message;
+                    r.result=null;
+                    return Promise.reject(r)
+                }
                 return this.paymentService.checkPaiement(
-                    ToupesuPaiementMethodFactory.getMethodPaiment(userHistory.financialTransaction.paiementMode),
+                    paymentMethod,
                     service,
                     userHistory.financialTransaction,
                     buyer,
