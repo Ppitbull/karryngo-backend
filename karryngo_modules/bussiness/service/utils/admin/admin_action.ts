@@ -39,7 +39,7 @@ export class AdminAction {
                         .then((result: ActionResult) => {
                             response.status(200).json({
                                 resultCode: result.resultCode,
-                                message: "The user was updated successfully"
+                                message: "The user was updated successfully by you."
                             });
                         })
                         .catch((error: ActionResult) => {
