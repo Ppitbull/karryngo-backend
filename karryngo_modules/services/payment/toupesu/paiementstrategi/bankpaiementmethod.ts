@@ -1,18 +1,14 @@
-import Configuration from "../../../../config-files/constants";
-import { ConfigurableApp } from "../../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService } from "../../../../karryngo_core/decorator";
-import { KRequest } from "../../../../karryngo_core/http/client/krequest";
-import { KResponse } from "../../../../karryngo_core/http/client/kresponse";
-import { RestApi } from "../../../../karryngo_core/http/client/restapi";
-import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
-import { EntityID } from "../../../../karryngo_core/utils/EntityID";
-import { TransactionService } from "../../../bussiness/service/entities/transactionservice";
-import { User } from "../../usermanager/entities/User";
-import { FinancialTransaction } from "../entities/financialtransaction";
-import { PaiementMethodEntity } from "../entities/paiementmethodentity";
-import { FinancialTransactionErrorType, FinancialTransactionState } from "../enums";
-import { PaiementMethodStrategy } from "../paiementmethod.interface";
+import Configuration from "../../../../../config-files/constants";
+import { ConfigurableApp } from "../../../../../karryngo_core/config/ConfigurableApp.interface";
+import { ConfigService } from "../../../../../karryngo_core/decorator";
+import { ActionResult } from "../../../../../karryngo_core/utils/ActionResult";
+import { TransactionService } from "../../../../bussiness/service/entities/transactionservice";
+import { User } from "../../../usermanager/entities/User";
+import { FinancialTransaction } from "../../entities/financialtransaction";
+import { PaiementMethodEntity } from "../../entities/paiementmethodentity";
+import { PaiementMethodStrategy } from "../../interfaces/paiementmethod.interface";
 import { PaiementMethodStrategyService } from "./paiementmethodstrategi.service";
+
 
 export class BankPaiementStrategy implements PaiementMethodStrategy
 {

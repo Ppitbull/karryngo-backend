@@ -19,8 +19,8 @@ import { ProviderServiceManager } from "../provider_transport_service/providerse
 import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
 import { UserHistory } from "../../../services/historique/history";
 import { HistoryService } from "../../../services/historique/historyService";
-import { FinancialTransaction } from "../../../services/toupesu/entities/financialtransaction";
-import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType } from "../../../services/toupesu/enums";
+import { FinancialTransaction } from "../../../services/payment/entities/financialtransaction";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType } from "../../../services/payment/enums";
 import { Customer } from "../../authentification/entities/customer";
 
 

@@ -11,15 +11,15 @@ import { PersistenceManager } from "../../../../karryngo_core/persistence/Persis
 import { ServiceTypeFactory } from "../utils/servicetypefactory";
 import { TransportServiceType, TransportServiceTypeState } from "../entities/transportservicetype";
 import Configuration from "../../../../config-files/constants";
-import { ToupesuPaiement } from "../../../services/toupesu/toupesupayment.service";
-import {  ToupesuPaiementMethodFactory } from "../../../services/toupesu/toupesupaiementmethodbuilder";
+import {  ToupesuPaiementMethodFactory } from "../../../services/payment/toupesu/toupesupaiementmethodbuilder";
 import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
-import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "../../../services/toupesu/enums";
+import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "../../../services/payment/enums";
 import { UserManagerService } from "../../../services/usermanager/usermanager.service";
 import { Customer } from "../../authentification/entities/customer";
-import { FinancialTransaction } from "../../../services/toupesu/entities/financialtransaction";
+import { FinancialTransaction } from "../../../services/payment/entities/financialtransaction";
 import { UserHistory } from "../../../services/historique/history";
 import { HistoryService } from "../../../services/historique/historyService";
+import { PaymentService } from "../../../services/payment/services/payment.service";
 
 
 @Controller()
@@ -30,7 +30,7 @@ export class TransportServiceManager
 
 
     constructor(
-        private toupesuPaiement:ToupesuPaiement,
+        private paymentService:PaymentService,
         private userService:UserManagerService,
         private userHistoryService:HistoryService){
             // console.log("hiezar")
@@ -222,7 +222,7 @@ export class TransportServiceManager
                     transaction=service.transactions.find((trans:TransactionService)=>trans.id.toString()==service.idSelectedTransaction);
                     transaction.makePaiement();
                     this.userService.findUserById(buyerID)
-                    .then((result:ActionResult)=>this.toupesuPaiement.makePaiement(
+                    .then((result:ActionResult)=>this.paymentService.makePaiement(
                         ToupesuPaiementMethodFactory.getMethodPaiment(paiementMethodStrategi),
                         service,result.result[0]
                         ,paiementMethodStrategi))
@@ -267,7 +267,7 @@ export class TransportServiceManager
             .then((result:ActionResult)=>{
                 service=result.result;
                 let buyer:Customer=new Customer(buyerID);
-                return this.toupesuPaiement.checkPaiement(
+                return this.paymentService.checkPaiement(
                     ToupesuPaiementMethodFactory.getMethodPaiment(userHistory.financialTransaction.paiementMode),
                     service,
                     userHistory.financialTransaction,

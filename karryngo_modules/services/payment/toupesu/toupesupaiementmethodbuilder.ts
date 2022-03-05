@@ -1,7 +1,8 @@
-import { RestApi } from "../../../karryngo_core/http/client/restapi";
-import { InjectorContainer } from "../../../karryngo_core/lifecycle/injector_container";
-import { PaiementStrategyType } from "./enums";
-import { PaiementMethodStrategy } from "./paiementmethod.interface";
+import { RestApi } from "../../../../karryngo_core/http/client/restapi";
+import { InjectorContainer } from "../../../../karryngo_core/lifecycle/injector_container";
+import { PaiementStrategyType } from "../enums";
+import { PaiementMethodStrategy } from "../interfaces/paiementmethod.interface";
+
 import { BankPaiementStrategy } from "./paiementstrategi/bankpaiementmethod";
 import { MobileMoneyPaiementMethod } from "./paiementstrategi/mobilemoneypaiementmethod";
 import { MTNMobileMoneyPaiementMethod } from "./paiementstrategi/mtnmobilemoneypaiementmethod";

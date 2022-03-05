@@ -1,6 +1,6 @@
 import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { PaiementStrategyType } from "../enums";
-import { PaiementMethodStrategy } from "../paiementmethod.interface";
+import { PaiementMethodStrategy } from "../interfaces/paiementmethod.interface";
 
 export abstract class PaiementMethodEntity extends KarryngoPersistentEntity
 {

@@ -1,13 +1,13 @@
-import Configuration from "../../../config-files/constants";
-import { ConfigurableApp } from "../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService, DBPersistence, Service } from "../../../karryngo_core/decorator";
-import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
-import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
-import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { Customer } from "../../bussiness/authentification/entities/customer";
-import { UserManagerService } from "../usermanager/usermanager.service";
-import { PaiementMethodEntity } from "./entities/paiementmethodentity";
-import { PaiementStrategyType } from "./enums";
+import Configuration from "../../../../config-files/constants";
+import { ConfigurableApp } from "../../../../karryngo_core/config/ConfigurableApp.interface";
+import { ConfigService, DBPersistence, Service } from "../../../../karryngo_core/decorator";
+import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
+import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
+import { EntityID } from "../../../../karryngo_core/utils/EntityID";
+import { Customer } from "../../../bussiness/authentification/entities/customer";
+import { UserManagerService } from "../../usermanager/usermanager.service";
+import { PaiementMethodEntity } from "../entities/paiementmethodentity";
+import { PaiementStrategyType } from "../enums";
 
 @Service()
 export class PaiementMethodService 

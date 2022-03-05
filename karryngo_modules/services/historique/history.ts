@@ -1,7 +1,7 @@
 import { KarryngoPersistentEntity } from "../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { TransportServiceType } from "../../bussiness/service/entities/transportservicetype";
-import { FinancialTransaction } from "../toupesu/entities/financialtransaction";
+import { FinancialTransaction } from "../payment/entities/financialtransaction";
 
 export class UserHistory extends KarryngoPersistentEntity
 {

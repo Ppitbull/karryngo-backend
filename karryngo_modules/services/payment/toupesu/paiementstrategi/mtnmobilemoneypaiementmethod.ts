@@ -1,14 +1,18 @@
-import { ConfigurableApp } from "../../../../karryngo_core/config/ConfigurableApp.interface";
-import { ConfigService } from "../../../../karryngo_core/decorator";
-import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
-import { TransactionService } from "../../../bussiness/service/entities/transactionservice";
-import { User } from "../../usermanager/entities/User";
-import { FinancialTransaction } from "../entities/financialtransaction";
-import { PaiementMethodEntity } from "../entities/paiementmethodentity";
-import { PaiementMethodStrategy } from "../paiementmethod.interface";
+import Configuration from "../../../../../config-files/constants";
+import { ConfigurableApp } from "../../../../../karryngo_core/config/ConfigurableApp.interface";
+import { ConfigService } from "../../../../../karryngo_core/decorator";
+import { RestApi } from "../../../../../karryngo_core/http/client/restapi";
+import { ActionResult } from "../../../../../karryngo_core/utils/ActionResult";
+import { Customer } from "../../../../bussiness/authentification/entities/customer";
+import { TransactionService } from "../../../../bussiness/service/entities/transactionservice";
+import { User } from "../../../usermanager/entities/User";
+import { FinancialTransaction } from "../../entities/financialtransaction";
+import { PaiementMethodEntity } from "../../entities/paiementmethodentity";
+import { PaiementMethodStrategy } from "../../interfaces/paiementmethod.interface";
+
 import { PaiementMethodStrategyService } from "./paiementmethodstrategi.service";
 
-export class OrangeMobileMoneyPaiementMethod implements PaiementMethodStrategy
+export class MTNMobileMoneyPaiementMethod  implements PaiementMethodStrategy
 {
 
     @ConfigService()
@@ -20,17 +24,14 @@ export class OrangeMobileMoneyPaiementMethod implements PaiementMethodStrategy
     buy(transaction: TransactionService, buyer: User,paiementMethod:PaiementMethodEntity): Promise<ActionResult> {
         let transactionRef=FinancialTransaction.generateRef();
 
-        console.log(this.configService.getKeysList())
-
         return this.paiementMethodeStrategyService.buy(
-            this.configService.getValueOf("orangePaiementUrl"),
+            this.configService.getValueOf("paiement").mtnPaiementUrl,
             {
                 refID:transactionRef,
                 amount:transaction.price,         
                 moneyCode:paiementMethod.moneyCode,
-                product:this.configService.getValueOf("product"),
-                msidn:buyer.adresse.phone,
-                PaymentMethod: paiementMethod.type
+                product:this.configService.getValueOf("paiement").product,
+                msidn:buyer.adresse.phone
                 // cancelUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].cancelUrl,
                 // successUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].successUrl,
                 // errorUrl:this.configService.getValueOf("paiement")[Configuration.env_mode].errorUrl,
@@ -40,17 +41,16 @@ export class OrangeMobileMoneyPaiementMethod implements PaiementMethodStrategy
     
     check(financialTransaction: FinancialTransaction, buyer: User,paiementMethod:PaiementMethodEntity): Promise<ActionResult> {
         return this.paiementMethodeStrategyService.check(
-            this.configService.getValueOf("paiement").orangeCheckPaiementUrl,
+            this.configService.getValueOf("paiement").mtnCheckPaiementUrl,
             {
-                // refid:financialTransaction.ref,
-                product:this.configService.getValueOf("paiement").product,
-                pay_token:financialTransaction.token
+                refid:financialTransaction.ref,
+                product:this.configService.getValueOf("paiement").product
             }
         )
     }
     cancel(transaction: TransactionService, buyer: User,paiementMethod:PaiementMethodEntity): Promise<ActionResult> {
         return this.paiementMethodeStrategyService.cancel(
-            this.configService.getValueOf("paiement").orangeCancelPaiementUrl,
+            this.configService.getValueOf("paiement").mtnCancelPaiementUrl,
             {}
         )
     }

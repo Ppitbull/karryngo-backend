@@ -1,30 +1,28 @@
-import { DBPersistence, Service } from "../../../karryngo_core/decorator";
-import { KarryngoPersistentEntity } from "../../../karryngo_core/persistence/KarryngoPersistentEntity";
-import { PersistenceManager } from "../../../karryngo_core/persistence/PersistenceManager.interface";
-import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
-import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { Customer } from "../../bussiness/authentification/entities/customer";
-import { TransactionService } from "../../bussiness/service/entities/transactionservice";
-import { TransportServiceType } from "../../bussiness/service/entities/transportservicetype";
-import { UserHistory } from "../historique/history";
-import { HistoryService } from "../historique/historyService";
-import { FinancialTransaction } from "./entities/financialtransaction";
-import { MobilePaiementMethodEntity } from "./entities/mobilepaiementmethodentity";
-import { PaiementMethodEntity } from "./entities/paiementmethodentity";
-import { FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType, PaiementStrategyType } from "./enums";
-import { PaiementMethodStrategy } from "./paiementmethod.interface";
-import { OrangeMobileMoneyPaiementMethod } from "./paiementstrategi/orangemobilemoneypaiementmethod";
+import { Service, DBPersistence } from "../../../../karryngo_core/decorator";
+import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
+import { ActionResult } from "../../../../karryngo_core/utils/ActionResult";
+import { Customer } from "../../../bussiness/authentification/entities/customer";
+import { TransactionService } from "../../../bussiness/service/entities/transactionservice";
+import { TransportServiceType } from "../../../bussiness/service/entities/transportservicetype";
+import { UserHistory } from "../../historique/history";
+import { HistoryService } from "../../historique/historyService";
+import { FinancialTransaction } from "../entities/financialtransaction";
+import { PaiementMethodEntity } from "../entities/paiementmethodentity";
+import { PaiementStrategyType, FinancialTransactionErrorType, FinancialTransactionState, FinancialTransactionType } from "../enums";
+import { PaiementMethodStrategy } from "../interfaces/paiementmethod.interface";
 import { WalletService } from "./wallet.service";
 
+
+
 @Service()
-export class ToupesuPaiement
+export class PaymentService
 {
     @DBPersistence()
     db:PersistenceManager;
 
     constructor(protected historyService:HistoryService,protected walletService:WalletService){}
     
-    makePaiement(toupesuPaiementMethod:PaiementMethodStrategy,service:TransportServiceType,buyer:Customer,paiementMethod:PaiementStrategyType):Promise<ActionResult>
+    makePaiement(paiementMethodStrategy:PaiementMethodStrategy,service:TransportServiceType,buyer:Customer,paiementMethod:PaiementStrategyType):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let history:UserHistory; 
@@ -45,7 +43,7 @@ export class ToupesuPaiement
                 if(paiementMethodEntity)
                 {
                     transaction=service.transactions.find((transaction:TransactionService)=>transaction.id.toString()==service.idSelectedTransaction); 
-                    return toupesuPaiementMethod.buy(
+                    return paiementMethodStrategy.buy(
                         transaction,
                         buyer,
                         paiementMethodEntity

@@ -9,10 +9,10 @@ import { Request,Response } from "express";
 import { Controller } from "../../../karryngo_core/decorator";
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
-import { paiementMethodBuilder } from "../../services/toupesu/entities/paiementmethodbuilder";
-import { PaiementMethodEntity } from "../../services/toupesu/entities/paiementmethodentity";
-import { PaiementStrategyType } from "../../services/toupesu/enums";
-import { PaiementMethodService } from "../../services/toupesu/paiementmethod.service";
+import { paiementMethodBuilder } from "../../services/payment/entities/paiementmethodbuilder";
+import { PaiementMethodEntity } from "../../services/payment/entities/paiementmethodentity";
+import { PaiementStrategyType } from "../../services/payment/enums";
+import { PaiementMethodService } from "../../services/payment/services/paiementmethod.service";
 
 
 

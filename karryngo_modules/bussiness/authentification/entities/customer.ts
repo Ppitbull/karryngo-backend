@@ -6,9 +6,9 @@
 
 import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { User } from "../../../services/usermanager/entities/User";
-import { Wallet } from "../../../services/toupesu/entities/wallet";
-import { PaiementMethodEntity } from "../../../services/toupesu/entities/paiementmethodentity";
-import { paiementMethodBuilder } from "../../../services/toupesu/entities/paiementmethodbuilder";
+import { Wallet } from "../../../services/payment/entities/wallet";
+import { PaiementMethodEntity } from "../../../services/payment/entities/paiementmethodentity";
+import { paiementMethodBuilder } from "../../../services/payment/entities/paiementmethodbuilder";
 
 export class Customer extends User
 {

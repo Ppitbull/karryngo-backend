@@ -18,7 +18,7 @@ import { ProviderService } from "../entities/providerservice";
 import { Request, Response } from "express";
 import { PersistenceManager } from "../../../../karryngo_core/persistence/PersistenceManager.interface";
 import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
-import { FinancialTransactionErrorType } from "../../../services/toupesu/enums";
+import { FinancialTransactionErrorType } from "../../../services/payment/enums";
 import { UserHistory } from "../../../services/historique/history";
 import { HistoryService } from "../../../services/historique/historyService";
 

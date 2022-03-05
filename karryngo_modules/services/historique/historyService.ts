@@ -4,8 +4,8 @@ import { PersistenceManager } from "../../../karryngo_core/persistence/Persisten
 import { ActionResult } from "../../../karryngo_core/utils/ActionResult";
 import { EntityID } from "../../../karryngo_core/utils/EntityID";
 import { Customer } from "../../bussiness/authentification/entities/customer";
-import { FinancialTransaction } from "../toupesu/entities/financialtransaction";
-import { FinancialTransactionState } from "../toupesu/enums";
+import { FinancialTransaction } from "../payment/entities/financialtransaction";
+import { FinancialTransactionState } from "../payment/enums";
 import { UserManagerService } from "../usermanager/usermanager.service";
 import { UserHistory } from "./history";
 
