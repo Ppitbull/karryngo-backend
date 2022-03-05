@@ -83,7 +83,6 @@ export default class AuthRequester
         user.password=request.body.password==undefined?"":request.body.password;
         let tokens:{token?:String,refresh_token?:String}={}
 
-        //console.log(request.body);
         this.auth.login(user)
         .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,data.result.id))
         .then((data:ActionResult)=>{

@@ -235,7 +235,7 @@ export class ProviderServiceManager
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"successful vehicle recovery",
-                result:data.result[0].vehicles
+                result: data.result.length>0?data.result[0].vehicles :[]
             });
         })
         .catch((error:ActionResult)=> response.status(500).json({

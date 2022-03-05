@@ -18,7 +18,6 @@ export class RapportService
         let month = request.params.month || "all";
         let day = request.params.day || "all";
 
-
         let findQuery=[];
         if(state!="all")
         {

@@ -4,13 +4,13 @@ import { KarryngoApp } from "./karryngo_core/KarryngoApp";
 import { InjectorContainer } from "./karryngo_core/lifecycle/injector_container";
 import { ActionResult } from "./karryngo_core/utils/ActionResult";
 
-const express = require('express');
+import express from 'express';
 var cors = require('cors');
 const app = express();
 let bodyParser = require('body-parser');  //librairie qui permet de parser une chaîne en JSON
 let router=express.Router();
 const httpServer = require("http").createServer(app);
-const timeout=require("connect-timeout")
+import timeout from "connect-timeout";
 
 app.use(timeout('120s'))
 
