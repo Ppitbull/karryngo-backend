@@ -7,8 +7,8 @@
 import { KarryngoEntity } from "../KarryngoEntity";
 import { ActionResult } from "../utils/ActionResult";
 import { KarryngoPersistentEntity } from "./KarryngoPersistentEntity";
-import mongooseDB from 'mongoose';
-
+// import mongooseDB from 'mongoose';
+let mongooseDB:any  
 
 import { NoSqlPersistenceManager } from "./NoSqlPersistenceManager";
 import { DataBaseException } from "../exception/DataBaseException";
