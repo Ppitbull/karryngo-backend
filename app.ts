@@ -28,8 +28,6 @@ var port = process.env.PORT || 8090;
 
 // Send message for default URL 
 app.use(express.json())
-app.get('/', (req:any, res:any) => res.send('Hello World with Express'));
-
 //instanciation du coeur de Karryngo
 let karryngoApp = InjectorContainer.getInstance().getInstanceOf<KarryngoApp>(KarryngoApp)
 karryngoApp.init(router, httpServer, app);
@@ -38,6 +36,9 @@ app.use(((request: any, response: any, next: any) => {
 
     next();
 }));
+app.get('/', (req:any, res:any) => res.send('Hello World with Express'));
+
+
 
 
 // Launch app to listen to specified port
