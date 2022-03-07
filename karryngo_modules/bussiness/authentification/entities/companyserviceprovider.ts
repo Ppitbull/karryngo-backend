@@ -12,11 +12,6 @@ export class CompagnyServiceProvider extends CompagnyServiceRequester
     isAcceptedProvider:boolean=false;
     
 
-    hydrate(entity: any):void
-    {
-        super.hydrate(entity);
-        this.isAcceptedProvider=this.purgeAttribute(entity,"isAcceptedProvider");
-    }
 
     toString():any
     {

@@ -63,13 +63,5 @@ export class Location extends KarryngoPersistentEntity
         }
     }
 
-    hydrate(entity: any): void
-    {
-        super.hydrate(entity);
-        this.longitude=this.purgeAttribute(entity,"long");
-        this.latitude=this.purgeAttribute(entity,"lat");
-        this.name=this.purgeAttribute(entity,"name");
-        this.country=this.purgeAttribute(entity,"country");
-        this.city=this.purgeAttribute(entity,"city");
-    }
+   
 }

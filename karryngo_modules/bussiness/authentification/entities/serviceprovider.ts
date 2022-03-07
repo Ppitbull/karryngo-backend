@@ -14,8 +14,11 @@ export class ServiceProvider extends ServiceRequester
 
     hydrate(entity: any):void
     {
-        super.hydrate(entity);
-        this.isAcceptedProvider=this.purgeAttribute(entity,"isAcceptedProvider");
+        for (const key of Object.keys(entity)) {
+            if (key == "_id") this.id.setId(entity[key]);
+            else if (key == "address") this.adresse.hydrate(entity[key]);
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }
     }
     toString():any
     {

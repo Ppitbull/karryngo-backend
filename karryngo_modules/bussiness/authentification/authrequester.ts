@@ -84,7 +84,7 @@ export default class AuthRequester
         let tokens:{token?:String,refresh_token?:String}={}
 
         this.auth.login(user)
-        .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,data.result.id))
+        .then((data:ActionResult)=> this.jwtAuth.JWTRegister(user.adresse.email,data.result.id.toString()))
         .then((data:ActionResult)=>{
             tokens=data.result;
             return this.tokenAutentification.setTokens({access:tokens.token,refresh:tokens.refresh_token})

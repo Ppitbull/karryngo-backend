@@ -13,15 +13,6 @@ export class CompagnyServiceRequester extends ServiceProvider
     importExportCompagnyCode:String="";    
     companyAddress:String="";
 
-    hydrate(entity: any):void
-    {
-        super.hydrate(entity);
-        this.companyName=this.purgeAttribute(entity,"companyName");
-        this.registrationNumber=this.purgeAttribute(entity,"registrationNumber");
-        this.importExportCompagnyCode=this.purgeAttribute(entity,"importExportCompagnyCode"); 
-        this.companyAddress=this.purgeAttribute(entity,"companyAddress")       
-    }
-
     toString():any
     {
         return {

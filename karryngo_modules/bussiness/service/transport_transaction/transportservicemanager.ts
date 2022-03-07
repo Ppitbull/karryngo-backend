@@ -215,7 +215,6 @@ export class TransportServiceManager
             this.getServiceById(idService)
             .then((data:ActionResult)=>{ 
                 // on instanci le service en fonction de son champ `type`
-                
                 //on fait le paiement
                 try
                 {
@@ -243,8 +242,7 @@ export class TransportServiceManager
                 }
                 catch(error:any)
                 {
-                    // data.resultCode=ActionResult.INVALID_ARGUMENT;
-                    data.resultCode=error.code
+                    data.resultCode=ActionResult.INVALID_ARGUMENT;
                     data.message=error.message;
                     data.result=null;
                     return Promise.reject(data);

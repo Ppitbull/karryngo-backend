@@ -13,9 +13,5 @@ export class MobilePaiementMethodEntity extends PaiementMethodEntity
         }
     }
 
-    hydrate(entity:Record<string,any>):void
-    {
-        super.hydrate(entity);
-        this.number=this.purgeAttribute(entity,"number") || '';
-    }
+    
 }

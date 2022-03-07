@@ -25,19 +25,21 @@ export class Discussion extends KarryngoPersistentEntity
     }
     hydrate(entity: any): void
     {
-        super.hydrate(entity);
-        this.inter1.setId(this.purgeAttribute(entity,"inter1"));
-        this.inter2.setId(this.purgeAttribute(entity,"inter2"));
-        this.idProject.setId(this.purgeAttribute(entity,"idProject"));
-        this.read=this.purgeAttribute(entity,"read");
-        this.idTransaction.setId(this.purgeAttribute(entity,"idTransaction"))
-        this.chats=this.purgeAttribute(entity,"chats")
-            ?this.purgeAttribute(entity,"chats").map((chat:Record<string,any>)=>{
-                let disc:Message=new Message(new EntityID());
+        // console.log("id ",this.id)
+        for (const key of Object.keys(entity)) {
+            if (key == "_id") this.id.setId(entity[key]);
+            else if (key == "inter1") this.inter1.setId(entity[key]);
+            else if (key == "inter2") this.inter2.setId(entity[key]);
+            else if (key == "idProject") this.idProject.setId(entity[key]);
+            else if (key == "chats") this.chats =entity[key].map((chat: Record<string, any>) => {
+                let disc: Message = new Message(new EntityID());
                 disc.hydrate(chat);
                 return disc;
             })
-            :[];
+            else if (key == "idTransaction") this.idTransaction.setId(entity[key]);
+
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }
         
     }
 

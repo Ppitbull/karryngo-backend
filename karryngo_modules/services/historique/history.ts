@@ -10,9 +10,12 @@ export class UserHistory extends KarryngoPersistentEntity
 
     hydrate(entity:any):void
     {
-        super.hydrate(entity);
-        this.financialTransaction.hydrate(this.purgeAttribute(entity,"financialTransaction")["financialTransaction"]);
-        this.serviceTransportID.setId(this.purgeAttribute(entity,"serviceTransportID"));
+        for (const key of Object.keys(entity)) {
+            if (key == "_id") this.id.setId(entity[key]);
+            else if (key == "financialTransaction") this.financialTransaction.hydrate(entity[key]);
+            else if (key == "serviceTransportID") this.serviceTransportID.setId(entity[key]);
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }
     }
 
     toString(): Record<string,any>

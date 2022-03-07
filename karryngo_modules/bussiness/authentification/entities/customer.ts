@@ -9,6 +9,7 @@ import { User } from "../../../services/usermanager/entities/User";
 import { Wallet } from "../../../services/payment/entities/wallet";
 import { PaiementMethodEntity } from "../../../services/payment/entities/paiementmethodentity";
 import { paiementMethodBuilder } from "../../../services/payment/entities/paiementmethodbuilder";
+import { UserHistory } from "../../../services/historique/history";
 
 export class Customer extends User
 {
@@ -17,18 +18,25 @@ export class Customer extends User
     isCompany:boolean=false;
     paimentMethodList:PaiementMethodEntity[]=[]
     wallet:Wallet=new Wallet(new EntityID());
-    histories:History[]=[];
+    histories:UserHistory[]=[];
     accountType:String = "";
 
     hydrate(entity:any):void
     {
-        super.hydrate(entity);
-        this.isProvider=this.purgeAttribute(entity,"isProvider")
-        this.passportNumber=this.purgeAttribute(entity,"passportNumber");
-        this.isCompany=this.purgeAttribute(entity,"isCompany");
-        this.wallet.hydrate(this.purgeAttribute(entity,"wallet"));
-        this.paimentMethodList=this.purgeAttribute(entity,"paimentMethodList")?this.purgeAttribute(entity,"paimentMethodList").map((paiementMethod:Record<string,any>)=> paiementMethodBuilder(paiementMethod)):[];
-        this.accountType = this.purgeAttribute(entity, "accountType") ? this.purgeAttribute(entity, "accountType") : ""
+        for (const key of Object.keys(entity)) {
+            
+
+            if (key == "_id") this.id.setId(entity[key]);
+            else if (key == "wallet") this.wallet.hydrate(entity[key]);
+            else if (key == "address") this.adresse.hydrate(entity[key]);
+            else if (key == "paimentMethodList") this.paimentMethodList=entity[key].map((paiementMethod: Record<string, any>) => paiementMethodBuilder(paiementMethod))
+            else if (key == "histories") this.histories = entity[key].map((history: Record<string, any>) => {
+                let histo=new UserHistory();
+                histo.hydrate(history)
+                return histo;
+            })
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }
     }
     toString():any
     {

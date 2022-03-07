@@ -81,6 +81,7 @@ export class UserManagerService
      */
     findUserById(id:EntityID):Promise<ActionResult>
     {
+        console.log("idUser ",id)
         return new Promise<ActionResult>((resolve,reject)=>
         {
             this.db.findInCollection(Configuration.collections.user,{"_id":id.toString()})
@@ -139,6 +140,8 @@ export class UserManagerService
                     return p;
                 });
                 resolve(action);
+                console.log("Show perseon ", action)
+
             })
             .catch((error:ActionResult)=>reject(error));
         })

@@ -25,17 +25,7 @@ export class Vehicle extends KarryngoPersistentEntity
         super(id);
     }
 
-    hydrate(entity:any):void
-    {
-        super.hydrate(entity);
-        this.type=this.purgeAttribute(entity,"type");
-        this.name=this.purgeAttribute(entity,"name");
-        this.marque=this.purgeAttribute(entity,"marque");
-        
-        this.photo=this.photo=this.purgeAttribute(entity,"photo");   
-        this.placeNumbler=this.purgeAttribute(entity,"placeNumbler");
-        this.description=this.purgeAttribute(entity,"description");        
-    }
+  
 
     /**
      * @inheritdoc

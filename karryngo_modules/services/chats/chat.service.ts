@@ -35,7 +35,7 @@ export class ChatService
                 {"chats":false}
             ).then((result:ActionResult)=>
             {
-                let disc:Discussion=new Discussion(result.result[0]._id);
+                let disc:Discussion=new Discussion();
                 disc.hydrate(result.result[0]);
                 result.result=disc;
                 resolve(result);

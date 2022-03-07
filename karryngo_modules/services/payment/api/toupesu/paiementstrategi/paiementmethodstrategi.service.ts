@@ -14,7 +14,6 @@ export class PaiementMethodStrategyService
     
     buy(url:string,data:Record<string,any>):Promise<ActionResult>
     {
-        console.log("Data ",data)
         return new Promise<ActionResult>((resolve,reject)=>{
             let transactionRef=FinancialTransaction.generateRef();
             this.restapi.sendRequest(
@@ -25,7 +24,6 @@ export class PaiementMethodStrategyService
                 .data(data)              
             ).then((result:ActionResult)=>{
                 let response:KResponse=result.result
-                console.log("result paiement ",response)
                 if(response.getData().success==true)
                 {
                     result.result={                      

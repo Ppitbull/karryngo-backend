@@ -31,13 +31,12 @@ export class Message extends KarryngoPersistentEntity
 
     hydrate(entity: any): void
     {
-        super.hydrate(entity);
-        this.from.setId(this.purgeAttribute(entity,"from"));
-        this.to.setId(this.purgeAttribute(entity,"to"));
-        this.date=this.purgeAttribute(entity,"date");
-        this.title=this.purgeAttribute(entity,"title");
-        this.content=this.purgeAttribute(entity,"content");
-        this.read=this.purgeAttribute(entity,"read");
+        for (const key of Object.keys(entity)) {
+            if (key == "_id") this.id.setId(entity[key]);
+            else if (key == "from") this.from.setId(entity[key]);
+            else if (key == "to") this.to.setId(entity[key]);
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }
     }
 
 

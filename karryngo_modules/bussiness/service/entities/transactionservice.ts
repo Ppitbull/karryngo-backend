@@ -139,18 +139,7 @@ export class TransactionService extends KarryngoPersistentEntity
         this.state=TransactionServiceState.SERVICE_END;
     }
 
-    /**
-     * 
-     * @inheritdoc
-     */
-    hydrate(entity:any):void
-    {
-        super.hydrate(entity);
-        this.state=this.purgeAttribute(entity,"state");
-        this.idProvider=this.purgeAttribute(entity,"idProvider");
-        this.idRequester=this.purgeAttribute(entity,"idRequester");
-        this.price=this.purgeAttribute(entity,"price");
-    }
+ 
 
     /**
      * 

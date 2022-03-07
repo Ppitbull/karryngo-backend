@@ -70,11 +70,10 @@ export class User extends KarryngoPersistentEntity
      */
     hydrate(entity: any): void {
         //console.log("entite ",entity)
-        super.hydrate(entity);
-        this.firstname=this.purgeAttribute(entity,"firstname");
-        this.lastname=this.purgeAttribute(entity,"lastname");
-        this.password=this.purgeAttribute(entity,"password");
-        if(entity.address) this.adresse.hydrate(entity.address);
-        this.username=this.purgeAttribute(entity,"username");
+        for (const key of Object.keys(entity)) {
+            if (key == "_id") this.id.setId(entity[key]);
+            else if (key == "address") this.adresse.hydrate(entity[key]);
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }
     }   
 }

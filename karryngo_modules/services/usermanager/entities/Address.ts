@@ -45,20 +45,5 @@ export class Address extends KarryngoPersistentEntity
         };
     }
 
-    /**
-     * @inheritdoc
-     */
-    hydrate(entity: any): void
-    {
-        super.hydrate(entity);
-        this.email=this.purgeAttribute(entity,"email");
-        this.mobilePhone=this.purgeAttribute(entity,"mobilePhone");
-        this.phone=this.purgeAttribute(entity,"phone");
-        this.websiteLink=this.purgeAttribute(entity,"websiteLink");
-        this.whatsAppNumber=this.purgeAttribute(entity,"whatsAppNumber");
-        this.skypeNumber=this.purgeAttribute(entity,"skypeNumber");
-        this.zip=this.purgeAttribute(entity,"zip");
-        this.country=this.purgeAttribute(entity,"country");
-        this.city=this.purgeAttribute(entity,"city");
-    }
+    
 }

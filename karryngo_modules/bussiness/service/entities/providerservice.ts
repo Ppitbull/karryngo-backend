@@ -32,28 +32,26 @@ export class ProviderService extends KarryngoPersistentEntity
     }
     hydrate(entity:Record<string, any>):void
     {
-        super.hydrate(entity);
-        this.title=this.purgeAttribute(entity,"title");
-        this.name=this.purgeAttribute(entity,"name");
-        this.description=this.purgeAttribute(entity,"description");
-        let idP:EntityID=new EntityID();
-        idP.setId(this.purgeAttribute(entity,"providerId"));
-        this.idProvider=idP;
-        this.deservedZone=this.purgeAttribute(entity,"zones").map((zone:Record<string, any>)=>{
-            let local:Location=new Location();
-            local.hydrate(zone);
-            return local;
-        });
-        this.listVehicle=this.purgeAttribute(entity,"vehicles").map((vehicle:Record<string, any>)=>{
-            let v:Vehicle=new Vehicle();
-            v.hydrate(vehicle);
-            return v;
-        })
-        this.documents=this.purgeAttribute(entity,"documents");
-        this.addressForVerification=this.purgeAttribute(entity,"addressForVerification").map((add:Record<string, any>)=>{
-            let addr:Address=new Address();
-            addr.hydrate(add);
-            return addr;
-        })
+
+        for (const key of Object.keys(entity)) {
+            if (key == "_id") this.id.setId(entity[key]);
+            else if (key == "providerId") this.idProvider.setId(entity[key]);
+            else if (key == "zones") this.deservedZone = entity[key].map((zone: Record<string, any>) => {
+                let local: Location = new Location();
+                local.hydrate(zone);
+                return local;
+            });
+            else if (key == "vehicles") this.listVehicle = entity[key].map((vehicle: Record<string, any>) => {
+                let v: Vehicle = new Vehicle();
+                v.hydrate(vehicle);
+                return v;
+            })
+            else if (key == "addressForVerification") this.addressForVerification = entity[key].map((add: Record<string, any>) => {
+                let addr: Address = new Address();
+                addr.hydrate(add);
+                return addr;
+            })
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }        
     }
 }

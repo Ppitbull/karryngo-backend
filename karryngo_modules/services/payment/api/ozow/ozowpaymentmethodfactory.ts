@@ -8,7 +8,7 @@ import { BankPaiementStrategy } from "./paiementstrategi/bankpaiementstrategy";
 import { PaiementMethodStrategyService } from "./paiementstrategi/paiementmethodstrategi.service";
 
 
-export class ToupesuPaiementMethodFactory
+export class OzowPaiementMethodFactory
 {
     getMethodPaiment(method:PaiementStrategyType):PaiementMethodStrategy
     {

@@ -66,7 +66,7 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
      */
     hydrate(entity:any):void
     {
-        super.hydrate(entity);
+        this._id=this.purgeAttribute(entity,'_id')
         let options=this.purgeAttribute(entity,"options");
         this.is_urgent=this.purgeAttribute(options,"is_urgent");
         this.description=this.purgeAttribute(entity,"description");
@@ -108,7 +108,7 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
         if(entity.transactions)
         {
             this.transactions=entity.transactions.map((trans:Record<string,any>)=>{
-                let transaction=new TransactionService(trans._id);
+                let transaction=new TransactionService(trans.id);
                 transaction.hydrate(trans);
                 return transaction;
             })

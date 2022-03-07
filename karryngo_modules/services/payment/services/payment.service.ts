@@ -38,7 +38,6 @@ export class PaymentService
                     return Promise.reject(result)
                 }
                 history=result.result[0];
-                console.log(buyer.paimentMethodList,paiementMethod)
                 paiementMethodEntity=buyer.paimentMethodList.find((p:PaiementMethodEntity)=>p.type==paiementMethod)
                 if(paiementMethodEntity)
                 {

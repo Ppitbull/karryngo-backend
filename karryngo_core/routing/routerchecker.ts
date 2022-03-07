@@ -59,6 +59,7 @@ export class RouterChecker extends KarryngoApplicationEntity
                 this.checkApiAccess(token)
                 .then((data:ActionResult)=>
                 {
+                    console.log("decoded ",JSON.parse(data.result.data))
                     req.decoded=JSON.parse(data.result.data);   
                     next();
                 })

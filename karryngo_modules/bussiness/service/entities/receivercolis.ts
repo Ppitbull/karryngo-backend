@@ -9,17 +9,6 @@ export class ReceiverColis extends KarryngoPersistentEntity
     /**
      * @inheritdoc
      */
-    hydrate(entity:any):void
-    {
-        super.hydrate(entity);
-        this.name=this.purgeAttribute(entity,"name");
-        this.contact=this.purgeAttribute(entity,"contact");
-        this.parttypesupplied=this.purgeAttribute(entity,"parttypesupplied");
-    }
-
-    /**
-     * @inheritdoc
-     */
     toString():any
     {
         return {

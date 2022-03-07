@@ -31,19 +31,7 @@ export class FinancialTransaction extends KarryngoPersistentEntity
         }
     }
 
-    hydrate(entity:Record<string,any>):void
-    {
-        this.state=this.purgeAttribute(entity,"state");
-        this.startDate=this.purgeAttribute(entity,"startDate");
-        this.endDate=this.purgeAttribute(entity,"endDate");
-        this.amount=this.purgeAttribute(entity,"amount");
-        this.type=this.purgeAttribute(entity,"type");
-        this.ref=parseInt(this.purgeAttribute(entity,"ref") || "0");
-        this.urlToRedirect=this.purgeAttribute(entity,"urlToRedirect");
-        this.token=this.purgeAttribute(entity,"token");
-        this.error=this.purgeAttribute(entity,"error");
-        this.paiementMode=this.purgeAttribute(entity,"paiementMode");
-    }
+    
 
     static generateRef():string
     {

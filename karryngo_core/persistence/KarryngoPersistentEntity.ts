@@ -8,7 +8,7 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
      * @description identifiant d'une entité
      * @type EntityID
      */
-    public _id:EntityID;
+    public _id:EntityID=new EntityID();
 
     
     constructor(id:EntityID=new EntityID())
@@ -38,8 +38,11 @@ export abstract class KarryngoPersistentEntity extends KarryngoEntity
      */
     hydrate(entity:any):void
     {
-        //console.log("Entity ",entity._id)
-        if(entity && entity._id) this.id=this.purgeAttribute(entity,"_id");
+        // console.log("id ",entity)
+        for (const key of Object.keys(entity)) {
+            if (key == "_id") this._id.setId(entity[key]);
+            else if (Reflect.has(this, key)) Reflect.set(this, key, entity[key]);
+        }
         
     }
 

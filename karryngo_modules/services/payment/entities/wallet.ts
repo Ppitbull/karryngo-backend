@@ -4,12 +4,7 @@ export class Wallet extends KarryngoPersistentEntity
 {
     amount:number=0;
 
-    hydrate(entity:Record<string,any>)
-    {
-        if(entity==null || entity==undefined) return;
-        super.hydrate(entity);
-        this.amount=this.purgeAttribute(entity,"amount");
-    }
+    
 
     toString():Record<string,any>
     {
