@@ -8,13 +8,10 @@ import { MongoDBManager } from '../persistence/MongoDBManager';
 import { MongooseDBManager } from '../persistence/MongooseDBManager';
 import { ActionResult } from '../utils/ActionResult';
 import { DynamicLoader } from '../utils/DynamicLoader';
-import mongooseDB from 'mongoose';
+
 
 var chai=require('chai');
-function createCollection(collectionName:String)
-{
-    mongooseDB.model(collectionName.toString());
-}
+
 describe('Test du service de Persistance',()=>
 {
     let jsonConfigFactory=new KarryngoConfigurationServiceFactory();
