@@ -222,7 +222,6 @@ export class ServiceManager
         let serviceID=new EntityID();
         serviceID.setId(request.body.idService);
         let currentUserId:EntityID = new EntityID();
-        console.log("request id ",request.decoded.id)
         currentUserId.setId(request.decoded.id);
         let idTransaction:EntityID=new EntityID();
         let history:UserHistory;

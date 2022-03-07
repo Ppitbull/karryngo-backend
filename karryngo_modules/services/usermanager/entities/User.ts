@@ -8,6 +8,7 @@ import { KarryngoEntity } from "../../../../karryngo_core/KarryngoEntity";
 import { KarryngoPersistentEntity } from "../../../../karryngo_core/persistence/KarryngoPersistentEntity";
 import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { Location } from "../../geolocalisation/entities/location";
+import { AccountType } from "./account-type.enum";
 import { Address } from "./Address";
 
 export class User extends KarryngoPersistentEntity
@@ -38,6 +39,8 @@ export class User extends KarryngoPersistentEntity
 
 
     public username:String="";
+    
+    public accountType:AccountType=AccountType.UNKNOW_ACCOUNT
 
 
     constructor(_id:EntityID=new EntityID(),fname:String="",lname:String="",username:String="",pwd:String="",add:Address=new Address())

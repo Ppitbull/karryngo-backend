@@ -6,6 +6,7 @@ import { PersistenceManager } from "../../../../../karryngo_core/persistence/Per
 import { ActionResult } from "../../../../../karryngo_core/utils/ActionResult";
 import { User } from '../../../../services/usermanager/entities/User';
 import { EntityID } from '../../../../../karryngo_core/utils/EntityID';
+import { AccountType } from '../../../../services/usermanager/entities/account-type.enum';
 
 @Controller()
 export class AdminAction {
@@ -25,7 +26,10 @@ export class AdminAction {
             .then((data: ActionResult) => {
                 accountType = data.result[0].accountType
 
-                if (accountType == "Admin") {
+                if (    accountType == AccountType.MANAGER_ACCOUNT || 
+                    accountType == AccountType.SUPER_ADMIN_ACCOUNT || 
+                    accountType==AccountType.CUSTOMER_ACCOUNT
+                ) {
                     let email = request.body.email;
 
                     this.userManagerService.findUserByEmail(email)

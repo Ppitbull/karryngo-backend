@@ -10,6 +10,7 @@ import { Wallet } from "../../../services/payment/entities/wallet";
 import { PaiementMethodEntity } from "../../../services/payment/entities/paiementmethodentity";
 import { paiementMethodBuilder } from "../../../services/payment/entities/paiementmethodbuilder";
 import { UserHistory } from "../../../services/historique/history";
+import { AccountType } from "../../../services/usermanager/entities/account-type.enum";
 
 export class Customer extends User
 {
@@ -19,8 +20,7 @@ export class Customer extends User
     paimentMethodList:PaiementMethodEntity[]=[]
     wallet:Wallet=new Wallet(new EntityID());
     histories:UserHistory[]=[];
-    accountType:String = "";
-
+    public accountType: AccountType=AccountType.CUSTOMER_ACCOUNT;
     hydrate(entity:any):void
     {
         for (const key of Object.keys(entity)) {
