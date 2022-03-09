@@ -18,6 +18,7 @@ app.use(cors())
 
 //ceci permet de gérer les tailles des json en entrée très grand
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.use(bodyParser.json({limit: '50mb'}));
 
 
 //utilisation du router

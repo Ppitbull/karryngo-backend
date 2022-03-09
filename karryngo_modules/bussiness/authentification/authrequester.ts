@@ -38,8 +38,11 @@ export default class AuthRequester
     }
     register(request:Request,response:Response):void
     {
+        
         let user=new Customer();
         user.hydrate(request.body)
+        user.adresse.hydrate(request.body.adress)
+        console.log(user)
         this.userManagerService.findUserByEmail(user.adresse.email)
             .then((data:ActionResult)=> 
             {
@@ -78,6 +81,7 @@ export default class AuthRequester
 
     login(request:Request,response:any):void
     {
+        console.log(request.body)
         let user:Customer=new Customer();
         user.adresse.email=request.body.email==undefined?"":request.body.email;
         user.password=request.body.password==undefined?"":request.body.password;

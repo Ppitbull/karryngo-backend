@@ -15,7 +15,7 @@ var Configuration=
         'chat':'Chats',
         'tokens':"Tokens"
     },
-    'env_mode':"dev_mode"
-    //  'env_mode':"prod_mode"
+    // 'env_mode':"dev_mode"
+     'env_mode':"prod_mode"
 };
 export default Configuration;
