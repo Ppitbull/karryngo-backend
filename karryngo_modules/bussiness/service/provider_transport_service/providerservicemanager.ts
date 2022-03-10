@@ -183,7 +183,8 @@ export class ProviderServiceManager
 
     getService(request:any,response:any):void
     {
-        let idProviderService=request.body.idProviderService;
+        let idProviderService=request.params.idProviderService;
+        console.log(request.params.idProviderService)
         this.db.findInCollection(Configuration.collections.provider,{"providerId":idProviderService})
         .then((data:ActionResult)=>
         {
