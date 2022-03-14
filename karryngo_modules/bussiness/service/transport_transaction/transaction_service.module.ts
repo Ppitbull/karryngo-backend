@@ -15,7 +15,7 @@ import { ServiceManager } from "./servicemanager";
         ]
     },
     {
-        "url":"/api/requester/service/update_paiement/",
+        "url":"/api/requester/service/update_paiement",
         "module" :ServiceManager,
         "actions":[
             {

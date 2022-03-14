@@ -282,7 +282,8 @@ export class ProviderServiceManager
     }
 
     findServiceProviderByZone(request:any,response:any):void{
-        // console.log("request", request.body)
+        console.log("request", request.body.start)
+        console.log("request", request.body.end)
         let startZone:Location=new Location();
         startZone.hydrate(request.body.start);
 

@@ -138,6 +138,7 @@ export class ServiceManager
 
     acceptPrice(request:any,response:any):void
     {
+        console.log("data body ", request.body)
         let idTransaction:EntityID=new EntityID();
         idTransaction.setId(request.body.idTransaction);
         // console.log("data body ", request.body)
@@ -152,7 +153,7 @@ export class ServiceManager
         ).then((result:ActionResult)=>this.chatService.findDisccussByTransactionID(idTransaction))
         .then((data:ActionResult)=>{
             let message:Message=this.notifyUser(data.result,currentUserId,idTransaction,"the price has been accepted")
-            return this.chatService.send(message,data.result.id.toString())            
+            return this.chatService.send(message,data.result.id.toString())
         })
         .then((data:ActionResult)=>{
             response.status(200).json({
@@ -218,7 +219,7 @@ export class ServiceManager
 
     makePaiement(request:any,response:any):void
     {
-
+        // console.log(request.body)
         let serviceID=new EntityID();
         serviceID.setId(request.body.idService);
         let currentUserId:EntityID = new EntityID();
@@ -370,6 +371,7 @@ export class ServiceManager
 
     updatePrice(request:any,response:any):void
     {
+        console.log(request.body)
         let idTransaction:EntityID = new EntityID();
         idTransaction.setId(request.body.idTransaction);
 
@@ -399,7 +401,9 @@ export class ServiceManager
         .then((result:ActionResult)=>{
             discuss=result.result;
 
-            let message:Message=this.notifyUser(discuss,currentUserId,idTransaction,"you have been selected to carry out this project")
+            // The following line is commented by Landry. I just wnat to change the content of the message sent
+            // let message:Message=this.notifyUser(discuss,currentUserId,idTransaction,"you have been selected to carry out this project")
+            let message:Message=this.notifyUser(discuss,currentUserId,idTransaction,"The price of this project has been updated")
            
             //on le sauvegarde comme non lu dans la bd
             return this.chatService.send(message,discuss.id.toString())

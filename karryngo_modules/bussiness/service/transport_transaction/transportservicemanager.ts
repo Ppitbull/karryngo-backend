@@ -67,7 +67,13 @@ export class TransportServiceManager
             //on essaie car les methodes de l'objet de transaction lance des exceptions celon des cas
             try{
                 //on accepte le pix
-                transaction.acceptPrice(transportService.suggestedPrice);
+                let e = transaction.acceptPrice(transportService.suggestedPrice);
+                console.log(e)
+                if (e==1) {
+                    data.result=null;
+                    data.message="la transaction doit être dans son état initial";
+                    return Promise.reject(data);
+                }
                 //on met a jour la bd
                 return this.db.updateInCollection(
                     Configuration.collections.requestservice,
@@ -218,9 +224,19 @@ export class TransportServiceManager
                 //on fait le paiement
                 try
                 {
+                    // console.log(data.result.TransactionService.price)
+                    // console.log("-------------------")
                     let service:TransportServiceType=data.result;
                     transaction=service.transactions.find((trans:TransactionService)=>trans.id.toString()==service.idSelectedTransaction);
-                    transaction.makePaiement();
+                    // console.log(transaction)
+                    let pay = {
+                                  "refID": transaction._id,
+                                  "amount": transaction.price,
+                                  "msidn": "+237675835953",
+                                  "moneyCode": "XAF",
+                                  "product": "Toupesu"
+                                }
+                    transaction.makePaiement(pay);
                     this.userService.findUserById(buyerID)
                     .then((result:ActionResult)=>this.paymentService.makePaiement(
                         PaymentBuilderService.getPaiementType().getMethodPaiment(paiementMethodStrategi),
@@ -336,7 +352,7 @@ export class TransportServiceManager
                         });
                  } catch (error) {
                     result.resultCode=ActionResult.INVALID_ARGUMENT;
-                    result.message=error.getMessage();
+                    result.message=error._description;
                     result.result=null;
                     return Promise.reject(result);
                  }
@@ -367,7 +383,7 @@ export class TransportServiceManager
                         });
                  } catch (error) {
                     result.resultCode=ActionResult.INVALID_ARGUMENT;
-                    result.message=error.getMessage();
+                    result.message=error._description;
                     result.result=null;
                     return Promise.reject(result);
                  }

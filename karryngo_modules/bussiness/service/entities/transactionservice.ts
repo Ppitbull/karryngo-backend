@@ -69,7 +69,8 @@ export class TransactionService extends KarryngoPersistentEntity
     acceptPrice(price:String)
     {
         if(this.state!=TransactionServiceState.INIT) 
-            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_INIT_STATE_ERROR,"la transaction doit être dans son état initial")
+            return 1;
+            // throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_INIT_STATE_ERROR,"la transaction doit être dans son état initial")
         
         let p=parseInt(price.toString());
         if(p<0)
@@ -77,13 +78,48 @@ export class TransactionService extends KarryngoPersistentEntity
         this.price=price;
         this.state=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT;
     }
-    makePaiement()
+    makePaiement(pay)
     {
         if(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT)
         {
-            throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR,
-                "Cannot make paiement in that step of transaction")
+            // throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR,
+            //     "Cannot make paiement in that step of transaction")
         }
+
+        const https = require('https');
+        const data = JSON.stringify(pay)
+
+        const options = {
+        hostname: 'whatever.com',
+        port: 443,
+        path: 'https://api.toupesu.com/livepaygateway2/api/main/reqPayment',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Content-Length': data.length
+            }
+        }
+
+        const req = https.request(options, res => {
+        console.log(`statusCode: ${res.statusCode}`)
+
+        res.on('data', d => {
+            process.stdout.write(d)
+            })
+        })
+        req.on('error', error => {
+          console.error("error", error)
+        })
+
+
+
+
+
+
+
+
+
+
             //on fait le paiemement. ici cela consite a retirer les fonds 
             //du compte bancaire|carte de crédit|compte paypal|... du client vers le compte bancaire de la plateforme
         this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START;
@@ -92,10 +128,11 @@ export class TransactionService extends KarryngoPersistentEntity
 
     startService()
     {
-        if(this.state!=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START)
+        if((this.state!=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START)&&(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT))
         {
             throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_START_STATE_ERROR,
-                "Cannot start service in that step of transaction")
+                "Cannot start service in that step of transaction or This service may have already been started")
+                // return {"status": 0, "state": this.state, "message": "This service has already been started. The status of this service should be service_paiement_done_and_waiting_start"}
         }
         this.state=TransactionServiceState.SERVICE_RUNNING;
     }
@@ -105,7 +142,7 @@ export class TransactionService extends KarryngoPersistentEntity
         if(this.state!=TransactionServiceState.SERVICE_RUNNING)
         {
             throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_RUNNIG_STATE_ERROR,
-                "Cannot done service in that step of transaction")
+                "Cannot end service in that step of transaction. This Service may have not been started or may have already been ended.")
         }
         this.state=TransactionServiceState.SERVICE_DONE_AND_WAIT_PROVIDER_PAIEMENT;
     }
