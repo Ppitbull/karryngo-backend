@@ -12,6 +12,27 @@ let router=express.Router();
 const httpServer = require("http").createServer(app);
 var timeout = require('connect-timeout')
 
+
+// By Landry
+const io = require('socket.io')(httpServer, {
+	cors: {
+		origins: ['http://localhost:4200']
+	}
+});
+//By Landry
+io.on('connection', (socket) => {
+	console.log('a user connected');
+	socket.on('disconnect', () => {
+		console.log('user disconnected');
+	});
+	socket.on('my message', (msg) => {
+		console.log('message: ' + msg['a']);
+		io.emit('my broadcast', {"server": msg});
+	});
+});
+////////////
+// ENd By landry
+
 app.use(timeout('120s'))
 
 app.use(cors())
@@ -46,3 +67,7 @@ app.get('/', (req:any, res:any) => res.send('Hello World with Express'));
 httpServer.listen(port, function () {
     console.log("Running Karryngo on port " + port);
 });
+
+
+
+

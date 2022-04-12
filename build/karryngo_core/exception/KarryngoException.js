@@ -35,4 +35,3 @@ class KarryngoException extends Error {
     }
 }
 exports.KarryngoException = KarryngoException;
-//# sourceMappingURL=KarryngoException.js.map

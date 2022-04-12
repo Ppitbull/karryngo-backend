@@ -8,6 +8,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = void 0;
 const KarryngoPersistentEntity_1 = require("../../../../karryngo_core/persistence/KarryngoPersistentEntity");
 const EntityID_1 = require("../../../../karryngo_core/utils/EntityID");
+const account_type_enum_1 = require("./account-type.enum");
 const Address_1 = require("./Address");
 class User extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
     constructor(_id = new EntityID_1.EntityID(), fname = "", lname = "", username = "", pwd = "", add = new Address_1.Address()) {
@@ -28,6 +29,7 @@ class User extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
          */
         this.password = "";
         this.username = "";
+        this.accountType = account_type_enum_1.AccountType.UNKNOW_ACCOUNT;
         this.firstname = fname;
         this.lastname = lname;
         this.password = pwd;
@@ -39,28 +41,21 @@ class User extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
      */
     toString() {
         // console.log("Adress",this.adresse.toString())
-        return {
-            ...super.toString(),
-            "firstname": this.firstname,
-            "lastname": this.lastname,
-            "password": this.password,
-            "username": this.username,
-            "address": this.adresse.toString(),
-        };
+        return Object.assign(Object.assign({}, super.toString()), { "firstname": this.firstname, "lastname": this.lastname, "password": this.password, "username": this.username, "address": this.adresse.toString() });
     }
     /**
      * @inheritdoc
      */
     hydrate(entity) {
         //console.log("entite ",entity)
-        super.hydrate(entity);
-        this.firstname = this.purgeAttribute(entity, "firstname");
-        this.lastname = this.purgeAttribute(entity, "lastname");
-        this.password = this.purgeAttribute(entity, "password");
-        if (entity.address)
-            this.adresse.hydrate(entity.address);
-        this.username = this.purgeAttribute(entity, "username");
+        for (const key of Object.keys(entity)) {
+            if (key == "_id")
+                this.id.setId(entity[key]);
+            else if (key == "address")
+                this.adresse.hydrate(entity[key]);
+            else if (Reflect.has(this, key))
+                Reflect.set(this, key, entity[key]);
+        }
     }
 }
 exports.User = User;
-//# sourceMappingURL=User.js.map

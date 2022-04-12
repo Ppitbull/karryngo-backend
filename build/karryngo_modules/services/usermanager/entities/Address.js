@@ -29,34 +29,7 @@ class Address extends KarryngoPersistentEntity_1.KarryngoPersistentEntity {
      * @inheritdoc
      */
     toString() {
-        return {
-            ...super.toString(),
-            email: this.email,
-            mobilePhone: this.mobilePhone,
-            phone: this.phone,
-            websiteLink: this.websiteLink,
-            whatsAppNumber: this.whatsAppNumber,
-            skypeNumber: this.skypeNumber,
-            zip: this.zip,
-            country: this.country,
-            city: this.city,
-        };
-    }
-    /**
-     * @inheritdoc
-     */
-    hydrate(entity) {
-        super.hydrate(entity);
-        this.email = this.purgeAttribute(entity, "email");
-        this.mobilePhone = this.purgeAttribute(entity, "mobilePhone");
-        this.phone = this.purgeAttribute(entity, "phone");
-        this.websiteLink = this.purgeAttribute(entity, "websiteLink");
-        this.whatsAppNumber = this.purgeAttribute(entity, "whatsAppNumber");
-        this.skypeNumber = this.purgeAttribute(entity, "skypeNumber");
-        this.zip = this.purgeAttribute(entity, "zip");
-        this.country = this.purgeAttribute(entity, "country");
-        this.city = this.purgeAttribute(entity, "city");
+        return Object.assign(Object.assign({}, super.toString()), { email: this.email, mobilePhone: this.mobilePhone, phone: this.phone, websiteLink: this.websiteLink, whatsAppNumber: this.whatsAppNumber, skypeNumber: this.skypeNumber, zip: this.zip, country: this.country, city: this.city });
     }
 }
 exports.Address = Address;
-//# sourceMappingURL=Address.js.map

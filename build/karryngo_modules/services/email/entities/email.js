@@ -6,7 +6,7 @@ class Email {
         this.sender = "";
         this.receiver = "";
         this.otherReceiver = [];
-        this.text = "";
+        this.text = " ";
         this.file = "";
         this.html = "";
         this.subject = "";
@@ -52,4 +52,3 @@ class Email {
     }
 }
 exports.Email = Email;
-//# sourceMappingURL=email.js.map

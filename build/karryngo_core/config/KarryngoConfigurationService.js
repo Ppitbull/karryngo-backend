@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -196,7 +200,7 @@ class KarryngoConfigurationService extends KarryngoApplicationEntity_1.KarryngoA
                 if ((obj[elmt].constructor == ({}).constructor) && ((obj[elmt].hasOwnProperty('parse') && !obj[elmt].parse))) {
                     let notParseObj = {};
                     notParseObj[elmt] = obj[elmt];
-                    let notParseObjCopy = { ...notParseObj };
+                    let notParseObjCopy = Object.assign({}, notParseObj);
                     if (obj[elmt].hasOwnProperty("url")) {
                         file = obj[elmt]['url'];
                         delete notParseObjCopy[elmt]['url'];
@@ -205,7 +209,7 @@ class KarryngoConfigurationService extends KarryngoApplicationEntity_1.KarryngoA
                         if (tab instanceof Array)
                             notParseObjCopy[elmt] = [...tab];
                         else
-                            notParseObjCopy[elmt] = { ...notParseObjCopy[elmt], ...tab };
+                            notParseObjCopy[elmt] = Object.assign(Object.assign({}, notParseObjCopy[elmt]), tab);
                     }
                     this.configObject.push({
                         url: file,
@@ -299,4 +303,3 @@ class KarryngoConfigurationService extends KarryngoApplicationEntity_1.KarryngoA
     }
 }
 exports.KarryngoConfigurationService = KarryngoConfigurationService;
-//# sourceMappingURL=KarryngoConfigurationService.js.map

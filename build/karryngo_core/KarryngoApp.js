@@ -89,7 +89,6 @@ let KarryngoApp = class KarryngoApp extends KarryngoApplicationEntity_1.Karryngo
     }
 };
 KarryngoApp = __decorate([
-    decorator_1.KarryngoCore()
+    (0, decorator_1.KarryngoCore)()
 ], KarryngoApp);
 exports.KarryngoApp = KarryngoApp;
-//# sourceMappingURL=KarryngoApp.js.map

@@ -7,15 +7,16 @@ var Configuration = {
     'path_for_module': "./karryngo_module",
     'path_for_bussiness_module': "./karryngo_modules/bussiness",
     'path_for_bussiness_service': "./karryngo_modules/services",
+    'api_for_payement': 'none',
     'collections': {
         'notification': 'Notifications',
         'user': 'Users',
         'provider': 'ProviderService',
         'requestservice': 'RequestService',
-        'chat': 'Chats'
+        'chat': 'Chats',
+        'tokens': "Tokens"
     },
-    'env_mode': "dev_mode"
-    //'env_mode':"prod_mode"
+    // 'env_mode':"dev_mode"
+    'env_mode': "prod_mode"
 };
 exports.default = Configuration;
-//# sourceMappingURL=constants.js.map

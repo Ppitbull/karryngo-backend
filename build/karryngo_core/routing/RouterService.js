@@ -94,4 +94,3 @@ class RouterService extends KarryngoApplicationEntity_1.KarryngoApplicationEntit
     }
 }
 exports.RouterService = RouterService;
-//# sourceMappingURL=RouterService.js.map

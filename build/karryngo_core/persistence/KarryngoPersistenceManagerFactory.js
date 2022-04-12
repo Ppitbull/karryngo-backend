@@ -48,8 +48,7 @@ let KarryngoPersistenceManagerFactory = class KarryngoPersistenceManagerFactory 
     }
 };
 KarryngoPersistenceManagerFactory = __decorate([
-    core_decorator_1.KarryngoCore(),
+    (0, core_decorator_1.KarryngoCore)(),
     __metadata("design:paramtypes", [KarryngoConfigurationServiceFactory_1.KarryngoConfigurationServiceFactory])
 ], KarryngoPersistenceManagerFactory);
 exports.KarryngoPersistenceManagerFactory = KarryngoPersistenceManagerFactory;
-//# sourceMappingURL=KarryngoPersistenceManagerFactory.js.map

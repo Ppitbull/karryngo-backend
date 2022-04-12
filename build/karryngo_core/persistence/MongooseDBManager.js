@@ -1,11 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MongooseDBManager = void 0;
 const ActionResult_1 = require("../utils/ActionResult");
-const mongoose_1 = __importDefault(require("mongoose"));
+// import mongooseDB from 'mongoose';
+let mongooseDB;
 const NoSqlPersistenceManager_1 = require("./NoSqlPersistenceManager");
 const DataBaseException_1 = require("../exception/DataBaseException");
 class MongooseDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManager {
@@ -65,8 +63,8 @@ class MongooseDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManage
             let connexionString = `mongodb://${this.configService.getValueOf("persistence").hostname}:${this.configService.getValueOf("persistence").port}/${this.configService.getValueOf("persistence").database}`;
             let result = new ActionResult_1.ActionResult();
             //connexion a la bd
-            mongoose_1.default.connect(connexionString.toString(), this.options.database);
-            this.db = mongoose_1.default.connection;
+            mongooseDB.connect(connexionString.toString(), this.options.database);
+            this.db = mongooseDB.connection;
             this.db.on('error', (e) => {
                 //si une erreur est rencontré on rejete la promise
                 result.resultCode = DataBaseException_1.DataBaseException.DATABAE_DISCONNECTED;
@@ -129,18 +127,17 @@ class MongooseDBManager extends NoSqlPersistenceManager_1.NoSqlPersistenceManage
      *  offerte par TypeScript
      */
     createShema(entity) {
-        let schema = mongoose_1.default.Schema;
+        let schema = mongooseDB.Schema;
         //création d'un schema vide
-        let entitySchema = new mongoose_1.default.Schema({}, this.options.schema);
+        let entitySchema = new mongooseDB.Schema({}, this.options.schema);
         //construction du schéma a partir de la classe
         entitySchema.loadClass(entity.constructor);
         if (this.shemas.get(entity.constructor.name))
             return this.shemas.get(entity.constructor.name);
         //création du model a partir du schema générer
-        let model = mongoose_1.default.model(entity.constructor.name, entitySchema);
+        let model = mongooseDB.model(entity.constructor.name, entitySchema);
         this.shemas.set(entity.constructor.name, model);
         return model;
     }
 }
 exports.MongooseDBManager = MongooseDBManager;
-//# sourceMappingURL=MongooseDBManager.js.map

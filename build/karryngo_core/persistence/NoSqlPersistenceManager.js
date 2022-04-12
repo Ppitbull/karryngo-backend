@@ -19,4 +19,3 @@ class NoSqlPersistenceManager extends AbstractPersistenceManager_1.AbstractPersi
     }
 }
 exports.NoSqlPersistenceManager = NoSqlPersistenceManager;
-//# sourceMappingURL=NoSqlPersistenceManager.js.map

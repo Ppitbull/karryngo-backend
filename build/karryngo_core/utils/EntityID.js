@@ -32,4 +32,3 @@ class EntityID {
     }
 }
 exports.EntityID = EntityID;
-//# sourceMappingURL=EntityID.js.map

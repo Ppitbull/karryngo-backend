@@ -77,6 +77,7 @@ let UserManagerService = class UserManagerService {
      *  elle est résolu dans le cas contraire
      */
     findUserById(id) {
+        console.log("idUser ", id);
         return new Promise((resolve, reject) => {
             this.db.findInCollection(constants_1.default.collections.user, { "_id": id.toString() })
                 .then((result) => {
@@ -122,18 +123,18 @@ let UserManagerService = class UserManagerService {
                     return p;
                 });
                 resolve(action);
+                console.log("Show perseon ", action);
             })
                 .catch((error) => reject(error));
         });
     }
 };
 __decorate([
-    decorator_1.DBPersistence(),
+    (0, decorator_1.DBPersistence)(),
     __metadata("design:type", Object)
 ], UserManagerService.prototype, "db", void 0);
 UserManagerService = __decorate([
-    decorator_1.Service(),
+    (0, decorator_1.Service)(),
     __metadata("design:paramtypes", [crud_service_1.CrudService])
 ], UserManagerService);
 exports.UserManagerService = UserManagerService;
-//# sourceMappingURL=usermanager.service.js.map

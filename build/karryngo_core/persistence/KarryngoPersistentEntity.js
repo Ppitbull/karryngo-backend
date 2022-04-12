@@ -6,6 +6,11 @@ const EntityID_1 = require("../utils/EntityID");
 class KarryngoPersistentEntity extends KarryngoEntity_1.KarryngoEntity {
     constructor(id = new EntityID_1.EntityID()) {
         super();
+        /**
+         * @description identifiant d'une entité
+         * @type EntityID
+         */
+        this._id = new EntityID_1.EntityID();
         this._id = id;
     }
     /**
@@ -29,9 +34,13 @@ class KarryngoPersistentEntity extends KarryngoEntity_1.KarryngoEntity {
      * @inheritdoc
      */
     hydrate(entity) {
-        //console.log("Entity ",entity._id)
-        if (entity._id)
-            this.id = this.purgeAttribute(entity, "_id");
+        // console.log("id ",entity)
+        for (const key of Object.keys(entity)) {
+            if (key == "_id")
+                this._id.setId(entity[key]);
+            else if (Reflect.has(this, key))
+                Reflect.set(this, key, entity[key]);
+        }
     }
     /**
      * @inheritdoc
@@ -49,4 +58,3 @@ class KarryngoPersistentEntity extends KarryngoEntity_1.KarryngoEntity {
     }
 }
 exports.KarryngoPersistentEntity = KarryngoPersistentEntity;
-//# sourceMappingURL=KarryngoPersistentEntity.js.map

@@ -40,4 +40,3 @@ class KarryngoConfigurationServiceFactory extends KarryngoApplicationEntity_1.Ka
     }
 }
 exports.KarryngoConfigurationServiceFactory = KarryngoConfigurationServiceFactory;
-//# sourceMappingURL=KarryngoConfigurationServiceFactory.js.map

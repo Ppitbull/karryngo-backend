@@ -20,7 +20,9 @@ let EmailService = class EmailService {
     send(email) {
         return new Promise((resolve, reject) => {
             let sender = nodemailer_1.default.createTransport({
-                service: this.configService.getValueOf('mail').service,
+                host: this.configService.getValueOf('mail').host,
+                port: this.configService.getValueOf('mail').port,
+                secure: this.configService.getValueOf('mail').secure,
                 auth: this.configService.getValueOf('mail').auth
             });
             sender.sendMail(email.toString(), (error, infos) => {
@@ -37,11 +39,10 @@ let EmailService = class EmailService {
     }
 };
 __decorate([
-    decorator_1.ConfigService(),
+    (0, decorator_1.ConfigService)(),
     __metadata("design:type", Object)
 ], EmailService.prototype, "configService", void 0);
 EmailService = __decorate([
-    decorator_1.Service()
+    (0, decorator_1.Service)()
 ], EmailService);
 exports.EmailService = EmailService;
-//# sourceMappingURL=email.service.js.map
