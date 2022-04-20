@@ -10,7 +10,7 @@
         "database_data":{
             "server_prefix":"mongodb+srv",
             "username":"admin",
-            "password":"E3R7KWhW9Cl0owHP",
+            "password":"vhEQhNRwdLrVNgob",
             "hostname":"karryngo.mikfa.mongodb.net",
             "database":"karryngo",
             "params":"retryWrites=true&w=majority"
@@ -18,7 +18,7 @@
         "database_file":{
             "server_prefix":"mongodb+srv",
             "username":"admin",
-            "password":"E3R7KWhW9Cl0owHP",
+            "password":"vhEQhNRwdLrVNgob",
             "hostname":"karryngo.mikfa.mongodb.net",
             "database":"karryngo_file",
             "params":"retryWrites=true&w=majority"

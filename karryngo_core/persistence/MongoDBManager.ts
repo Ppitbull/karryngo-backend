@@ -180,7 +180,8 @@ export class MongoDBManager extends NoSqlPersistenceManager
         let connexionString=configUrl.server_prefix+'://';
         if(configUrl.username && configUrl.password) connexionString+=`${configUrl.username}:${configUrl.password}@`;
         connexionString+=`${configUrl.hostname}/${configUrl.database}`;
-        if(configUrl.params) connexionString+=`${configUrl.params}`
+        if(configUrl.params) connexionString+=`?${configUrl.params}`
+            console.log(connexionString);
         return connexionString;
     }
 
