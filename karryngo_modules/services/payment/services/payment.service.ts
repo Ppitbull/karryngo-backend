@@ -121,6 +121,7 @@ export class PaymentService
             .catch((error:ActionResult)=>reject(error))
         })
     }
+    
     cancelPaiement(toupesuPaiementMethod:PaiementMethodStrategy,transactionservice:TransactionService,buyer:Customer,paiementMethod:PaiementStrategyType):Promise<ActionResult>
     {
         throw new Error("Method not implemented.");

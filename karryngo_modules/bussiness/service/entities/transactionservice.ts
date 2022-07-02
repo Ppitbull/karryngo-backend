@@ -44,6 +44,8 @@ export class TransactionService extends KarryngoPersistentEntity
     idProvider:String="";
     idRequester:String="";
     price:String="";
+    completed:Boolean=false;
+    refID: String;
 
     constructor(id:EntityID=new EntityID(),)
     {
@@ -86,7 +88,10 @@ export class TransactionService extends KarryngoPersistentEntity
             //     "Cannot make paiement in that step of transaction")
         }
 
-        const https = require('https');
+
+
+// This is the payment implemented by cedric. I changed it to the one bellow
+/*        const https = require('https');
         const data = JSON.stringify(pay)
 
         const options = {
@@ -110,25 +115,75 @@ export class TransactionService extends KarryngoPersistentEntity
         req.on('error', error => {
           console.error("error", error)
         })
+*/
 
 
+    const axios = require('axios');
+    // console.log("pay : ", pay)
+    var data;
+    var makeRequest = async() => {
+        let res = await axios.post('http://api.toupesu.com/livepaygateway2/api/main/reqPayment', pay).catch((err) => {
+                        console.error(err);
+                    });
 
-
-
-
-
-
-
-
-            //on fait le paiemement. ici cela consite a retirer les fonds 
-            //du compte bancaire|carte de crédit|compte paypal|... du client vers le compte bancaire de la plateforme
+        data = res.data;
+        console.log("payment data : ", data);
+    }
+    makeRequest().then(() => {
         this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START;
+        // return result;
+    });
+
+
+        // const axios = require('axios');
+        // var result;
+        // const payment = async() => {
+        //     result = await axios.post('http://api.toupesu.com/livepaygateway2/api/main/reqPayment', pay)
+        //         .then((res) => {
+        //             console.log(`Status: ${res.status}`);
+        //             console.log('Body: ', res.data);
+        //             result = res.data;
+        //         }).catch((err) => {
+        //             console.error(err);
+        //             result = err;
+        //         })
+        // }
+        
     }
 
 
+    checkPaiement(pay): Promise<ActionResult>
+    {
+        if(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT)
+        {
+            // throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_PAIEMENT_STATE_ERROR,
+            //     "Cannot make paiement in that step of transaction")
+        }
+        return new Promise<ActionResult>((resolve,reject)=>{
+            const axios = require('axios');
+            // console.log("pay : ", pay)
+            var makeRequest = async() => {
+                let res = await axios.post('http://api.toupesu.com/livepaygateway2/api/main/checkTransation', pay).catch((err) => {
+                                console.error(err);
+                            });
+                return res.data;
+            }
+
+            makeRequest().then((data) => {
+                this.state=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START;
+                // console.log("payment daaaaaaaaaaata : ", data);
+                // return data;
+                resolve(data) 
+                // return result;
+            });
+        });
+            
+    }
+ 
+
     startService()
     {
-        if((this.state!=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START)&&(this.state!=TransactionServiceState.SERVICE_ACCEPTED_AND_WAITING_PAIEMENT))
+        if(this.state!=TransactionServiceState.SERVICE_PAIEMENT_DONE_AND_WAITING_START)
         {
             throw new InvalideServiceStateException(InvalideServiceStateException.TRANSACTION_IS_NOT_IN_WAITING_START_STATE_ERROR,
                 "Cannot start service in that step of transaction or This service may have already been started")
@@ -190,6 +245,7 @@ export class TransactionService extends KarryngoPersistentEntity
             idProvider:this.idProvider,
             idRequester:this.idRequester,
             price:this.price,
+            refID: this.refID,
         }
     }
 }

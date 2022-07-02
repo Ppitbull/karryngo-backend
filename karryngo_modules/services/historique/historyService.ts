@@ -116,7 +116,7 @@ export class HistoryService
             })
         })
     }
-    findHistoryByRefTransaction(userID:EntityID,ref:number):Promise<ActionResult>
+    findHistoryByRefTransaction(userID:EntityID,ref:any):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             this.db.findDepthInCollection(
@@ -132,7 +132,7 @@ export class HistoryService
                     },
                     {
                         "$match":{
-                            "histories.financialTransaction.financialTransaction.ref":`${ref}`
+                            "histories.financialTransaction.ref":ref
                         }
                     },
                     {
@@ -142,7 +142,6 @@ export class HistoryService
                     }
                 ]
             ).then((result:ActionResult)=>{
-
                 if(result.result.length==0)
                 {
                     result.result=null;
@@ -151,7 +150,7 @@ export class HistoryService
                 }
                 let history=new UserHistory(new EntityID());
                 history.hydrate(result.result[0]);
-                result.result=history
+                result.result=history;
                 resolve(result);
             })
             .catch((error:ActionResult)=>{

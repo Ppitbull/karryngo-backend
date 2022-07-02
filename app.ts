@@ -16,7 +16,7 @@ var timeout = require('connect-timeout')
 // By Landry
 const io = require('socket.io')(httpServer, {
 	cors: {
-		origins: ['http://localhost:4200']
+		origins: ['*']
 	}
 });
 //By Landry

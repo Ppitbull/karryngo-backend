@@ -97,8 +97,8 @@ export class UserManagerService
                 }
                 else
                 {
-                    action.result=people.map((person:any)=> UserFactory.getInstance(person));
-                    resolve(action);
+                    // action.result=people.map((person:any)=> UserFactory.getInstance(person));
+                    resolve(result);
                 }
                 
             });

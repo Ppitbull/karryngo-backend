@@ -69,7 +69,7 @@ export class RequesterServiceManager
         service.idRequester=request.decoded.id
 
         this.fileUploadService.uploadAll(request.body.options.images )
-        .then((result:ActionResult)=>{
+        .then((result:ActionResult)=>{ 
             service.images=result.result;
 
             return this.db.addToCollection(Configuration.collections.requestservice,service);

@@ -21,6 +21,8 @@ import { Controller, DBPersistence } from "../../../../karryngo_core/decorator";
 import { FinancialTransactionErrorType } from "../../../services/payment/enums";
 import { UserHistory } from "../../../services/historique/history";
 import { HistoryService } from "../../../services/historique/historyService";
+import { RateService } from "../../../services/payment/services/rate.service";
+import { EmailService } from "../../../services/email/email.service";
 
 @Controller()
 export class ServiceManager
@@ -31,6 +33,8 @@ export class ServiceManager
     constructor(
         private transportServiceManager:TransportServiceManager,
         private chatService:ChatService,
+        private rateService:RateService,
+        private emailService:EmailService,
         private userHistoryService:HistoryService
         // private chatRealTimeService:RealTimeChatManager,
         // private realTimeRouterService:RealTimeRouterService
@@ -173,10 +177,29 @@ export class ServiceManager
     }
     checkPaiement(request:any,response:Response):void
     {
+        //I'll implement this to check payment
+        // const axios = require('axios');
+        // var result;
+        // const check_payment = async() => {
+        //     result = await axios.post('http://api.toupesu.com/livepaygateway2/api/main/checkTransation', request.body)
+        //         .then((res) => {
+        //             console.log(`Status: ${res.status}`);
+        //             // console.log('Body: ', res.data);
+        //             // result = res.data;
+        //             return res.data;
+        //         }).catch((err) => {
+        //             console.error(err);
+        //             result = err;
+        //         })
+        // }
+        // // console.log(result)
+        // check_payment().then(()=>{console.log(result)});
+// return;
         let refID=request.params.ref;
         let userID:EntityID=new EntityID();
         userID.setId(request.decoded.id);
-
+        let serviceID:EntityID=new EntityID();
+        serviceID.setId(request.body.idService);
         if(refID==null || refID==undefined)
         {
             response.status(400).json({
@@ -186,12 +209,12 @@ export class ServiceManager
         }
         else
         {
-            this.transportServiceManager.checkPaiement(parseInt(refID),userID)
+            this.transportServiceManager.checkPaiement(refID,userID, serviceID, request.body)
             .then((result:ActionResult)=>{
                 response.status(200).json({
                     resultCode:ActionResult.SUCCESS,
                     message:"Payment transaction found",
-                    data:result.result.toString()
+                    data:result
                 })
             })
             .catch((error:ActionResult)=>{
@@ -206,7 +229,8 @@ export class ServiceManager
                 }
                 response.status(code).json({
                     resultCode,
-                    message
+                    message,
+                    error
                 })
             })
         }
@@ -219,14 +243,18 @@ export class ServiceManager
 
     makePaiement(request:any,response:any):void
     {
+        
         // console.log(request.body)
+
         let serviceID=new EntityID();
         serviceID.setId(request.body.idService);
         let currentUserId:EntityID = new EntityID();
         currentUserId.setId(request.decoded.id);
-        let idTransaction:EntityID=new EntityID();
+        let idTransaction:EntityID=new EntityID(); 
         let history:UserHistory;
-        this.transportServiceManager.makePaiement(serviceID,request.body.paiement_mode,currentUserId)
+        console.log("request.body.paiement_mode", request.body.paiement_mode)
+        // this.transportServiceManager.makePaiement(serviceID,request.body.paiement_mode,currentUserId, request.body.phone)
+        this.transportServiceManager.makePaiement(serviceID,request.body.phone,currentUserId, request.body.phone)
         .then((data:ActionResult)=> 
         { 
             history=data.result.history;
@@ -241,7 +269,7 @@ export class ServiceManager
             response.status(200).json({
                 resultCode:ActionResult.SUCCESS,
                 message:"Successful confirmation paiement",
-                data:history.financialTransaction.toString()
+                data:history
             })
         })
         .catch((error:ActionResult)=>{{
@@ -444,5 +472,89 @@ export class ServiceManager
             })
         })
 
+    }
+
+    createRate(request:Request,response:any):void
+    {
+        // console.log(request.body)
+        this.rateService.addRate(request.body)
+        .then((data:ActionResult)=> response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"rate added",
+                result:data.result.toString(),
+                data: data
+            })
+        )
+        .catch((error:ActionResult)=>{
+            let code=500;
+            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) code=404;
+            else code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            });
+        })
+    }
+
+
+    changeRate(request:Request,response:any):void
+    {
+        this.rateService.changeRate(request.params.rate_id, request.body)
+        .then((data:ActionResult)=> response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"rate updated",
+                result:data.result.toString(),
+                data: data
+            })
+        )
+        .catch((error:ActionResult)=>{
+            let code=500;
+            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) code=404;
+            else code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            });
+        })
+    }
+
+    getRateByCountry(request:Request,response:any):void
+    {
+        this.rateService.getRateByCountry(request.params.country_id)
+        .then((data:ActionResult)=> response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"rate retrieved",
+                result:data.result
+            })
+        )
+        .catch((error:ActionResult)=>{
+            let code=500;
+            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) code=404;
+            else code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            });
+        })
+    }
+
+    sendBill(request:Request,response:any):void
+    {
+        this.emailService.sendBill(request.params.service_id, response)
+        .then((data:ActionResult)=> response.status(200).json({
+                resultCode:ActionResult.SUCCESS,
+                message:"rate retrieved",
+                result:data
+            })
+        )
+        .catch((error:ActionResult)=>{
+            let code=500;
+            if(error.resultCode==ActionResult.RESSOURCE_NOT_FOUND_ERROR) code=404;
+            else code=400;
+            response.status(code).json({
+                resultCode:error.resultCode,
+                message:error.message
+            });
+        })
     }
 }

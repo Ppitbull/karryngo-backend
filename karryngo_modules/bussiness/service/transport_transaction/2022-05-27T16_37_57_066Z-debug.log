@@ -1,0 +1,34 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'start' ]
+2 info using npm@6.14.4
+3 info using node@v10.19.0
+4 verbose run-script [ 'prestart', 'start', 'poststart' ]
+5 info lifecycle karryngo-backend@2.1.0~prestart: karryngo-backend@2.1.0
+6 info lifecycle karryngo-backend@2.1.0~start: karryngo-backend@2.1.0
+7 verbose lifecycle karryngo-backend@2.1.0~start: unsafe-perm in lifecycle true
+8 verbose lifecycle karryngo-backend@2.1.0~start: PATH: /usr/share/npm/node_modules/npm-lifecycle/node-gyp-bin:/root/karryngo-backend/node_modules/.bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+9 verbose lifecycle karryngo-backend@2.1.0~start: CWD: /root/karryngo-backend
+10 silly lifecycle karryngo-backend@2.1.0~start: Args: [ '-c', 'nodemon app.ts' ]
+11 silly lifecycle karryngo-backend@2.1.0~start: Returned: code: 1  signal: null
+12 info lifecycle karryngo-backend@2.1.0~start: Failed to exec start script
+13 verbose stack Error: karryngo-backend@2.1.0 start: `nodemon app.ts`
+13 verbose stack Exit status 1
+13 verbose stack     at EventEmitter.<anonymous> (/usr/share/npm/node_modules/npm-lifecycle/index.js:332:16)
+13 verbose stack     at EventEmitter.emit (events.js:198:13)
+13 verbose stack     at ChildProcess.<anonymous> (/usr/share/npm/node_modules/npm-lifecycle/lib/spawn.js:55:14)
+13 verbose stack     at ChildProcess.emit (events.js:198:13)
+13 verbose stack     at maybeClose (internal/child_process.js:982:16)
+13 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:259:5)
+14 verbose pkgid karryngo-backend@2.1.0
+15 verbose cwd /root/karryngo-backend
+16 verbose Linux 5.4.0-86-generic
+17 verbose argv "/usr/bin/node" "/usr/bin/npm" "start"
+18 verbose node v10.19.0
+19 verbose npm  v6.14.4
+20 error code ELIFECYCLE
+21 error errno 1
+22 error karryngo-backend@2.1.0 start: `nodemon app.ts`
+22 error Exit status 1
+23 error Failed at the karryngo-backend@2.1.0 start script.
+23 error This is probably not a problem with npm. There is likely additional logging output above.
+24 verbose exit [ 1, true ]

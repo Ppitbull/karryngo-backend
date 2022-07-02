@@ -124,6 +124,50 @@ import { ServiceManager } from "./servicemanager";
             }
         ]
     },
+    {
+        "url":"/api/requester/service/transaction/create_rate",
+        "module" :ServiceManager,
+        "actions":[
+            {
+                "method":"post",
+                "action": "createRate",
+                "params":{}
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/transaction/change_rate/:rate_id",
+        "module" :ServiceManager,
+        "actions":[
+            {
+                "method":"post",
+                "action": "changeRate",
+                "params":{}
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/transaction/country_rate/:country_id",
+        "module" :ServiceManager,
+        "actions":[
+            {
+                "method":"get",
+                "action": "getRateByCountry",
+                "params":{}
+            }
+        ]
+    },
+    {
+        "url":"/api/requester/service/transaction/send_bill/:service_id",
+        "module" :ServiceManager,
+        "actions":[
+            {
+                "method":"post",
+                "action": "sendBill",
+                "params":{}
+            }
+        ]
+    },
 ])
 export class TransactionRoutingModule
 {}

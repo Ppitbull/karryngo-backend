@@ -21,7 +21,7 @@ import { ProviderServiceManager } from "./providerservicemanager";
         "actions":[
             {
                 "method":"post",
-                "action": "findServiceProviderByZone",
+                "action": "findServiceProviderByZone", 
                 "params":{
                     
                 }

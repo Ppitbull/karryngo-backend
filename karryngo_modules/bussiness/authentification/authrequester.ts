@@ -121,14 +121,15 @@ export default class AuthRequester
 
     getProfil(request:any,response:Response):void
     {
-        let id:EntityID=new EntityID();
+        console.log(request.decoded)
+        let id:EntityID=new EntityID(); 
         id.setId(request.decoded.id)
         this.userManagerService.findUserById(id)
         .then((data:ActionResult)=>{
             // console.log("Provider: ",data);
             return response.status(200).json({
                 resultCode:data.resultCode,
-                result:data.result[0].toString()
+                result:data.result[0]
             })
         }).catch((error:ActionResult)=>{
             return response.status(404).json({
@@ -141,7 +142,7 @@ export default class AuthRequester
     {
         request.decoded.id=request.params.idProfil;
         this.getProfil(request,response);
-    }
+    } 
 
     resetPassword(request:any,response:Response):void
     {

@@ -3,11 +3,16 @@ import * as express from 'express';
 import { ActionResult } from '../../../karryngo_core/utils/ActionResult';
 import { EmailService } from './email.service';
 import { Email } from './entities/email';
+import {UserManagerService} from "../usermanager/usermanager.service";
+import { CrudService } from "../crud/crud.service";
+
 var chai=require('chai');
 
 describe('Test du service de mail',async ()=>
 {
-    let emailService:EmailService=new EmailService();
+    var crud:CrudService;
+    var user = new UserManagerService(crud);
+    let emailService:EmailService=new EmailService(user);
     it("test de l'envoi d'un mail", async (done)=>
     {
         let email:Email=new Email().from('contact.karryngo@gmail.com')

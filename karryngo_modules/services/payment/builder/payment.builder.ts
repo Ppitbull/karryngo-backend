@@ -9,4 +9,4 @@ export class PaymentBuilderService
     {
         return DynamicLoader.load(`${Configuration.path_for_bussiness_service}/payment/api/${Configuration.api_for_payement}/${Configuration.api_for_payement}paymentmethodfactory`)
     }
-}
+} 

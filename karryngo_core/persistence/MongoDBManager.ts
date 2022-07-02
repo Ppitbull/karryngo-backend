@@ -181,7 +181,7 @@ export class MongoDBManager extends NoSqlPersistenceManager
         if(configUrl.username && configUrl.password) connexionString+=`${configUrl.username}:${configUrl.password}@`;
         connexionString+=`${configUrl.hostname}/${configUrl.database}`;
         if(configUrl.params) connexionString+=`?${configUrl.params}`
-            console.log(connexionString);
+        console.log("Connecting to the database on " + connexionString + "...");
         return connexionString;
     }
 
@@ -203,7 +203,7 @@ export class MongoDBManager extends NoSqlPersistenceManager
         // let connexionString=`mongodb+srv://admin:KFBbc7ebBHHloYyd@cluster0.kiwom.mongodb.net/karryngo?retryWrites=true&w=majority`
         return new Promise<ActionResult>((resolve,reject)=>
         {
-            let mongoClient = new MongoClient(connexionString, { useNewUrlParser: true, useUnifiedTopology: true });
+            let mongoClient = new MongoClient(connexionString);
             //connexion a la bd
             mongoClient.connect((err)=>{
                 if(err)

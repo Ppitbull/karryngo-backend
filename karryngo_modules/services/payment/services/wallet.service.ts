@@ -6,6 +6,7 @@ import { EntityID } from "../../../../karryngo_core/utils/EntityID";
 import { Customer } from "../../../bussiness/authentification/entities/customer";
 import { UserManagerService } from "../../usermanager/usermanager.service";
 import { Wallet } from "../entities/wallet";
+import { Rate } from "../entities/rate";
 
 @Service()
 export class WalletService
@@ -26,8 +27,9 @@ export class WalletService
             }
             this.getWallet(userID)
             .then((result:ActionResult)=>{
-                let wallet:Wallet=result.result;
+                var wallet = new Wallet(result.result);
                 wallet.increase(amount);
+                console.log("walletwalletwallet: ", wallet)
                 return this.updateWallet(wallet);
             })
             .then((result:ActionResult)=>resolve(result))
@@ -70,7 +72,6 @@ export class WalletService
             })
             .catch((error)=>reject(error))
         })
-
     }
 
     updateWallet(wallet:Wallet):Promise<ActionResult>
@@ -81,7 +82,9 @@ export class WalletService
                 "wallet._id":wallet.id
             },
             {
-                "wallet.amount":wallet.amount
+                $set:{ 
+                    "wallet.amount":wallet.amount
+                }
             }
         );
     }

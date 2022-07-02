@@ -6,6 +6,12 @@ export class Wallet extends KarryngoPersistentEntity
 
     
 
+    constructor(data) {  // Constructor
+        super();
+        this.id = data._id;
+        this.amount = data.amount;
+    }
+
     toString():Record<string,any>
     {
         return {

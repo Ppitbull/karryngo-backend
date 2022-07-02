@@ -10,6 +10,7 @@ import { Location } from "../../../services/geolocalisation/entities/location";
 import { TransactionService } from "./transactionservice";
 import { TransportService } from "./transportservice";
 import { Vehicle } from "./vehicle";
+import { ServiceBill } from "../../../services/payment/entities/servicebill";
 
 export enum TransportServiceTypeState
 {
@@ -39,6 +40,7 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
     idSelectedTransaction:string="";
     providers:any[]=[];
     transactions:TransactionService[]=[];
+    bill: ServiceBill;
 
     constructor(
         id:EntityID=new EntityID(),
@@ -147,7 +149,8 @@ export abstract class TransportServiceType extends KarryngoPersistentEntity
             idSelectedProvider:this.idSelectedProvider,
             idSelectedTransaction:this.idSelectedTransaction,
             providers:this.providers,
-            transactions:this.transactions.map((trans:TransactionService)=>trans.toString())
+            transactions:this.transactions.map((trans:TransactionService)=>trans.toString()),
+            bill: this.bill
         };
         //stringify date format ISO 8601
     }

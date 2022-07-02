@@ -21,6 +21,8 @@ import { UserHistory } from "../../../services/historique/history";
 import { HistoryService } from "../../../services/historique/historyService";
 import { PaymentService } from "../../../services/payment/services/payment.service";
 import { PaymentBuilderService } from "../../../services/payment/builder/payment.builder";
+import { WalletService } from "../../../services/payment/services/wallet.service";
+import { RateService } from "../../../services/payment/services/rate.service";
 
 
 @Controller()
@@ -33,6 +35,9 @@ export class TransportServiceManager
     constructor(
         private paymentService:PaymentService,
         private userService:UserManagerService,
+        private walletService:WalletService,
+        private rateService:RateService,
+        private transactionService:TransactionService,
         private userHistoryService:HistoryService){
             // console.log("hiezar")
         }
@@ -211,7 +216,7 @@ export class TransportServiceManager
      * @param paiementMethodStrategi  Mode de paiement de type `PaiementStrategyType`
      * @param buyerID Identitifiant du payeur
      */
-    makePaiement(idService:EntityID,paiementMethodStrategi:PaiementStrategyType,buyerID:EntityID):Promise<ActionResult>
+    makePaiement(idService:EntityID,paiementMethodStrategi:PaiementStrategyType,buyerID:EntityID, phone):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let transaction:TransactionService;
@@ -222,31 +227,39 @@ export class TransportServiceManager
             .then((data:ActionResult)=>{ 
                 // on instanci le service en fonction de son champ `type`
                 //on fait le paiement
+                console.log("data   : ", data)
                 try
                 {
+
                     // console.log(data.result.TransactionService.price)
                     // console.log("-------------------")
                     let service:TransportServiceType=data.result;
                     transaction=service.transactions.find((trans:TransactionService)=>trans.id.toString()==service.idSelectedTransaction);
-                    // console.log(transaction)
+                    // console.log("transaction, transaction", transaction)
+                    var today = new Date();
+                    var refID = transaction._id['_id'].toString()+ today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate() + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
                     let pay = {
-                                  "refID": transaction._id,
-                                  "amount": transaction.price,
-                                  "msidn": "+237675835953",
+                                  "refID": refID,
+                                  "amount": transaction.price.toString(),
+                                  "msidn": phone.toString(),
                                   "moneyCode": "XAF",
                                   "product": "Toupesu"
                                 }
-                    transaction.makePaiement(pay);
+                    // Update transaction refID and pay
+                    this.updateRefTransaction(transaction.id.toString(), refID);
+                    // .then((value:ActionResult)=> {
+                    //     console.log("iddddddddddd : ", value)
+                    // });
+                    // End update transaction refID
+                    var payment = transaction.makePaiement(pay);
+                    // console.log("payment : ", payment);
                     this.userService.findUserById(buyerID)
-                    .then((result:ActionResult)=>this.paymentService.makePaiement(
-                        PaymentBuilderService.getPaiementType().getMethodPaiment(paiementMethodStrategi),
-                        service,result.result[0]
-                        ,paiementMethodStrategi))
+                    
                     .then((value:ActionResult)=> {
-                        // console.log("idService ",idService,transaction.state)
+                        // console.log("idService details:",idService, ";", "sataes: ", transaction.state)
                         history=value.result;
                         return this.updateServiceTransactionStatus(idService,transaction)
-                    })
+                    }) 
                     .then((value:ActionResult)=> {
                         value.result={
                             service,
@@ -262,23 +275,24 @@ export class TransportServiceManager
                     data.message=error.message;
                     data.result=null;
                     return Promise.reject(data);
-                } 
+                }
+                
             })
             .catch((error:ActionResult)=>reject(error))
         })
         
     }
 
-    checkPaiement(refID:number,buyerID:EntityID):Promise<ActionResult>
+    checkPaiement(refID:number,buyerID:EntityID, serviceID:EntityID, data):Promise<ActionResult>
     {
         return new Promise<ActionResult>((resolve,reject)=>{
             let userHistory:UserHistory;
             let financialTransaction:FinancialTransaction;
             let service:TransportServiceType;
-            this.userHistoryService.findHistoryByRefTransaction(buyerID,refID)
+            this.userHistoryService.findHistoryByRefTransaction(buyerID,0)
             .then((result:ActionResult)=>{
                 userHistory=result.result;
-                return this.getServiceById(userHistory.serviceTransportID)
+                return this.getServiceById(serviceID)
             })
             .then((result:ActionResult)=>{
                 service=result.result;
@@ -286,6 +300,7 @@ export class TransportServiceManager
                 let paymentMethod=null;
                 try {
                     paymentMethod=PaymentBuilderService.getPaiementType().getMethodPaiment(userHistory.financialTransaction.paiementMode)
+                    // console.log("res", paymentMethod)
                 } catch (error) {
                     let r=new ActionResult();
                     r.resultCode=error.code;
@@ -293,30 +308,67 @@ export class TransportServiceManager
                     r.result=null;
                     return Promise.reject(r)
                 }
-                return this.paymentService.checkPaiement(
-                    paymentMethod,
-                    service,
-                    userHistory.financialTransaction,
-                    buyer,
-                    userHistory.financialTransaction.paiementMode
-                )
+                return this.transactionService.checkPaiement(data).then((result)=>{
+                    return result;
+                })
+                // return this.paymentService.checkPaiement(
+                //     paymentMethod,
+                //     service,
+                //     userHistory.financialTransaction,
+                //     buyer,
+                //     userHistory.financialTransaction.paiementMode
+                // )
             })
             .then((result:ActionResult)=>
             {
-                console.log("ResultAction ",result)
-
-                financialTransaction=userHistory.financialTransaction;
-                financialTransaction.state=result.result.state;
-                financialTransaction.endDate=result.result.endDate;
-                return this.updateServiceTransactionStatus(service.id,service.transactions.find((transaction)=>transaction._id.toString()==service.idSelectedTransaction))
+                // console.log("ResultAction ",service)
+                return this.getTransactionByRef(data['refID'])
+                .then((res) => {
+                    if (res.result.completed==true) {
+                        result.message = "A transaction has already been completed for this service"
+                        return result
+                    } else {
+                        if(result['status']=="FAILED") {
+                            return result;
+                        }
+                        else {
+                            console.log("this.getTransaction(data['refID'])");   
+                            this.rateService.getRate("1")
+                            this.setBill(result["amount"], service);
+                            this.walletService.increaseWallet(buyerID, result["amount"]);
+                            return this.setTransactionAsCompleted(data['refID']);
+                        }
+                    }
+                    
+                })
+                // financialTransaction=userHistory.financialTransaction;
+                // financialTransaction.state=result.result.state;
+                // financialTransaction.endDate=result.result.endDate;
+                // return this.updateServiceTransactionStatus(service.id,service.transactions.find((transaction)=>transaction._id.toString()==service.idSelectedTransaction))
             })
             .then((result:ActionResult)=> {
-                result.result=financialTransaction
+                console.log("final result : ", result)
+                // result=financialTransaction
+                // result.result=financialTransaction
                 resolve(result)
             })
             .catch((error:ActionResult)=>reject(error))
         })
     }
+
+    setBill(amount: number, service: TransportServiceType){
+        return this.db.updateInCollection(Configuration.collections.requestservice,
+            {
+                "_id":service._id.toString()
+            },
+            {
+                $set:{ 
+                    "bill.amount":amount,
+                    "bill.date":new Date()
+                }
+            });
+    }
+
     updateServiceTransactionStatus(idService:EntityID,transaction:TransactionService):Promise<ActionResult>
     {
         return this.db.updateInCollection(Configuration.collections.requestservice,
@@ -340,14 +392,63 @@ export class TransportServiceManager
                  let transaction:TransactionService=result.result;
                 
                  try {
-                    transaction.startService();
+                    transaction.startService(); 
                     return this.db.updateInCollection(Configuration.collections.requestservice,
                         {
                             "transactions._id":transaction.id.toString()
                         },
                         {
-                            $set:{ 
+                            $set:{
                                 "transactions.$.state":transaction.state,
+                            }
+                        });
+                 } catch (error) {
+                    result.resultCode=ActionResult.INVALID_ARGUMENT;
+                    result.message=error._description;
+                    result.result=null;
+                    return Promise.reject(result);
+                 }
+            })
+        
+    }
+
+
+    setTransactionAsCompleted(refID:String):Promise<ActionResult>
+    {
+        console.log("refID", refID)
+        return this.db.updateInCollection(Configuration.collections.requestservice,
+            {
+                "transactions.refID": refID
+            },
+            {
+                $set:{ 
+                    "transactions.$.completed":true
+                }
+            });
+    }
+
+    updateRefTransaction(idTransaction, refID):Promise<ActionResult>
+    {
+        // return this.db.updateInCollection(Configuration.collections.requestservice,
+        //     {
+        //         "transactions._id":idTransaction
+        //     },
+        //     {
+        //         $set:{ 
+        //             "transactions.refId":refID,
+        //         }
+        //     });
+        return this.getTransaction(idTransaction)
+            .then((result:ActionResult)=>{
+                 let transaction:TransactionService=result.result;
+                 try {
+                    return this.db.updateInCollection(Configuration.collections.requestservice,
+                        {
+                            "transactions._id":transaction.id.toString()
+                        },
+                        {
+                            $set:{
+                                "transactions.$.refID":refID,
                             }
                         });
                  } catch (error) {
@@ -402,7 +503,26 @@ export class TransportServiceManager
                 },
             )
             .then((data:ActionResult)=>{
-                
+                console.log("data data: ", data)
+                let transaction:TransactionService = new TransactionService();
+                transaction.hydrate(data.result[0].transactions[0]);
+                // console.log("Transaction ",transaction)
+                data.result=transaction;
+                resolve(data);
+            })
+        })
+    }
+
+    // Get a transaction using the refID
+    getTransactionByRef(ref):Promise<ActionResult>
+    {
+        return new Promise<ActionResult>((resolve,reject)=>{
+            this.db.findInCollection(Configuration.collections.requestservice,
+                {
+                    "transactions.refID": ref
+                },
+            )
+            .then((data:ActionResult)=>{
                 let transaction:TransactionService = new TransactionService();
                 transaction.hydrate(data.result[0].transactions[0]);
                 // console.log("Transaction ",transaction)
